@@ -479,7 +479,7 @@
     box-shadow 0.3s ease;
 }
 
-.plan-card.is-visible {
+.plan-card[data-revealed] {
   opacity: 1;
   transform: translateY(0);
 }
@@ -489,7 +489,7 @@
   box-shadow: 0 26px 60px -26px rgba(0, 0, 0, 0.85);
 }
 
-.plan-card.is-visible:hover {
+.plan-card[data-revealed]:hover {
   transform: translateY(-8px);
 }
 
@@ -750,7 +750,7 @@
     box-shadow 0.25s ease;
 }
 
-.faq-item.is-visible {
+.faq-item[data-revealed] {
   opacity: 1;
   transform: translateY(0);
 }

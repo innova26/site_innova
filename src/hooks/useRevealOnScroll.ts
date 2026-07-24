@@ -1,9 +1,14 @@
 import { useEffect, useRef } from 'react'
 
 /**
- * Adiciona a classe `is-visible` aos elementos que casam com `selector`
- * conforme eles entram na viewport, permitindo revelacao escalonada via CSS.
+ * Marca com `data-revealed` os elementos que casam com `selector` conforme
+ * eles entram na viewport, permitindo revelacao escalonada via CSS.
  * Com `prefers-reduced-motion`, tudo ja nasce visivel.
+ *
+ * Usa atributo em vez de classe de proposito: o React reescreve `className`
+ * a cada re-render a partir do JSX, o que apagaria uma classe adicionada
+ * imperativamente aqui (era o que fazia o item do FAQ sumir ao ser aberto).
+ * `data-revealed` nao e gerenciado pelo React, entao sobrevive ao re-render.
  */
 export function useRevealOnScroll<T extends HTMLElement>(selector: string) {
   const containerRef = useRef<T>(null)
@@ -17,7 +22,7 @@ export function useRevealOnScroll<T extends HTMLElement>(selector: string) {
     ).matches
 
     if (reduceMotion) {
-      items.forEach((item) => item.classList.add('is-visible'))
+      items.forEach((item) => item.setAttribute('data-revealed', 'true'))
       return
     }
 
@@ -25,7 +30,7 @@ export function useRevealOnScroll<T extends HTMLElement>(selector: string) {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible')
+            entry.target.setAttribute('data-revealed', 'true')
             observer.unobserve(entry.target)
           }
         })
