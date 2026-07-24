@@ -2,6 +2,7 @@ import './App.css'
 import HeroArt from './components/HeroArt'
 import MarketSection from './components/MarketSection'
 import PlansSection from './components/PlansSection'
+import FaqSection from './components/FaqSection'
 
 const NAV_ITEMS = [
   { label: 'INÍCIO', href: '#', active: true },
@@ -88,6 +89,7 @@ function App() {
 
         <MarketSection />
         <PlansSection />
+        <FaqSection />
       </main>
     </div>
   )

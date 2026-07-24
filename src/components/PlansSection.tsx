@@ -1,9 +1,5 @@
-import {
-  useEffect,
-  useRef,
-  type CSSProperties,
-  type MouseEvent,
-} from 'react'
+import { type CSSProperties, type MouseEvent } from 'react'
+import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 
 /** Troque pelo numero real da operadora (formato internacional, sem simbolos). */
 const WHATSAPP = '5511999999999'
@@ -142,34 +138,7 @@ function WhatsAppIcon() {
 }
 
 function PlansSection() {
-  const gridRef = useRef<HTMLDivElement>(null)
-
-  /* Reveal escalonado quando a secao entra na viewport */
-  useEffect(() => {
-    const cards = gridRef.current?.querySelectorAll('.plan-card')
-    if (!cards?.length) return
-
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce) {
-      cards.forEach((c) => c.classList.add('is-visible'))
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.2 },
-    )
-
-    cards.forEach((card) => observer.observe(card))
-    return () => observer.disconnect()
-  }, [])
+  const gridRef = useRevealOnScroll<HTMLDivElement>('.plan-card')
 
   /* Spotlight que acompanha o cursor dentro do card */
   const handleMove = (event: MouseEvent<HTMLElement>) => {
