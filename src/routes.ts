@@ -2,7 +2,6 @@
 export const ROUTES = {
   home: '/',
   quemSomos: '/quem-somos',
-  blog: '/blog',
   rede: '/rede-de-atendimento',
   cotacao: '/cotacao',
   credenciado: '/seja-um-credenciado',
@@ -21,7 +20,6 @@ export const PORTAIS = [
 export const NAV_ITEMS = [
   { label: 'Início', to: ROUTES.home },
   { label: 'Quem somos', to: ROUTES.quemSomos },
-  { label: 'Blog', to: ROUTES.blog },
   { label: 'Rede de Atendimento', to: ROUTES.rede },
   { label: 'Cotação', to: ROUTES.cotacao },
   { label: 'Seja um credenciado', to: ROUTES.credenciado },
@@ -31,7 +29,6 @@ export const NAV_ITEMS = [
 ]
 
 export const ROUTE_TITLES: Record<string, string> = {
-  [ROUTES.blog]: 'Blog',
   [ROUTES.rede]: 'Rede de Atendimento',
   [ROUTES.cotacao]: 'Cotação',
   [ROUTES.credenciado]: 'Seja um credenciado',

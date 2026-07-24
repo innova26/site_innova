@@ -19,7 +19,6 @@ function App() {
           <Route path={ROUTES.credenciado} element={<Credenciado />} />
 
           {/* previstas no menu, ainda em construcao */}
-          <Route path={ROUTES.blog} element={<EmBreve />} />
           <Route path={ROUTES.rede} element={<EmBreve />} />
           <Route path={ROUTES.corretoras} element={<EmBreve />} />
           <Route path={ROUTES.sac} element={<EmBreve />} />

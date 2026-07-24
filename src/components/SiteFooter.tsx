@@ -4,7 +4,6 @@ import { PORTAIS, ROUTES } from '../routes'
 const NAV_LINKS = [
   { label: 'Início', to: ROUTES.home },
   { label: 'Quem somos', to: ROUTES.quemSomos },
-  { label: 'Blog', to: ROUTES.blog },
   { label: 'Rede de Atendimento', to: ROUTES.rede },
   { label: 'Cotação', to: ROUTES.cotacao },
   { label: 'Seja um credenciado', to: ROUTES.credenciado },
