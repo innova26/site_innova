@@ -4,49 +4,12 @@ import MarketSection from './components/MarketSection'
 import PlansSection from './components/PlansSection'
 import FaqSection from './components/FaqSection'
 import SiteFooter from './components/SiteFooter'
-
-const NAV_ITEMS = [
-  { label: 'INÍCIO', href: '#', active: true },
-  { label: 'SOLUÇÕES', href: '#solucoes', caret: true },
-  { label: 'SEGMENTOS', href: '#segmentos', caret: true },
-  { label: 'A INNOVA', href: '#empresa' },
-  { label: 'BLOG', href: '#blog' },
-  { label: 'IMPRENSA', href: '#imprensa' },
-  { label: 'MATERIAIS', href: '#materiais' },
-]
+import SiteHeader from './components/SiteHeader'
 
 function App() {
   return (
     <div className="page">
-      <header className="site-header">
-        <div className="shell header-inner">
-          <a className="brand" href="#">
-            <span className="brand-top">Innova</span>
-            <span className="brand-sub">operadora de saúde</span>
-          </a>
-
-          <nav className="nav" aria-label="Principal">
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className={item.active ? 'nav-link is-active' : 'nav-link'}
-              >
-                {item.label}
-                {item.caret && (
-                  <span className="caret" aria-hidden="true">
-                    ▾
-                  </span>
-                )}
-              </a>
-            ))}
-          </nav>
-
-          <a className="btn btn-primary header-cta" href="#contato">
-            FALE COM ESPECIALISTA
-          </a>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main>
         <section className="hero">
