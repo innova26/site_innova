@@ -1017,8 +1017,15 @@
 }
 
 .social-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
+}
+
+/* glifo que ocupa a caixa toda (WhatsApp) recua para igualar o peso otico:
+   "f" e "in" ocupam 18 das 24 unidades, entao 21 * 18/24 = ~16px */
+.social-btn svg.is-inset {
+  width: 16px;
+  height: 16px;
 }
 
 .social-btn:hover {
