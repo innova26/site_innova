@@ -1,18 +1,14 @@
-const NAV_LINKS = [
-  { label: 'Início', href: '#' },
-  { label: 'Quem somos', href: '#empresa' },
-  { label: 'Blog', href: '#blog' },
-  { label: 'Rede de Atendimento', href: '#rede' },
-  { label: 'Suporte ao cliente', href: '#suporte' },
-  { label: 'Cotação', href: '#cotacao' },
-  { label: 'Seja um credenciado', href: '#credenciado' },
-]
+import { Link } from 'react-router-dom'
+import { PORTAIS, ROUTES } from '../routes'
 
-const PORTAL_LINKS = [
-  { label: 'Portal do Beneficiário', href: '#portal-beneficiario' },
-  { label: 'Portal do Prestador', href: '#portal-prestador' },
-  { label: 'Portal do Corretor', href: '#portal-corretor' },
-  { label: 'Portal da Empresa', href: '#portal-empresa' },
+const NAV_LINKS = [
+  { label: 'Início', to: ROUTES.home },
+  { label: 'Quem somos', to: ROUTES.quemSomos },
+  { label: 'Blog', to: ROUTES.blog },
+  { label: 'Rede de Atendimento', to: ROUTES.rede },
+  { label: 'Cotação', to: ROUTES.cotacao },
+  { label: 'Seja um credenciado', to: ROUTES.credenciado },
+  { label: 'SAC', to: ROUTES.sac },
 ]
 
 const LEGAL_LINKS = [
@@ -125,7 +121,7 @@ function SiteFooter() {
           <ul>
             {NAV_LINKS.map((link) => (
               <li key={link.label}>
-                <a href={link.href}>{link.label}</a>
+                <Link to={link.to}>{link.label}</Link>
               </li>
             ))}
           </ul>
@@ -134,9 +130,11 @@ function SiteFooter() {
         <nav className="footer-col" aria-label="Portais">
           <h2>Portais</h2>
           <ul>
-            {PORTAL_LINKS.map((link) => (
+            {PORTAIS.map((link) => (
               <li key={link.label}>
-                <a href={link.href}>{link.label}</a>
+                <a href={link.href} target="_blank" rel="noreferrer">
+                  {link.label}
+                </a>
               </li>
             ))}
           </ul>

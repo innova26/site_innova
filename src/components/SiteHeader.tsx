@@ -1,23 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-
-const PORTAIS = [
-  { label: 'Portal do Beneficiário', href: '#portal-beneficiario' },
-  { label: 'Portal do Prestador', href: '#portal-prestador' },
-  { label: 'Portal do Corretor', href: '#portal-corretor' },
-  { label: 'Portal da Empresa', href: '#portal-empresa' },
-]
-
-const NAV_ITEMS = [
-  { label: 'Início', href: '#', active: true },
-  { label: 'Quem somos', href: '#quem-somos' },
-  { label: 'Blog', href: '#blog' },
-  { label: 'Rede de Atendimento', href: '#rede' },
-  { label: 'Cotação', href: '#cotacao' },
-  { label: 'Seja um credenciado', href: '#credenciado' },
-  { label: 'Corretoras', href: '#corretoras' },
-  { label: 'Portais', submenu: PORTAIS },
-  { label: 'SAC', href: '#sac' },
-]
+import { Link, NavLink } from 'react-router-dom'
+import { NAV_ITEMS, ROUTES } from '../routes'
 
 function Caret() {
   return (
@@ -95,7 +78,13 @@ function SiteHeader() {
           <ul className="nav-submenu">
             {item.submenu.map((sub) => (
               <li key={sub.label}>
-                <a href={sub.href} onClick={onNavigate}>
+                {/* portais sao sistemas externos */}
+                <a
+                  href={sub.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={onNavigate}
+                >
                   {sub.label}
                 </a>
               </li>
@@ -103,24 +92,27 @@ function SiteHeader() {
           </ul>
         </div>
       ) : (
-        <a
+        <NavLink
           key={item.label}
-          href={item.href}
-          className={item.active ? 'nav-link is-active' : 'nav-link'}
+          to={item.to!}
+          end={item.to === ROUTES.home}
+          className={({ isActive }) =>
+            isActive ? 'nav-link is-active' : 'nav-link'
+          }
           onClick={onNavigate}
         >
           {item.label}
-        </a>
+        </NavLink>
       ),
     )
 
   return (
     <header className="site-header">
       <div className="shell header-inner">
-        <a className="brand" href="#" onClick={closeAll}>
+        <Link className="brand" to={ROUTES.home} onClick={closeAll}>
           <span className="brand-top">Innova</span>
           <span className="brand-sub">operadora de saúde</span>
-        </a>
+        </Link>
 
         <nav className="nav" aria-label="Principal">
           {renderLinks()}

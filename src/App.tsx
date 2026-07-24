@@ -1,63 +1,31 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
-import HeroArt from './components/HeroArt'
-import MarketSection from './components/MarketSection'
-import PlansSection from './components/PlansSection'
-import FaqSection from './components/FaqSection'
-import SiteFooter from './components/SiteFooter'
-import SiteHeader from './components/SiteHeader'
+import Layout from './components/Layout'
+import Home from './pages/Home'
+import QuemSomos from './pages/QuemSomos'
+import EmBreve from './pages/EmBreve'
+import { ROUTES } from './routes'
 
 function App() {
   return (
-    <div className="page">
-      <SiteHeader />
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path={ROUTES.home} element={<Home />} />
+          <Route path={ROUTES.quemSomos} element={<QuemSomos />} />
 
-      <main>
-        <section className="hero">
-          <div className="shell hero-inner">
-            <div className="hero-copy">
-              <p className="eyebrow">SAÚDE SUPLEMENTAR · 40 ANOS</p>
+          {/* previstas no menu, ainda em construcao */}
+          <Route path={ROUTES.blog} element={<EmBreve />} />
+          <Route path={ROUTES.rede} element={<EmBreve />} />
+          <Route path={ROUTES.cotacao} element={<EmBreve />} />
+          <Route path={ROUTES.credenciado} element={<EmBreve />} />
+          <Route path={ROUTES.corretoras} element={<EmBreve />} />
+          <Route path={ROUTES.sac} element={<EmBreve />} />
 
-              <h1 className="hero-title">
-                Transformando a gestão
-                <br />
-                na <span className="accent">saúde suplementar</span>
-              </h1>
-
-              <p className="hero-lead">
-                Tecnologia, inteligência e eficiência para garantir performance
-                e conformidade em um mercado altamente regulado.
-              </p>
-
-              <div className="hero-actions">
-                <a className="btn btn-primary" href="#demonstracao">
-                  Agendar demonstração <span aria-hidden="true">→</span>
-                </a>
-                <a className="btn btn-ghost" href="#solucoes">
-                  Conheça nossas soluções
-                </a>
-              </div>
-
-              <div className="hero-eco">
-                <p className="eco-title">Parte do ecossistema</p>
-                <p className="eco-text">
-                  Innova · presente em 100% das cidades brasileiras
-                </p>
-              </div>
-            </div>
-
-            <div className="hero-visual">
-              <HeroArt />
-            </div>
-          </div>
-        </section>
-
-        <MarketSection />
-        <PlansSection />
-        <FaqSection />
-      </main>
-
-      <SiteFooter />
-    </div>
+          <Route path="*" element={<EmBreve />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
