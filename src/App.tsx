@@ -3,6 +3,7 @@ import HeroArt from './components/HeroArt'
 import MarketSection from './components/MarketSection'
 import PlansSection from './components/PlansSection'
 import FaqSection from './components/FaqSection'
+import SiteFooter from './components/SiteFooter'
 
 const NAV_ITEMS = [
   { label: 'INÍCIO', href: '#', active: true },
@@ -91,6 +92,8 @@ function App() {
         <PlansSection />
         <FaqSection />
       </main>
+
+      <SiteFooter />
     </div>
   )
 }
