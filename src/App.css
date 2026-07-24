@@ -1809,3 +1809,257 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ==================== Página: Cotação ==================== */
+.cotacao {
+  padding-block: clamp(44px, 6vw, 80px);
+  background:
+    radial-gradient(
+      900px 520px at 78% 10%,
+      rgba(47, 128, 237, 0.24),
+      transparent 62%
+    ),
+    linear-gradient(170deg, var(--navy-800), var(--navy-900));
+}
+
+.cotacao-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+
+.cotacao-copy .page-lead {
+  margin-bottom: 34px;
+}
+
+/* --- diferenciais --- */
+.diferenciais {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+}
+
+.diferenciais li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.dif-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  color: var(--blue-300);
+  background: rgba(90, 169, 255, 0.12);
+  border: 1px solid rgba(90, 169, 255, 0.22);
+}
+
+.dif-icone svg {
+  width: 20px;
+  height: 20px;
+}
+
+.diferenciais strong {
+  display: block;
+  font-size: 15px;
+  color: #fff;
+  margin-bottom: 3px;
+}
+
+.diferenciais span {
+  display: block;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+/* --- cartão do formulário --- */
+.cotacao-form-wrap {
+  position: relative;
+}
+
+.cotacao-form {
+  position: relative;
+  padding: clamp(26px, 3vw, 38px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.07),
+      rgba(255, 255, 255, 0.02)
+    ),
+    rgba(9, 18, 44, 0.72);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 30px 70px -34px rgba(0, 0, 0, 0.9);
+}
+
+.cotacao-form h2 {
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff;
+  margin: 0 0 10px;
+}
+
+.form-intro {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0 0 26px;
+}
+
+/* --- campos --- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.campo label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #dfe7f8;
+  margin-bottom: 7px;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  color: #fff;
+  padding: 13px 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(6, 13, 33, 0.6);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.campo select {
+  cursor: pointer;
+  /* seta propria, ja que a nativa nao acompanha o tema escuro */
+  appearance: none;
+  background-image: linear-gradient(
+      45deg,
+      transparent 50%,
+      var(--blue-300) 50%
+    ),
+    linear-gradient(135deg, var(--blue-300) 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) calc(50% + 2px),
+    calc(100% - 14px) calc(50% + 2px);
+  background-size:
+    6px 6px,
+    6px 6px;
+  background-repeat: no-repeat;
+}
+
+.campo select option {
+  background: var(--navy-800);
+  color: #fff;
+}
+
+.campo input::placeholder {
+  color: rgba(169, 182, 214, 0.6);
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: none;
+  border-color: var(--blue-400);
+  background: rgba(6, 13, 33, 0.85);
+  box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.22);
+}
+
+.campo.tem-erro input,
+.campo.tem-erro select {
+  border-color: #ff8080;
+}
+
+.campo.tem-erro input:focus,
+.campo.tem-erro select:focus {
+  box-shadow: 0 0 0 4px rgba(255, 128, 128, 0.2);
+}
+
+.erro {
+  font-size: 12.5px;
+  color: #ffa9a9;
+  margin-top: 6px;
+}
+
+/* --- envio --- */
+.form-enviar {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.form-enviar:disabled {
+  opacity: 0.7;
+  cursor: progress;
+  transform: none;
+}
+
+.form-nota {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  text-align: center;
+  margin: 14px 0 0;
+}
+
+/* --- confirmação --- */
+.cotacao-ok {
+  padding-block: clamp(72px, 11vw, 140px);
+  background:
+    radial-gradient(
+      900px 500px at 50% 0%,
+      rgba(47, 128, 237, 0.22),
+      transparent 62%
+    ),
+    linear-gradient(180deg, var(--navy-800), var(--navy-900));
+}
+
+.ok-selo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  margin-bottom: 26px;
+  color: #fff;
+  background: linear-gradient(180deg, var(--blue-400), var(--blue-500));
+  box-shadow: 0 16px 34px -14px rgba(47, 128, 237, 0.9);
+}
+
+.ok-selo svg {
+  width: 30px;
+  height: 30px;
+}
+
+.cotacao-ok .page-lead strong {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campo input,
+  .campo select {
+    transition: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .cotacao-inner {
+    grid-template-columns: 1fr;
+  }
+}
