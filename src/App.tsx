@@ -1,6 +1,7 @@
 import './App.css'
 import HeroArt from './components/HeroArt'
 import MarketSection from './components/MarketSection'
+import PlansSection from './components/PlansSection'
 
 const NAV_ITEMS = [
   { label: 'INÍCIO', href: '#', active: true },
@@ -86,6 +87,7 @@ function App() {
         </section>
 
         <MarketSection />
+        <PlansSection />
       </main>
     </div>
   )

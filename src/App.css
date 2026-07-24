@@ -399,10 +399,321 @@
   margin: 0;
 }
 
+/* ---------- Plans section (dark) ---------- */
+.plans {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(64px, 9vw, 120px);
+  background:
+    radial-gradient(
+      900px 520px at 50% -10%,
+      rgba(47, 128, 237, 0.22),
+      transparent 65%
+    ),
+    linear-gradient(180deg, var(--navy-900), var(--navy-800));
+}
+
+.plans-head {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto clamp(40px, 5vw, 64px);
+}
+
+.section-eyebrow.on-dark {
+  justify-content: center;
+  color: var(--blue-300);
+}
+
+.section-eyebrow.on-dark .eyebrow-dash {
+  background: rgba(90, 169, 255, 0.5);
+}
+
+.section-title.on-dark {
+  color: #fff;
+}
+
+.section-title.on-dark .accent {
+  color: var(--blue-300);
+}
+
+.section-lead.on-dark {
+  color: var(--text-muted);
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+  align-items: start;
+}
+
+/* --- card --- */
+.plan-card {
+  --accent-card: var(--blue-400);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 34px 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.02)
+    ),
+    rgba(9, 18, 44, 0.6);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  isolation: isolate;
+
+  /* estado inicial do reveal */
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.6s ease var(--delay, 0ms),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.plan-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.plan-card:hover {
+  border-color: rgba(90, 169, 255, 0.5);
+  box-shadow: 0 26px 60px -26px rgba(0, 0, 0, 0.85);
+}
+
+.plan-card.is-visible:hover {
+  transform: translateY(-8px);
+}
+
+/* spotlight seguindo o cursor */
+.plan-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(90, 169, 255, 0.18),
+    transparent 65%
+  );
+}
+
+.plan-card:hover .plan-spotlight {
+  opacity: 1;
+}
+
+/* card em destaque */
+.plan-card.is-featured {
+  --accent-card: var(--blue-300);
+  border-color: rgba(90, 169, 255, 0.4);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(59, 143, 245, 0.16),
+      rgba(255, 255, 255, 0.02)
+    ),
+    rgba(9, 18, 44, 0.72);
+  box-shadow: 0 22px 60px -30px rgba(47, 128, 237, 0.9);
+}
+
+.plan-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: #04122c;
+  background: linear-gradient(180deg, var(--blue-200), var(--blue-300));
+}
+
+.plan-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  margin-bottom: 24px;
+  color: var(--accent-card);
+  background: rgba(90, 169, 255, 0.12);
+  border: 1px solid rgba(90, 169, 255, 0.22);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease;
+}
+
+.plan-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.plan-card:hover .plan-icon {
+  transform: translateY(-3px) scale(1.06);
+  background: rgba(90, 169, 255, 0.2);
+}
+
+.plan-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+  letter-spacing: -0.3px;
+}
+
+.plan-name .accent {
+  color: var(--accent-card);
+}
+
+.plan-tagline {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0 0 18px;
+}
+
+.plan-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  margin: 0 0 26px;
+}
+
+/* --- features --- */
+.plan-features {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.plan-features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #e7edfb;
+  padding: 11px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.plan-card:hover .plan-features li {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.plan-features li:hover {
+  transform: translateX(4px);
+}
+
+.check-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #04122c;
+  background: var(--accent-card);
+}
+
+.check {
+  width: 13px;
+  height: 13px;
+}
+
+/* --- cta --- */
+.plan-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: 15px 22px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  border: 1px solid rgba(90, 169, 255, 0.45);
+  background: rgba(90, 169, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.2s ease;
+}
+
+.plan-cta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.28),
+    transparent
+  );
+  transition: left 0.55s ease;
+}
+
+.plan-cta:hover {
+  background: linear-gradient(180deg, var(--blue-400), var(--blue-500));
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
+.plan-cta:hover::after {
+  left: 130%;
+}
+
+.wa-icon {
+  width: 19px;
+  height: 19px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plan-card,
+  .plan-icon,
+  .plan-features li,
+  .plan-cta,
+  .plan-cta::after {
+    transition: none;
+  }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 980px) {
   .market-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .plans-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin-inline: auto;
   }
 }
 
