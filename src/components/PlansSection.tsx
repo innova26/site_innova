@@ -1,8 +1,6 @@
 import { type CSSProperties, type MouseEvent } from 'react'
 import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
-
-/** Troque pelo numero real da operadora (formato internacional, sem simbolos). */
-const WHATSAPP = '5511999999999'
+import { CONTATOS, linkWhatsapp } from '../contatos'
 
 const ICONS = {
   building: (
@@ -205,9 +203,10 @@ function PlansSection() {
 
               <a
                 className="plan-cta"
-                href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
+                href={linkWhatsapp(
+                  CONTATOS.comercial.whatsapp,
                   `Olá! Gostaria de saber mais sobre o ${plan.name} ${plan.highlight}.`,
-                )}`}
+                )}
                 target="_blank"
                 rel="noreferrer"
               >
