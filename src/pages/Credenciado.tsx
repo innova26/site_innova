@@ -1,6 +1,13 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../routes'
+import {
+  emailValido,
+  erroDocumento,
+  focarPrimeiroErro,
+  mascaraDocumento,
+  mascaraTelefone,
+} from '../utils/formulario'
 
 const UFS = [
   'Acre',
@@ -83,66 +90,11 @@ const VAZIO: Campos = {
   comentario: '',
 }
 
-function mascaraTelefone(valor: string) {
-  const d = valor.replace(/\D/g, '').slice(0, 11)
-  if (d.length <= 2) return d
-  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`
-  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`
-}
-
-/** Alterna entre CPF (000.000.000-00) e CNPJ (00.000.000/0000-00). */
-function mascaraDocumento(valor: string) {
-  const d = valor.replace(/\D/g, '').slice(0, 14)
-  if (d.length <= 11) {
-    return d
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-  }
-  return d
-    .replace(/(\d{2})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1/$2')
-    .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
-}
-
-function cpfValido(d: string) {
-  if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false
-  const digito = (fatia: number) => {
-    let soma = 0
-    for (let i = 0; i < fatia; i++) soma += Number(d[i]) * (fatia + 1 - i)
-    const resto = (soma * 10) % 11
-    return resto === 10 ? 0 : resto
-  }
-  return digito(9) === Number(d[9]) && digito(10) === Number(d[10])
-}
-
-function cnpjValido(d: string) {
-  if (d.length !== 14 || /^(\d)\1{13}$/.test(d)) return false
-  const digito = (fatia: number) => {
-    const pesos =
-      fatia === 12
-        ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-        : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-    let soma = 0
-    for (let i = 0; i < fatia; i++) soma += Number(d[i]) * pesos[i]
-    const resto = soma % 11
-    return resto < 2 ? 0 : 11 - resto
-  }
-  return digito(12) === Number(d[12]) && digito(13) === Number(d[13])
-}
-
 function validar(campos: Campos, portfolio: File | null): Erros {
   const erros: Erros = {}
-  const doc = campos.documento.replace(/\D/g, '')
 
-  if (!doc) erros.documento = 'Informe o CNPJ ou CPF.'
-  else if (doc.length !== 11 && doc.length !== 14)
-    erros.documento = 'Use 11 dígitos para CPF ou 14 para CNPJ.'
-  else if (doc.length === 11 && !cpfValido(doc)) erros.documento = 'CPF inválido.'
-  else if (doc.length === 14 && !cnpjValido(doc))
-    erros.documento = 'CNPJ inválido.'
+  const doc = erroDocumento(campos.documento)
+  if (doc) erros.documento = doc
 
   if (campos.nome.trim().length < 3) erros.nome = 'Informe o nome completo.'
 
@@ -152,8 +104,7 @@ function validar(campos: Campos, portfolio: File | null): Erros {
   if (campos.whatsapp && campos.whatsapp.replace(/\D/g, '').length < 10)
     erros.whatsapp = 'Informe DDD e número.'
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(campos.email.trim()))
-    erros.email = 'Informe um e-mail válido.'
+  if (!emailValido(campos.email)) erros.email = 'Informe um e-mail válido.'
 
   if (!campos.endereco.trim()) erros.endereco = 'Informe o endereço.'
   if (!campos.numero.trim()) erros.numero = 'Informe o número.'
@@ -197,11 +148,7 @@ function Credenciado() {
     const encontrados = validar(campos, portfolio)
     setErros(encontrados)
     if (Object.keys(encontrados).length > 0) {
-      document
-        .querySelector<HTMLElement>(
-          '.campo.tem-erro input, .campo.tem-erro select, .campo.tem-erro textarea',
-        )
-        ?.focus()
+      focarPrimeiroErro()
       return
     }
 

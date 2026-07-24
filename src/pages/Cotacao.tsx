@@ -1,6 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../routes'
+import {
+  emailValido,
+  focarPrimeiroErro,
+  mascaraTelefone,
+} from '../utils/formulario'
 
 const PLANOS = [
   'Plano coletivo por adesão',
@@ -45,15 +50,6 @@ const VAZIO: Campos = {
   telefone: '',
 }
 
-/** (69) 2018-1000 / (69) 92018-1000 conforme o usuario digita */
-function mascaraTelefone(valor: string) {
-  const d = valor.replace(/\D/g, '').slice(0, 11)
-  if (d.length <= 2) return d
-  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`
-  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`
-}
-
 function validar(campos: Campos): Erros {
   const erros: Erros = {}
 
@@ -66,8 +62,7 @@ function validar(campos: Campos): Erros {
 
   if (campos.nome.trim().length < 3) erros.nome = 'Informe seu nome completo.'
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(campos.email.trim()))
-    erros.email = 'Informe um e-mail válido.'
+  if (!emailValido(campos.email)) erros.email = 'Informe um e-mail válido.'
 
   const digitos = campos.telefone.replace(/\D/g, '')
   if (digitos.length < 10) erros.telefone = 'Informe DDD e número.'
@@ -92,9 +87,7 @@ function Cotacao() {
     const encontrados = validar(campos)
     setErros(encontrados)
     if (Object.keys(encontrados).length > 0) {
-      document
-        .querySelector<HTMLElement>('.campo.tem-erro input, .campo.tem-erro select')
-        ?.focus()
+      focarPrimeiroErro()
       return
     }
 
