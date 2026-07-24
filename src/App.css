@@ -944,7 +944,9 @@
   gap: 13px;
 }
 
-.footer-col a {
+/* restrito aos links de lista: `.footer-col a` venceria `.social-btn`
+   por especificidade e quebraria o flex que centraliza os icones */
+.footer-col ul a {
   font-size: 14px;
   color: var(--text-muted);
   transition:
@@ -953,7 +955,7 @@
   display: inline-block;
 }
 
-.footer-col a:hover {
+.footer-col ul a:hover {
   color: #fff;
   transform: translateX(3px);
 }
