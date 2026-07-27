@@ -74,6 +74,32 @@
   transition: color 0.2s ease;
 }
 
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.95);
+  background: transparent;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-btn:hover,
+.nav-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.nav-btn-admin {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
 .nav-link:hover {
   color: #fff;
 }

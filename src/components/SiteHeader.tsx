@@ -120,6 +120,9 @@ function SiteHeader() {
 
         <nav className="nav" aria-label="Principal">
           {renderLinks()}
+          <Link className="nav-btn nav-btn-admin" to={ROUTES.admin} onClick={closeAll}>
+            Admin
+          </Link>
         </nav>        
 
         <button
