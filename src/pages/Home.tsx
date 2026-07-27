@@ -22,8 +22,8 @@ function Home() {
             </p>
 
             <div className="hero-actions">
-              <a className="btn btn-primary" href="#demonstracao">
-                Portal do Beneficiario <span aria-hidden="true">→</span>
+              <a className="btn btn-primary" href="https://portal.innovaoperadora.com.br/portal_beneficiario/home" target="_blank" rel="noopener noreferrer">
+                Portal do Beneficiario <span aria-hidden="true">→</span>              
               </a>
               <a className="btn btn-ghost" href="#solucoes">
                 Saiba mais <span aria-hidden="true">→</span>

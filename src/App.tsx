@@ -7,6 +7,8 @@ import Cotacao from './pages/Cotacao'
 import Credenciado from './pages/Credenciado'
 import Corretoras from './pages/Corretoras'
 import Sac from './pages/Sac'
+import RedeAtendimento from './pages/RedeAtendimento'
+import Admin from './pages/Admin'
 import EmBreve from './pages/EmBreve'
 import { ROUTES } from './routes'
 
@@ -21,12 +23,13 @@ function App() {
           <Route path={ROUTES.credenciado} element={<Credenciado />} />
           <Route path={ROUTES.corretoras} element={<Corretoras />} />
           <Route path={ROUTES.sac} element={<Sac />} />
-
-          {/* previstas no menu, ainda em construcao */}
-          <Route path={ROUTES.rede} element={<EmBreve />} />
+          <Route path={ROUTES.rede} element={<RedeAtendimento />} />
 
           <Route path="*" element={<EmBreve />} />
         </Route>
+
+        {/* área administrativa: fora do layout de marketing */}
+        <Route path={ROUTES.admin} element={<Admin />} />
       </Routes>
     </BrowserRouter>
   )
