@@ -232,6 +232,27 @@ function Painel({ sessao }: { sessao: Session }) {
   const [salvando, setSalvando] = useState(false)
   const [subindoLogo, setSubindoLogo] = useState(false)
   const [erro, setErro] = useState('')
+  const [busca, setBusca] = useState('')
+
+  const listaFiltrada = useMemo(() => {
+    const t = busca.trim().toLowerCase()
+    if (!t) return lista
+    return lista.filter((p) =>
+      [
+        p.nome,
+        p.instituicao ?? '',
+        p.profissional ?? '',
+        p.municipio,
+        p.uf,
+        p.tipo,
+        p.especialidades.join(' '),
+        p.redes.join(' '),
+      ]
+        .join(' ')
+        .toLowerCase()
+        .includes(t),
+    )
+  }, [lista, busca])
 
   const recarregar = () => {
     setCarregando(true)
@@ -330,7 +351,8 @@ function Painel({ sessao }: { sessao: Session }) {
 
         <div className="admin-barra">
           <p className="rede-contagem">
-            <strong>{lista.length}</strong> prestadores cadastrados
+            <strong>{listaFiltrada.length}</strong>
+            {busca.trim() ? ` de ${lista.length}` : ''} prestadores
           </p>
           <button
             type="button"
@@ -339,6 +361,16 @@ function Painel({ sessao }: { sessao: Session }) {
           >
             + Novo prestador
           </button>
+        </div>
+
+        <div className="admin-busca-wrap">
+          <input
+            type="search"
+            className="admin-busca-input"
+            placeholder="Buscar por nome, profissional, cidade, especialidade…"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
         </div>
 
         {carregando ? (
@@ -357,7 +389,14 @@ function Painel({ sessao }: { sessao: Session }) {
                 </tr>
               </thead>
               <tbody>
-                {lista.map((p) => (
+                {listaFiltrada.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="admin-td-vazio">
+                      Nenhum prestador encontrado para “{busca}”.
+                    </td>
+                  </tr>
+                )}
+                {listaFiltrada.map((p) => (
                   <tr key={p.id}>
                     <td>
                       <strong>{p.nome}</strong>

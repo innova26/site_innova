@@ -2945,6 +2945,39 @@
   margin-bottom: 18px;
 }
 
+/* --- busca --- */
+.admin-busca-wrap {
+  margin-bottom: 16px;
+}
+
+.admin-busca-input {
+  width: 100%;
+  font: inherit;
+  font-size: 15px;
+  color: #fff;
+  padding: 13px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(6, 13, 33, 0.6);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-busca-input::placeholder {
+  color: rgba(169, 182, 214, 0.6);
+}
+
+.admin-busca-input:focus {
+  outline: none;
+  border-color: var(--blue-400);
+  box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.22);
+}
+
+.admin-td-vazio {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 28px 16px;
+}
+
 /* --- tabela --- */
 .admin-tabela-wrap {
   overflow-x: auto;
