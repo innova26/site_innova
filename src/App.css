@@ -1294,6 +1294,10 @@
     display: block;
   }
 
+  .mobile-menu[hidden] {
+    display: none !important;
+  }
+
   /* no painel mobile o submenu e empilhado, nao flutuante */
   .mobile-nav .nav-group {
     display: flex;
