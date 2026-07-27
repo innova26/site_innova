@@ -11,7 +11,7 @@ import RedeAtendimento from './pages/RedeAtendimento'
 import Admin from './pages/Admin'
 import EmBreve from './pages/EmBreve'
 import { ROUTES } from './routes'
-import { Analytics } from "@vercel/analytics/react "
+import { Analytics } from '@vercel/analytics/react'
 
 function App() {
   return (
@@ -32,8 +32,9 @@ function App() {
         {/* área administrativa: fora do layout de marketing */}
         <Route path={ROUTES.admin} element={<Admin />} />
       </Routes>
+      <Analytics />
     </BrowserRouter>
   )
 }
-<Analytics />
+
 export default App
