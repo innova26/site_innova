@@ -114,7 +114,7 @@ function FaqSection() {
 
         <div className="faq-footer">
           <p>Não encontrou o que procurava?</p>
-          <a className="btn btn-primary" href="#contato">
+          <a className="btn btn-primary" href="https://api.whatsapp.com/send/?phone=556920181000&text=Ol%C3%A1%21+Gostaria+de+saber+mais+sobre+o+Plano+Empresarial.&type=phone_number&app_absent=0">
             Falar com um especialista <span aria-hidden="true">→</span>
           </a>
         </div>

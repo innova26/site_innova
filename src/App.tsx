@@ -11,6 +11,7 @@ import RedeAtendimento from './pages/RedeAtendimento'
 import Admin from './pages/Admin'
 import EmBreve from './pages/EmBreve'
 import { ROUTES } from './routes'
+import { Analytics } from "@vercel/analytics/react "
 
 function App() {
   return (
@@ -34,5 +35,5 @@ function App() {
     </BrowserRouter>
   )
 }
-
+<Analytics />
 export default App
