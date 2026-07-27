@@ -12,10 +12,10 @@ export const ROUTES = {
 
 /** Portais sao sistemas externos, por isso ficam fora do roteador. */
 export const PORTAIS = [
-  { label: 'Portal do Beneficiário', href: 'https://innovaoperadora.com.br' },
-  { label: 'Portal do Prestador', href: 'https://innovaoperadora.com.br' },
+  { label: 'Portal do Beneficiário', href: 'https://portal.innovaoperadora.com.br/portal_beneficiario/auth/login' },
+  { label: 'Portal do Prestador', href: 'https://portal.innovaoperadora.com.br/prestador/' },
   { label: 'Portal do Corretor', href: 'https://innovaoperadora.com.br' },
-  { label: 'Portal da Empresa', href: 'https://innovaoperadora.com.br' },
+  { label: 'Portal da Empresa', href: 'https://portal.innovaoperadora.com.br/empresa/' },
 ]
 
 export const NAV_ITEMS = [
