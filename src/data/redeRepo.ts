@@ -11,6 +11,7 @@ type LinhaDB = {
   id: string
   nome: string
   instituicao: string | null
+  profissional: string | null
   logo_url: string | null
   tipo: Prestador['tipo']
   especialidades: string[] | null
@@ -19,6 +20,7 @@ type LinhaDB = {
   municipio: string
   endereco: string | null
   telefones: string[] | null
+  visivel: boolean | null
 }
 
 /** Dados do formulário de cadastro (sem id ao criar). */
@@ -28,6 +30,7 @@ const daLinha = (l: LinhaDB): Prestador => ({
   id: l.id,
   nome: l.nome,
   instituicao: l.instituicao ?? undefined,
+  profissional: l.profissional ?? undefined,
   logo: l.logo_url ?? undefined,
   tipo: l.tipo,
   especialidades: l.especialidades ?? [],
@@ -36,11 +39,13 @@ const daLinha = (l: LinhaDB): Prestador => ({
   municipio: l.municipio,
   endereco: l.endereco ?? '',
   telefones: l.telefones ?? [],
+  visivel: l.visivel ?? true,
 })
 
 const paraLinha = (p: PrestadorInput) => ({
   nome: p.nome,
   instituicao: p.instituicao || null,
+  profissional: p.profissional || null,
   logo_url: p.logo || null,
   tipo: p.tipo,
   especialidades: p.especialidades,
@@ -49,9 +54,10 @@ const paraLinha = (p: PrestadorInput) => ({
   municipio: p.municipio,
   endereco: p.endereco || null,
   telefones: p.telefones,
+  visivel: p.visivel ?? true,
 })
 
-/** Lista todos os prestadores (Supabase ou fallback estático). */
+/** Lista todos os prestadores (Supabase ou fallback estático) — uso no admin. */
 export async function carregarPrestadores(): Promise<Prestador[]> {
   if (!supabaseConfigurado || !supabase) return PRESTADORES
 
@@ -62,6 +68,38 @@ export async function carregarPrestadores(): Promise<Prestador[]> {
 
   if (error) throw error
   return (data as LinhaDB[]).map(daLinha)
+}
+
+/** Lista apenas os prestadores visíveis — uso na página pública. */
+export async function carregarVisiveis(): Promise<Prestador[]> {
+  if (!supabaseConfigurado || !supabase)
+    return PRESTADORES.filter((p) => p.visivel !== false)
+
+  /* tenta filtrar por `visivel`; se a coluna ainda não existir, carrega todos */
+  let res = await supabase
+    .from('prestadores')
+    .select('*')
+    .eq('visivel', true)
+    .order('nome')
+
+  if (res.error) {
+    res = await supabase.from('prestadores').select('*').order('nome')
+  }
+  if (res.error) throw res.error
+  return (res.data as LinhaDB[]).map(daLinha)
+}
+
+/** Altera só a visibilidade de um prestador. */
+export async function definirVisivel(
+  id: string,
+  visivel: boolean,
+): Promise<void> {
+  if (!supabase) throw new Error('Supabase não configurado.')
+  const { error } = await supabase
+    .from('prestadores')
+    .update({ visivel })
+    .eq('id', id)
+  if (error) throw error
 }
 
 /** Cria (sem id) ou atualiza (com id) um prestador. */

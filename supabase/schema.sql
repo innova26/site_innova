@@ -8,6 +8,7 @@ create table if not exists public.prestadores (
   id uuid primary key default gen_random_uuid(),
   nome text not null,
   instituicao text,
+  profissional text,
   logo_url text,
   tipo text not null check (
     tipo in ('Hospital','Clínica','Laboratório','Consultório','Pronto atendimento')
@@ -18,6 +19,7 @@ create table if not exists public.prestadores (
   municipio text not null,
   endereco text,
   telefones text[] not null default '{}',
+  visivel boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

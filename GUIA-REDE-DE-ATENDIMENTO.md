@@ -150,8 +150,11 @@ mostra um aviso.
 - `src/data/redeRepo.ts` — lê/grava no Supabase (ou cai no estático). É a única
   camada que fala com o banco; a página e o admin usam essas funções.
 - `src/pages/Admin.tsx` — login + tabela + formulário + upload de logo.
-- Migrar os dados de exemplo para o banco: cadastre-os pelo `/admin`, ou faça um
-  *insert* em massa no SQL Editor a partir de `src/data/rede.ts`.
+- Popular a base real: o arquivo `supabase/seed.sql` (gerado do export do
+  WordPress, 452 prestadores) pode ser colado e executado no **SQL Editor**.
+  Para começar do zero, descomente a linha `truncate` no topo do arquivo. As
+  logos vêm vazias (o WordPress só guardava o ID do anexo) — sobem depois pelo
+  `/admin`.
 
 ## Checklist para "deixar funcionando"
 

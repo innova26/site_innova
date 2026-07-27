@@ -4,8 +4,12 @@ import type { Session } from '@supabase/supabase-js'
 import { ROUTES } from '../routes'
 import { supabase, supabaseConfigurado } from '../lib/supabase'
 import { ESTADOS, TIPOS, type Prestador, type TipoRecurso } from '../data/rede'
+import { ESPECIALIDADES_PADRAO } from '../data/especialidades'
+import { REDES_PADRAO } from '../data/redesPlanos'
+import SelecaoMultipla from '../components/SelecaoMultipla'
 import {
   carregarPrestadores,
+  definirVisivel,
   excluirPrestador,
   salvarPrestador,
   uploadLogo,
@@ -17,27 +21,31 @@ type FormState = {
   id?: string
   nome: string
   instituicao: string
+  profissional: string
   tipo: TipoRecurso
   uf: string
   municipio: string
   endereco: string
-  especialidades: string
-  redes: string
+  especialidades: string[]
+  redes: string[]
   telefones: string
   logo: string
+  visivel: boolean
 }
 
 const FORM_VAZIO: FormState = {
   nome: '',
   instituicao: '',
+  profissional: '',
   tipo: 'Clínica',
   uf: ESTADOS[0].uf,
   municipio: '',
   endereco: '',
-  especialidades: '',
-  redes: '',
+  especialidades: [],
+  redes: [],
   telefones: '',
   logo: '',
+  visivel: true,
 }
 
 const listaTexto = (v: string): string[] =>
@@ -50,34 +58,98 @@ const formDoPrestador = (p: Prestador): FormState => ({
   id: p.id,
   nome: p.nome,
   instituicao: p.instituicao ?? '',
+  profissional: p.profissional ?? '',
   tipo: p.tipo,
   uf: p.uf,
   municipio: p.municipio,
   endereco: p.endereco,
-  especialidades: p.especialidades.join(', '),
-  redes: p.redes.join(', '),
+  especialidades: p.especialidades,
+  redes: p.redes,
   telefones: p.telefones.join(', '),
   logo: p.logo ?? '',
+  visivel: p.visivel !== false,
 })
 
 const prestadorDoForm = (f: FormState): PrestadorInput => ({
   id: f.id,
   nome: f.nome.trim(),
   instituicao: f.instituicao.trim() || undefined,
+  profissional: f.profissional.trim() || undefined,
   logo: f.logo || undefined,
   tipo: f.tipo,
   uf: f.uf,
   municipio: f.municipio.trim(),
   endereco: f.endereco.trim(),
-  especialidades: listaTexto(f.especialidades),
-  redes: listaTexto(f.redes),
+  especialidades: f.especialidades,
+  redes: f.redes,
   telefones: listaTexto(f.telefones),
+  visivel: f.visivel,
 })
+
+function OlhoIcone({ aberto }: { aberto: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      {!aberto && (
+        <path
+          d="M4 4l16 16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+      )}
+    </svg>
+  )
+}
+
+/** Switch liga/desliga para a visibilidade (Público / Não público). */
+function Switch({
+  ligado,
+  onToggle,
+}: {
+  ligado: boolean
+  onToggle: () => void
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={ligado}
+      className={`admin-switch${ligado ? '' : ' off'}`}
+      onClick={onToggle}
+      title="Público aparece no site; não público fica oculto"
+    >
+      <span className="admin-switch-track" aria-hidden="true">
+        <span className="admin-switch-knob" />
+      </span>
+      <span className="admin-switch-txt">
+        {ligado ? 'Público' : 'Não público'}
+      </span>
+    </button>
+  )
+}
 
 /* ====================== Tela de login ====================== */
 function Login() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   const [erro, setErro] = useState('')
   const [entrando, setEntrando] = useState(false)
 
@@ -113,14 +185,25 @@ function Login() {
 
         <div className="campo">
           <label htmlFor="a-senha">Senha</label>
-          <input
-            id="a-senha"
-            type="password"
-            autoComplete="current-password"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            required
-          />
+          <div className="campo-senha">
+            <input
+              id="a-senha"
+              type={mostrarSenha ? 'text' : 'password'}
+              autoComplete="current-password"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+            />
+            <button
+              type="button"
+              className="olho-btn"
+              onClick={() => setMostrarSenha((v) => !v)}
+              aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+              aria-pressed={mostrarSenha}
+            >
+              <OlhoIcone aberto={mostrarSenha} />
+            </button>
+          </div>
         </div>
 
         {erro && (
@@ -203,6 +286,20 @@ function Painel({ sessao }: { sessao: Session }) {
     }
   }
 
+  const alternarVisivel = async (p: Prestador) => {
+    const novo = p.visivel === false
+    /* atualização otimista */
+    setLista((atual) =>
+      atual.map((x) => (x.id === p.id ? { ...x, visivel: novo } : x)),
+    )
+    try {
+      await definirVisivel(p.id, novo)
+    } catch (err) {
+      setErro('Não foi possível alterar a visibilidade: ' + String(err))
+      recarregar()
+    }
+  }
+
   return (
     <section className="admin">
       <div className="shell">
@@ -254,6 +351,7 @@ function Painel({ sessao }: { sessao: Session }) {
                   <th>Nome</th>
                   <th>Tipo</th>
                   <th>Local</th>
+                  <th>Visível</th>
                   <th>Especialidades</th>
                   <th aria-label="Ações" />
                 </tr>
@@ -268,6 +366,12 @@ function Painel({ sessao }: { sessao: Session }) {
                     <td>{p.tipo}</td>
                     <td>
                       {p.municipio}/{p.uf}
+                    </td>
+                    <td>
+                      <Switch
+                        ligado={p.visivel !== false}
+                        onToggle={() => alternarVisivel(p)}
+                      />
                     </td>
                     <td>{p.especialidades.join(', ')}</td>
                     <td className="admin-td-acoes">
@@ -324,6 +428,18 @@ function Painel({ sessao }: { sessao: Session }) {
               />
             </div>
 
+            <div className="campo">
+              <label htmlFor="fprof">
+                Profissional <small>(ex.: Dr. Fulano — opcional)</small>
+              </label>
+              <input
+                id="fprof"
+                placeholder="Dr. Fulano, Dra. Beltrana"
+                value={form.profissional}
+                onChange={(e) => alterar('profissional', e.target.value)}
+              />
+            </div>
+
             <div className="admin-form-linha">
               <div className="campo">
                 <label htmlFor="ftipo">Tipo de recurso *</label>
@@ -377,25 +493,31 @@ function Painel({ sessao }: { sessao: Session }) {
 
             <div className="campo">
               <label htmlFor="fesp">
-                Especialidades <small>(separadas por vírgula)</small>
+                Especialidades <small>(busque e marque; pode adicionar nova)</small>
               </label>
-              <input
+              <SelecaoMultipla
                 id="fesp"
-                placeholder="Cardiologia, Clínica Geral"
-                value={form.especialidades}
-                onChange={(e) => alterar('especialidades', e.target.value)}
+                opcoes={ESPECIALIDADES_PADRAO}
+                selecionados={form.especialidades}
+                onChange={(novas) =>
+                  setForm((f) => (f ? { ...f, especialidades: novas } : f))
+                }
+                placeholder="Buscar especialidade…"
               />
             </div>
 
             <div className="campo">
               <label htmlFor="fredes">
-                Redes / Planos <small>(separados por vírgula)</small>
+                Redes / Planos <small>(busque e marque; pode adicionar nova)</small>
               </label>
-              <input
+              <SelecaoMultipla
                 id="fredes"
-                placeholder="Essencial RO I, Executivo Nacional"
-                value={form.redes}
-                onChange={(e) => alterar('redes', e.target.value)}
+                opcoes={REDES_PADRAO}
+                selecionados={form.redes}
+                onChange={(novas) =>
+                  setForm((f) => (f ? { ...f, redes: novas } : f))
+                }
+                placeholder="Buscar rede / plano…"
               />
             </div>
 
@@ -423,6 +545,16 @@ function Painel({ sessao }: { sessao: Session }) {
               {form.logo && (
                 <img className="admin-logo-preview" src={form.logo} alt="" />
               )}
+            </div>
+
+            <div className="campo">
+              <label>Visibilidade</label>
+              <Switch
+                ligado={form.visivel}
+                onToggle={() =>
+                  setForm((f) => (f ? { ...f, visivel: !f.visivel } : f))
+                }
+              />
             </div>
 
             <div className="admin-form-acoes">

@@ -44,6 +44,8 @@ export type Prestador = {
   nome: string
   /** Instituição/credenciada à qual o prestador pertence (opcional). */
   instituicao?: string
+  /** Profissional(is) responsável(is), ex.: "Dr. Fulano" (opcional). */
+  profissional?: string
   /**
    * URL da logo do prestador/instituição (opcional). Pode ser um arquivo em
    * `src/assets`, uma URL pública ou um data URI. Sem logo, o card usa o ícone
@@ -59,6 +61,8 @@ export type Prestador = {
   municipio: string
   endereco: string
   telefones: string[]
+  /** Se aparece na página pública. Ausente = visível. */
+  visivel?: boolean
 }
 
 export const PRESTADORES: Prestador[] = [

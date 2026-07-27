@@ -13,7 +13,9 @@ import {
   type Prestador,
   type TipoRecurso,
 } from '../data/rede'
-import { carregarPrestadores } from '../data/redeRepo'
+import { carregarVisiveis } from '../data/redeRepo'
+
+const POR_PAGINA = 50
 
 /** Ícone (path do SVG 24x24) de acordo com o tipo de recurso. */
 const ICONE_TIPO: Record<TipoRecurso, string> = {
@@ -35,6 +37,28 @@ function IconePin() {
         strokeLinejoin="round"
       />
       <circle cx="12" cy="10" r="2.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  )
+}
+
+function IconePessoa() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle
+        cx="12"
+        cy="8"
+        r="3.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M5 20a7 7 0 0 1 14 0"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
     </svg>
   )
 }
@@ -99,6 +123,15 @@ function CardPrestador({ prestador }: { prestador: Prestador }) {
         ))}
       </ul>
 
+      {prestador.profissional && (
+        <p className="rede-card-linha">
+          <span className="rede-card-ic">
+            <IconePessoa />
+          </span>
+          {prestador.profissional}
+        </p>
+      )}
+
       <p className="rede-card-linha">
         <span className="rede-card-ic">
           <IconePin />
@@ -131,9 +164,11 @@ function RedeAtendimento() {
   const [prestadores, setPrestadores] = useState<Prestador[]>([])
   const [carregando, setCarregando] = useState(true)
 
+  const [pagina, setPagina] = useState(1)
+
   useEffect(() => {
     let ativo = true
-    carregarPrestadores()
+    carregarVisiveis()
       .then((lista) => ativo && setPrestadores(lista))
       .catch((e) => console.error('Falha ao carregar prestadores', e))
       .finally(() => ativo && setCarregando(false))
@@ -155,6 +190,16 @@ function RedeAtendimento() {
   const resultados = useMemo(
     () => filtrarPrestadores(prestadores, filtros),
     [prestadores, filtros],
+  )
+
+  /* volta para a 1ª página sempre que os filtros mudam */
+  useEffect(() => setPagina(1), [filtros])
+
+  const totalPaginas = Math.max(1, Math.ceil(resultados.length / POR_PAGINA))
+  const paginaAtual = Math.min(pagina, totalPaginas)
+  const visiveisPagina = resultados.slice(
+    (paginaAtual - 1) * POR_PAGINA,
+    paginaAtual * POR_PAGINA,
   )
 
   const alterar = (campo: keyof Filtros, valor: string) => {
@@ -322,11 +367,39 @@ function RedeAtendimento() {
           </div>
 
           {carregando ? null : resultados.length > 0 ? (
-            <div className="rede-grid">
-              {resultados.map((p) => (
-                <CardPrestador key={p.id} prestador={p} />
-              ))}
-            </div>
+            <>
+              <div className="rede-grid">
+                {visiveisPagina.map((p) => (
+                  <CardPrestador key={p.id} prestador={p} />
+                ))}
+              </div>
+
+              {totalPaginas > 1 && (
+                <nav className="rede-paginacao" aria-label="Paginação">
+                  <button
+                    type="button"
+                    className="rede-pag-btn"
+                    onClick={() => setPagina((p) => Math.max(1, p - 1))}
+                    disabled={paginaAtual === 1}
+                  >
+                    ← Anterior
+                  </button>
+                  <span className="rede-pag-info">
+                    Página {paginaAtual} de {totalPaginas}
+                  </span>
+                  <button
+                    type="button"
+                    className="rede-pag-btn"
+                    onClick={() =>
+                      setPagina((p) => Math.min(totalPaginas, p + 1))
+                    }
+                    disabled={paginaAtual === totalPaginas}
+                  >
+                    Próxima →
+                  </button>
+                </nav>
+              )}
+            </>
           ) : (
             <div className="rede-vazio">
               <h3>Nenhum prestador encontrado</h3>
