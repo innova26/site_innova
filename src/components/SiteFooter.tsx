@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { PORTAIS, ROUTES } from '../routes'
 import { CONTATOS, linkWhatsapp } from '../contatos'
+import logoInnova from '../assets/logoinnova.png'
 
 const NAV_LINKS = [
   { label: 'Início', to: ROUTES.home },
@@ -112,7 +113,12 @@ function SiteFooter() {
     <footer className="site-footer">
       <div className="shell footer-inner">
         <div className="footer-brand">
-          <span className="brand-top">Innova</span>
+          <img
+            src={logoInnova}
+            alt="Innova Operadora de Saúde"
+            className="brand-logo"
+            width={150}
+          />
           <span className="footer-tagline">A evolução do seu Plano de Saúde</span>
           <span className="ans-badge">ANS: 42357 - 2</span>
         </div>

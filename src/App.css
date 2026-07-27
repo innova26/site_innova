@@ -558,17 +558,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: #eef2f8;
-  color: #33507e;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(180deg, var(--blue-400), var(--blue-500));
+  box-shadow: 0 10px 22px -12px rgba(47, 128, 237, 0.9);
   margin-bottom: 22px;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .card-icon svg {
   width: 24px;
   height: 24px;
+}
+
+.market-card:hover .card-icon {
+  transform: translateY(-3px) scale(1.07);
 }
 
 .market-card h3 {
@@ -1349,10 +1355,25 @@
   .hero-visual {
     order: -1;
     margin-bottom: 8px;
+    position: relative;
   }
 
   .hero-art {
     max-width: 380px;
+  }
+
+  /* no empilhado o medico volta a ficar centrado na coluna visual */
+  .hero-medico {
+    left: 50%;
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    width: clamp(240px, 62vw, 360px);
+  }
+
+  /* a barra azul so serve para o corte inferior do desktop */
+  .hero::after {
+    display: none;
   }
 }
 
