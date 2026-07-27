@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { NAV_ITEMS, ROUTES } from '../routes'
+import logoInnova from '../assets/logoinnova.png'
 
 function Caret() {
   return (
@@ -78,7 +79,6 @@ function SiteHeader() {
           <ul className="nav-submenu">
             {item.submenu.map((sub) => (
               <li key={sub.label}>
-                {/* portais sao sistemas externos */}
                 <a
                   href={sub.href}
                   target="_blank"
@@ -110,17 +110,17 @@ function SiteHeader() {
     <header className="site-header">
       <div className="shell header-inner">
         <Link className="brand" to={ROUTES.home} onClick={closeAll}>
-          <span className="brand-top">Innova</span>
-          <span className="brand-sub">operadora de saúde</span>
+          <img
+            src={logoInnova}
+            alt="Innova Operadora de Saúde"
+            className="brand-logo"
+            width={150}
+          />
         </Link>
 
         <nav className="nav" aria-label="Principal">
           {renderLinks()}
-        </nav>
-
-        <a className="btn btn-primary header-cta" href="#contato">
-          FALE COM ESPECIALISTA
-        </a>
+        </nav>        
 
         <button
           type="button"

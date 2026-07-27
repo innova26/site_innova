@@ -363,13 +363,11 @@
 
 /* ---------- Hero visual ---------- */
 .hero-visual {
-  position: relative;
   display: flex;
   justify-content: center;
 }
 
 .hero-art {
-  position: relative;
   width: 100%;
   max-width: 520px;
   aspect-ratio: 520 / 560;
@@ -379,6 +377,50 @@
   width: 100%;
   height: 100%;
   filter: drop-shadow(0 30px 60px rgba(20, 60, 140, 0.45));
+}
+
+/* imagem posicionada sobre os blobs */
+
+.hero-medico {
+  position: absolute;
+  left: 74%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: clamp(320px, 34vw, 560px);
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+  z-index: 2;
+  transition: width 0.18s ease;
+}
+
+/* linha azul na base do hero: disfarca o corte inferior do medico */
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  background: var(--blue-400);
+  z-index: 3;
+}
+
+@media (max-width: 1200px) {
+  .hero-medico {
+    width: clamp(260px, 40vw, 380px);
+  }
+}
+
+@media (min-width: 1400px) {
+  .hero-medico {
+    width: 620px;
+  }
+}
+
+/* garantir que os cards flutuantes fiquem acima da imagem */
+.hero-card {
+  z-index: 3;
 }
 
 /* floating glass cards */

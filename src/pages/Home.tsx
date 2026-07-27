@@ -9,34 +9,26 @@ function Home() {
       <section className="hero">
         <div className="shell hero-inner">
           <div className="hero-copy">
-            <p className="eyebrow">SAÚDE SUPLEMENTAR · 40 ANOS</p>
+            <p className="eyebrow">Sua saúde em boas mãos, sem burocracia.</p>
 
             <h1 className="hero-title">
-              Transformando a gestão
+              A evolução do seu plano de saúde
               <br />
-              na <span className="accent">saúde suplementar</span>
+              a <span className="accent">o futuro começa aqui.</span>
             </h1>
 
             <p className="hero-lead">
-              Tecnologia, inteligência e eficiência para garantir performance e
-              conformidade em um mercado altamente regulado.
+              O futuro da saúde começa aqui.
             </p>
 
             <div className="hero-actions">
               <a className="btn btn-primary" href="#demonstracao">
-                Agendar demonstração <span aria-hidden="true">→</span>
+                Portal do Beneficiario <span aria-hidden="true">→</span>
               </a>
               <a className="btn btn-ghost" href="#solucoes">
-                Conheça nossas soluções
+                Saiba mais <span aria-hidden="true">→</span>
               </a>
-            </div>
-
-            <div className="hero-eco">
-              <p className="eco-title">Parte do ecossistema</p>
-              <p className="eco-text">
-                Innova · presente em 100% das cidades brasileiras
-              </p>
-            </div>
+            </div>            
           </div>
 
           <div className="hero-visual">

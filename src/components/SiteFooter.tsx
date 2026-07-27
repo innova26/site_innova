@@ -161,12 +161,7 @@ function SiteFooter() {
                 Central de Atendimento – 0800 345 9999
               </a>
             </li>
-            <li>
-              <span className="contact-icon">
-                <PhoneIcon />
-              </span>
-              <a href="tel:+556920181000">Ouvidoria – (69) 2018-1000</a>
-            </li>
+            
             <li>
               <span className="contact-icon">
                 <MailIcon />

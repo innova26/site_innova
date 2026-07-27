@@ -1,6 +1,10 @@
+import medicoHero from '../assets/medicohero.png'
+
 function HeroArt() {
   return (
+    
     <div className="hero-art">
+     
       {/* Decorative blue blobs + concentric arc lines, echoing the reference */}
       <svg
         className="hero-art-svg"
@@ -53,33 +57,12 @@ function HeroArt() {
         <circle cx="452" cy="300" r="30" fill="#8ec6ff" opacity="0.9" />
       </svg>
 
+      {/* imagem do profissional sobre os blobs */}
+      <img src={medicoHero} alt="Profissional de saúde" className="hero-medico" />
+
       {/* Glass info cards floating over the art */}
-      <div className="hero-card hero-card-pulse">
-        <svg viewBox="0 0 120 40" className="pulse-line" aria-hidden="true">
-          <polyline
-            points="0,24 18,24 26,10 36,34 48,4 58,24 78,24 86,16 96,28 120,24"
-            fill="none"
-            stroke="#3b8ff5"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        <div>
-          <strong>Gestão em tempo real</strong>
-          <span>Indicadores e conformidade ANS</span>
-        </div>
-      </div>
+      
 
-      <div className="hero-card hero-card-stat">
-        <strong>100%</strong>
-        <span>das cidades brasileiras</span>
-      </div>
-
-      <div className="hero-card hero-card-years">
-        <strong>40</strong>
-        <span>anos de mercado</span>
-      </div>
     </div>
   )
 }
