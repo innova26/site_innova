@@ -3,42 +3,79 @@ const CARDS = [
     title: 'Telemedicina',
     text: 'Acesse médicos online de onde estiver, com praticidade e segurança. Atendimento rápido, humanizado e disponível 24h para você cuidar da sua saúde sem sair de casa. Entre em contato pela central 0800 892 4888 ou 3003 6291',
     icon: (
-      <path
-        d="M3 17l6-6 4 4 8-8m0 0h-5m5 0v5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <>
+        <rect
+          x="3"
+          y="4"
+          width="18"
+          height="13"
+          rx="2"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
+        <path
+          d="M8 21h8 M12 17v4 M12 8v5 M9.5 10.5h5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </>
     ),
   },
   {
     title: 'Rede credenciada',
     text: 'Consulte médicos, clínicas e hospitais disponíveis no seu plano. Encontre atendimento com agilidade e confiança.',
     icon: (
-      <path
-        d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z M9 12l2 2 4-4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <>
+        <circle cx="12" cy="5" r="2.5" fill="none" stroke="currentColor" strokeWidth="2" />
+        <circle cx="5" cy="19" r="2.5" fill="none" stroke="currentColor" strokeWidth="2" />
+        <circle cx="19" cy="19" r="2.5" fill="none" stroke="currentColor" strokeWidth="2" />
+        <path
+          d="M10.7 6.9 6.3 16.8 M13.3 6.9 17.7 16.8 M7.5 19h9"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </>
     ),
   },
   {
     title: 'Autorizações e exames',
     text: 'Solicite suas autorizações e acompanhe seus exames com poucos cliques. Mais controle, menos burocracia. Entre em contato com nossa Central: 0800 345 9999 (telefone ou WhatsApp)',
     icon: (
-      <path
-        d="M12 20s-7-4.5-7-9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 7 3.5C19 15.5 12 20 12 20z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <>
+        <path
+          d="M9 4H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <rect
+          x="9"
+          y="2.5"
+          width="6"
+          height="3.5"
+          rx="1"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
+        <path
+          d="M8.5 13l2.2 2.2L15.5 10.5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </>
     ),
   },
   {
@@ -48,16 +85,24 @@ const CARDS = [
       <>
         <rect
           x="4"
-          y="4"
+          y="5"
           width="16"
-          height="16"
-          rx="3"
+          height="15"
+          rx="2"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
         />
         <path
-          d="M8 14l3-3 2 2 3-4"
+          d="M4 9h16 M8 3v4 M16 3v4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9 13.5l1.8 1.8L15 11.5"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"

@@ -18,7 +18,7 @@ const DIFERENCIAIS = [
   {
     titulo: 'Proposta sob medida',
     texto: 'Com poucos dados montamos um plano que cabe no seu perfil.',
-    icone: 'M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3zM9 12l2 2 4-4',
+    icone: 'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5zM14 3v5h5M9 13h6M9 17h4',
   },
   {
     titulo: 'Sem compromisso',
