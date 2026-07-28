@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../routes'
+import { enviarCotacao } from '../data/cotacoesRepo'
 import {
   emailValido,
   focarPrimeiroErro,
@@ -18,7 +19,7 @@ const DIFERENCIAIS = [
   {
     titulo: 'Proposta sob medida',
     texto: 'Com poucos dados montamos um plano que cabe no seu perfil.',
-    icone: 'M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3zM9 12l2 2 4-4',
+    icone: 'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5zM14 3v5h5M9 13h6M9 17h4',
   },
   {
     titulo: 'Sem compromisso',
@@ -75,6 +76,7 @@ function Cotacao() {
   const [erros, setErros] = useState<Erros>({})
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
+  const [erroEnvio, setErroEnvio] = useState<string | null>(null)
 
   const alterar = (campo: keyof Campos, valor: string) => {
     setCampos((atual) => ({ ...atual, [campo]: valor }))
@@ -91,11 +93,19 @@ function Cotacao() {
       return
     }
 
+    setErroEnvio(null)
     setEnviando(true)
-    // TODO: ligar a um endpoint real. Hoje nada e enviado para o servidor.
-    await new Promise((r) => setTimeout(r, 700))
-    setEnviando(false)
-    setEnviado(true)
+    try {
+      await enviarCotacao(campos)
+      setEnviado(true)
+    } catch (err) {
+      console.error('Falha ao enviar cotação:', err)
+      setErroEnvio(
+        'Não conseguimos enviar sua cotação agora. Tente novamente em instantes ou fale com a gente pelo telefone.',
+      )
+    } finally {
+      setEnviando(false)
+    }
   }
 
   if (enviado) {
@@ -303,6 +313,12 @@ function Cotacao() {
                 </span>
               )}
             </div>
+
+            {erroEnvio && (
+              <p className="form-erro-envio" role="alert">
+                {erroEnvio}
+              </p>
+            )}
 
             <button
               type="submit"
