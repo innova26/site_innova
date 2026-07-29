@@ -10,10 +10,14 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? ''
-const DESTINO =
+const DESTINOS = (
   Deno.env.get('CREDENCIADO_DESTINO') ??
   Deno.env.get('COTACAO_DESTINO') ??
-  'faleconosco@innovaoperadora.com.br'
+  'adelia.castro@innovaoperadora.com.br'
+)
+  .split(',')
+  .map((item) => item.trim())
+  .filter(Boolean)
 const REMETENTE =
   Deno.env.get('COTACAO_REMETENTE') ?? 'Innova <onboarding@resend.dev>'
 
@@ -149,7 +153,7 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           from: REMETENTE,
-          to: [DESTINO],
+          to: DESTINOS,
           reply_to: dados.email,
           subject: `Novo credenciamento — ${dados.nome} (${dados.tipo})`,
           html,

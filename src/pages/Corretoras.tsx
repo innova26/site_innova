@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../routes'
+import { enviarCorretora } from '../data/corretorasRepo'
 import {
   emailValido,
   erroDocumento,
@@ -101,10 +102,18 @@ function Corretoras() {
     }
 
     setEnviando(true)
-    // TODO: ligar a um endpoint real. Hoje nada e enviado para o servidor.
-    await new Promise((r) => setTimeout(r, 700))
-    setEnviando(false)
-    setEnviado(true)
+    try {
+      await enviarCorretora(campos)
+      setEnviado(true)
+    } catch (err) {
+      console.error('Falha ao enviar corretora:', err)
+      setErros((atual) => ({
+        ...atual,
+        email: 'Não conseguimos enviar seu cadastro agora. Tente novamente.',
+      }))
+    } finally {
+      setEnviando(false)
+    }
   }
 
   if (enviado) {

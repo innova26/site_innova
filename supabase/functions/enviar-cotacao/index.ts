@@ -8,7 +8,10 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? ''
-const DESTINO = Deno.env.get('COTACAO_DESTINO') ?? 'faleconosco@innovaoperadora.com.br'
+const DESTINOS = (Deno.env.get('COTACAO_DESTINO') ?? 'mateus.souza@innovaoperadora.com.br')
+  .split(',')
+  .map((item) => item.trim())
+  .filter(Boolean)
 // Antes de verificar o domínio no Resend, use o remetente de teste deles:
 //   Innova <onboarding@resend.dev>
 // Depois de verificar innovaoperadora.com.br, troque para algo como:
@@ -100,7 +103,7 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           from: REMETENTE,
-          to: [DESTINO],
+          to: DESTINOS,
           reply_to: email,
           subject: `Nova cotação — ${nome} (${plano})`,
           html,
