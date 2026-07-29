@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../routes'
+import { enviarCredenciado } from '../data/credenciadosRepo'
 import {
   emailValido,
   erroDocumento,
@@ -132,6 +133,7 @@ function Credenciado() {
   const [erros, setErros] = useState<Erros>({})
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
+  const [erroEnvio, setErroEnvio] = useState<string | null>(null)
 
   const alterar = (campo: keyof Campos, valor: string) => {
     setCampos((atual) => ({ ...atual, [campo]: valor }))
@@ -152,11 +154,19 @@ function Credenciado() {
       return
     }
 
+    setErroEnvio(null)
     setEnviando(true)
-    // TODO: ligar a um endpoint real. Hoje nada e enviado, nem o PDF.
-    await new Promise((r) => setTimeout(r, 700))
-    setEnviando(false)
-    setEnviado(true)
+    try {
+      await enviarCredenciado(campos, portfolio)
+      setEnviado(true)
+    } catch (err) {
+      console.error('Falha ao enviar credenciamento:', err)
+      setErroEnvio(
+        'Não conseguimos enviar seu cadastro agora. Tente novamente em instantes ou fale com a gente pelo telefone.',
+      )
+    } finally {
+      setEnviando(false)
+    }
   }
 
   if (enviado) {
@@ -550,6 +560,12 @@ function Credenciado() {
                 )}
               </div>
             </fieldset>
+
+            {erroEnvio && (
+              <p className="form-erro-envio" role="alert">
+                {erroEnvio}
+              </p>
+            )}
 
             <button
               type="submit"

@@ -28,3 +28,6 @@ dist-ssr
 
 # variáveis locais
 .env
+
+# Supabase CLI (estado local do link)
+supabase/.temp/
