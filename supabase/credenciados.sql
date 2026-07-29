@@ -44,11 +44,14 @@ insert into storage.buckets (id, name, public)
 values ('portfolios', 'portfolios', false)
 on conflict (id) do nothing;
 
--- O navegador (anon) pode APENAS enviar arquivos para este bucket.
+-- O navegador pode APENAS enviar arquivos para este bucket.
+-- Usa `to public` (e não `to anon`): as chaves publishable novas
+-- (sb_publishable_...) não casam de forma confiável com policies `to anon`.
 drop policy if exists "portfolios upload anon" on storage.objects;
-create policy "portfolios upload anon"
+drop policy if exists "portfolios upload publico" on storage.objects;
+create policy "portfolios upload publico"
   on storage.objects for insert
-  to anon
+  to public
   with check (bucket_id = 'portfolios');
 
 -- Equipe autenticada pode ler/baixar os PDFs pelo painel.
