@@ -204,7 +204,7 @@ function PlansSection() {
               <a
                 className="plan-cta"
                 href={linkWhatsapp(
-                  CONTATOS.comercial.whatsapp,
+                  CONTATOS.central.whatsapp,
                   `Olá! Gostaria de saber mais sobre o ${plan.name} ${plan.highlight}.`,
                 )}
                 target="_blank"
