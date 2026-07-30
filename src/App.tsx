@@ -12,6 +12,7 @@ import Admin from './pages/Admin'
 import EmBreve from './pages/EmBreve'
 import { ROUTES } from './routes'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path={ROUTES.admin} element={<Admin />} />
       </Routes>
       <Analytics />
+      <SpeedInsights />
     </BrowserRouter>
   )
 }
