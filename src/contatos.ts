@@ -11,9 +11,9 @@ export const CONTATOS = {
   },
   /** Time comercial e ouvidoria. */
   comercial: {
-    rotulo: '(69) 2018-1000',
-    telefone: 'tel:+556920181000',
-    whatsapp: '556920181000',
+    rotulo: '0800 345 9999',
+    telefone: 'tel:08003459999',
+    whatsapp: '558003459999',
   },
   email: 'faleconosco@innovaoperadora.com.br',
   endereco: {
