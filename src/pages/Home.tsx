@@ -14,7 +14,7 @@ function Home() {
             <h1 className="hero-title">
               A evolução do seu plano de saúde
               <br />
-              a <span className="accent">o futuro começa aqui.</span>
+              <span className="accent">o futuro começa aqui.</span>
             </h1>
 
             <p className="hero-lead">
