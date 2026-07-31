@@ -2556,8 +2556,12 @@
 
 /* ==================== Página: Rede de Atendimento ==================== */
 
+/* faixa clara: a partir dos filtros a seção troca o fundo azul-escuro por
+   uma superfície clara, ganhando contraste (texto escuro sobre claro) */
 .rede {
   padding-block: clamp(32px, 5vw, 56px) clamp(56px, 8vw, 96px);
+  background: #eef2f9;
+  color: #1c2a4a;
 }
 
 /* --- filtros --- */
@@ -2566,15 +2570,49 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px 18px;
   padding: 22px;
-  border: 1px solid var(--border);
+  border: 1px solid #d8e0ee;
   border-radius: 16px;
-  background: rgba(10, 19, 48, 0.55);
-  backdrop-filter: blur(6px);
+  background: #ffffff;
+  box-shadow: 0 14px 34px -24px rgba(16, 32, 63, 0.35);
 }
 
 /* dentro da grade os campos não precisam da margem inferior padrão */
 .rede-filtros .campo {
   margin-bottom: 0;
+}
+
+/* --- campos dos filtros na faixa clara (sobrescreve o tema escuro global) --- */
+.rede-filtros .campo label {
+  color: #1c2a4a;
+}
+
+.rede-filtros .campo input,
+.rede-filtros .campo select {
+  color: #10203f;
+  border-color: #cdd6e8;
+  background-color: #ffffff;
+}
+
+.rede-filtros .campo select {
+  /* seta em azul mais forte para contrastar com o fundo branco */
+  background-image: linear-gradient(45deg, transparent 50%, var(--blue-500) 50%),
+    linear-gradient(135deg, var(--blue-500) 50%, transparent 50%);
+}
+
+.rede-filtros .campo select option {
+  background: #ffffff;
+  color: #10203f;
+}
+
+.rede-filtros .campo input::placeholder {
+  color: #8a95af;
+}
+
+.rede-filtros .campo input:focus,
+.rede-filtros .campo select:focus {
+  border-color: var(--blue-500);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.18);
 }
 
 .rede-busca {
@@ -2594,11 +2632,11 @@
 .rede-contagem {
   margin: 0;
   font-size: 15px;
-  color: var(--text-muted);
+  color: #4a5877;
 }
 
 .rede-contagem strong {
-  color: #fff;
+  color: #10203f;
   font-size: 18px;
 }
 
@@ -2606,7 +2644,7 @@
 .rede-link {
   font: inherit;
   cursor: pointer;
-  color: var(--blue-300);
+  color: #1c62c4;
   background: none;
   border: none;
   padding: 0;
@@ -2616,14 +2654,14 @@
   font-size: 14px;
   font-weight: 600;
   padding: 9px 16px;
-  border: 1px solid rgba(90, 169, 255, 0.4);
+  border: 1px solid rgba(47, 128, 237, 0.45);
   border-radius: 999px;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .rede-limpar:hover {
-  background: rgba(90, 169, 255, 0.14);
-  border-color: var(--blue-300);
+  background: rgba(47, 128, 237, 0.1);
+  border-color: var(--blue-500);
 }
 
 .rede-link {
@@ -2631,7 +2669,7 @@
 }
 
 .rede-link:hover {
-  color: #fff;
+  color: var(--blue-500);
 }
 
 /* --- grade de cards --- */
@@ -2661,27 +2699,27 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  color: #fff;
+  color: #1c62c4;
   padding: 10px 18px;
   border-radius: 999px;
-  border: 1px solid rgba(90, 169, 255, 0.4);
-  background: rgba(90, 169, 255, 0.1);
+  border: 1px solid rgba(47, 128, 237, 0.45);
+  background: rgba(47, 128, 237, 0.08);
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .rede-pag-btn:hover:not(:disabled) {
-  background: rgba(90, 169, 255, 0.2);
-  border-color: var(--blue-300);
+  background: rgba(47, 128, 237, 0.16);
+  border-color: var(--blue-500);
 }
 
 .rede-pag-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: default;
 }
 
 .rede-pag-info {
   font-size: 14px;
-  color: var(--text-muted);
+  color: #4a5877;
 }
 
 .rede-card {
@@ -2689,16 +2727,17 @@
   flex-direction: column;
   gap: 12px;
   padding: 22px;
-  border: 1px solid var(--border);
+  border: 1px solid #e1e7f2;
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(19, 37, 82, 0.5), rgba(10, 19, 48, 0.5));
+  background: #ffffff;
+  box-shadow: 0 12px 30px -24px rgba(16, 32, 63, 0.4);
   transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .rede-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(90, 169, 255, 0.45);
-  box-shadow: 0 22px 44px -26px rgba(6, 13, 33, 0.9);
+  border-color: rgba(47, 128, 237, 0.5);
+  box-shadow: 0 22px 44px -26px rgba(16, 32, 63, 0.5);
 }
 
 .rede-card-topo {
@@ -2745,14 +2784,14 @@
   margin: 0;
   font-size: 17px;
   font-weight: 700;
-  color: #fff;
+  color: #10203f;
   line-height: 1.25;
 }
 
 .rede-card-inst {
   margin: 3px 0 0;
   font-size: 13px;
-  color: var(--text-dim);
+  color: #64708c;
 }
 
 .rede-tag-tipo {
@@ -2762,11 +2801,11 @@
   font-weight: 600;
   letter-spacing: 0.3px;
   text-transform: uppercase;
-  color: var(--blue-200);
+  color: #1c62c4;
   padding: 5px 10px;
   border-radius: 999px;
-  background: rgba(90, 169, 255, 0.12);
-  border: 1px solid rgba(90, 169, 255, 0.25);
+  background: rgba(47, 128, 237, 0.1);
+  border: 1px solid rgba(47, 128, 237, 0.28);
 }
 
 .rede-chips {
@@ -2780,11 +2819,11 @@
 
 .rede-chip {
   font-size: 12px;
-  color: #dfe7f8;
+  color: #2a3a5e;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border);
+  background: #eef2fa;
+  border: 1px solid #dbe2f0;
 }
 
 .rede-card-linha {
@@ -2794,12 +2833,12 @@
   margin: 0;
   font-size: 13.5px;
   line-height: 1.5;
-  color: var(--text-muted);
+  color: #45527a;
 }
 
 .rede-card-ic {
   flex-shrink: 0;
-  color: var(--blue-300);
+  color: var(--blue-500);
   margin-top: 1px;
 }
 
@@ -2815,24 +2854,24 @@
 }
 
 .rede-fones a {
-  color: var(--blue-300);
+  color: #1c62c4;
   transition: color 0.2s ease;
 }
 
 .rede-fones a:hover {
-  color: #fff;
+  color: var(--blue-500);
 }
 
 .rede-card-redes {
   margin: 2px 0 0;
   padding-top: 12px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid #e1e7f2;
   font-size: 12.5px;
-  color: var(--text-dim);
+  color: #64708c;
 }
 
 .rede-card-redes span {
-  color: #cdd8f2;
+  color: #2a3a5e;
   font-weight: 600;
 }
 
@@ -2840,20 +2879,20 @@
 .rede-vazio {
   text-align: center;
   padding: 56px 24px;
-  border: 1px dashed var(--border);
+  border: 1px dashed #c4cee0;
   border-radius: 16px;
-  background: rgba(10, 19, 48, 0.4);
+  background: #ffffff;
 }
 
 .rede-vazio h3 {
   margin: 0 0 8px;
   font-size: 19px;
-  color: #fff;
+  color: #10203f;
 }
 
 .rede-vazio p {
   margin: 0;
-  color: var(--text-muted);
+  color: #4a5877;
 }
 
 @media (max-width: 560px) {
