@@ -13,7 +13,7 @@ const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? ''
 const DESTINOS = (
   Deno.env.get('CREDENCIADO_DESTINO') ??
   Deno.env.get('COTACAO_DESTINO') ??
-  'adelia.castro@innovaoperadora.com.br'
+  'relacionamentorede@innovaoperadora.com.br'
 )
   .split(',')
   .map((item) => item.trim())
