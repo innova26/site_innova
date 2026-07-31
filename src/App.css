@@ -2910,11 +2910,26 @@
 /* ==================== Admin: cadastro da Rede ==================== */
 
 .admin {
+  min-height: 100svh;
   padding-block: clamp(28px, 5vw, 48px) 80px;
+  background: #eef2f9;
+  color: #1c2a4a;
+}
+
+/* botoes "fantasma" (Ver pagina publica / Sair / Cancelar) na faixa clara */
+.admin .btn-ghost {
+  color: #1c2a4a;
+  background: #ffffff;
+  border-color: #cdd6e8;
+}
+
+.admin .btn-ghost:hover {
+  background: #f0f3fa;
+  border-color: #9fb0d0;
 }
 
 .admin-info {
-  color: var(--text-muted);
+  color: #4a5877;
   padding-block: 40px;
 }
 
@@ -3001,12 +3016,13 @@
 .admin-titulo {
   font-size: clamp(26px, 3vw, 34px);
   margin: 0;
+  color: #10203f;
 }
 
 .admin-usuario {
   margin: 4px 0 0;
   font-size: 13px;
-  color: var(--text-dim);
+  color: #64708c;
 }
 
 .admin-acoes-topo {
@@ -3036,35 +3052,37 @@
   width: 100%;
   font: inherit;
   font-size: 15px;
-  color: #fff;
+  color: #10203f;
   padding: 13px 16px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(6, 13, 33, 0.6);
+  border: 1px solid #cdd6e8;
+  background: #ffffff;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .admin-busca-input::placeholder {
-  color: rgba(169, 182, 214, 0.6);
+  color: #8a95af;
 }
 
 .admin-busca-input:focus {
   outline: none;
-  border-color: var(--blue-400);
-  box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.22);
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.18);
 }
 
 .admin-td-vazio {
   text-align: center;
-  color: var(--text-muted);
+  color: #4a5877;
   padding: 28px 16px;
 }
 
 /* --- tabela --- */
 .admin-tabela-wrap {
   overflow-x: auto;
-  border: 1px solid var(--border);
+  border: 1px solid #e1e7f2;
   border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px -24px rgba(16, 32, 63, 0.4);
 }
 
 .admin-tabela {
@@ -3078,16 +3096,17 @@
 .admin-tabela td {
   text-align: left;
   padding: 13px 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #e6ebf4;
   vertical-align: top;
+  color: #45527a;
 }
 
 .admin-tabela th {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  color: var(--text-dim);
-  background: rgba(255, 255, 255, 0.03);
+  color: #64708c;
+  background: #f4f7fc;
 }
 
 .admin-tabela tbody tr:last-child td {
@@ -3095,16 +3114,16 @@
 }
 
 .admin-tabela tbody tr:hover {
-  background: rgba(90, 169, 255, 0.06);
+  background: rgba(47, 128, 237, 0.06);
 }
 
 .admin-tabela td strong {
   display: block;
-  color: #fff;
+  color: #10203f;
 }
 
 .admin-tabela td small {
-  color: var(--text-dim);
+  color: #64708c;
 }
 
 .admin-td-acoes {
@@ -3116,17 +3135,21 @@
   cursor: pointer;
   background: none;
   border: none;
-  color: var(--blue-300);
+  color: #1c62c4;
   padding: 0 8px;
 }
 
 .admin-link:hover {
-  color: #fff;
+  color: var(--blue-500);
   text-decoration: underline;
 }
 
 .admin-link-danger {
-  color: #ff9b9b;
+  color: #d64545;
+}
+
+.admin-link-danger:hover {
+  color: #b91c1c;
 }
 
 /* switch de visibilidade (Público / Não público) */
@@ -3142,11 +3165,11 @@
   padding: 0;
   background: none;
   border: none;
-  color: #86efac;
+  color: #15803d;
 }
 
 .admin-switch.off {
-  color: #9aa7c2;
+  color: #64708c;
 }
 
 .admin-switch-track {
@@ -3154,13 +3177,13 @@
   width: 38px;
   height: 22px;
   border-radius: 999px;
-  background: rgba(74, 222, 128, 0.85);
+  background: #22c55e;
   transition: background 0.2s ease;
   flex-shrink: 0;
 }
 
 .admin-switch.off .admin-switch-track {
-  background: rgba(255, 255, 255, 0.2);
+  background: #cdd6e8;
 }
 
 .admin-switch-knob {
@@ -3196,14 +3219,14 @@
   max-width: 560px;
   margin-block: auto;
   padding: 28px;
-  border: 1px solid var(--border);
+  border: 1px solid #d8e0ee;
   border-radius: 16px;
-  background: var(--navy-800);
+  background: #ffffff;
 }
 
 .admin-form h2 {
   margin: 0 0 20px;
-  color: #fff;
+  color: #10203f;
   font-size: 21px;
 }
 
@@ -3214,8 +3237,44 @@
 }
 
 .admin-form .campo small {
-  color: var(--text-dim);
+  color: #64708c;
   font-weight: 400;
+}
+
+/* campos do formulario na faixa clara (sobrescreve o tema escuro global) */
+.admin-form .campo label {
+  color: #1c2a4a;
+}
+
+.admin-form .campo input,
+.admin-form .campo select,
+.admin-form .campo textarea {
+  color: #10203f;
+  border-color: #cdd6e8;
+  background-color: #ffffff;
+}
+
+.admin-form .campo select {
+  background-image: linear-gradient(45deg, transparent 50%, var(--blue-500) 50%),
+    linear-gradient(135deg, var(--blue-500) 50%, transparent 50%);
+}
+
+.admin-form .campo select option {
+  background: #ffffff;
+  color: #10203f;
+}
+
+.admin-form .campo input::placeholder,
+.admin-form .campo textarea::placeholder {
+  color: #8a95af;
+}
+
+.admin-form .campo input:focus,
+.admin-form .campo select:focus,
+.admin-form .campo textarea:focus {
+  border-color: var(--blue-500);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.18);
 }
 
 .admin-logo-preview {
@@ -3250,21 +3309,21 @@
   cursor: pointer;
   padding: 8px 38px 8px 12px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(6, 13, 33, 0.6);
-  color: #fff;
+  border: 1px solid #cdd6e8;
+  background: #ffffff;
+  color: #10203f;
   font: inherit;
 }
 
 .msel-control.aberto,
 .msel-control:focus-visible {
   outline: none;
-  border-color: var(--blue-400);
-  box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.22);
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.18);
 }
 
 .msel-placeholder {
-  color: rgba(169, 182, 214, 0.6);
+  color: #8a95af;
   font-size: 15px;
 }
 
@@ -3282,9 +3341,9 @@
   line-height: 1;
   padding: 5px 7px 5px 10px;
   border-radius: 999px;
-  color: #eaf1ff;
-  background: rgba(90, 169, 255, 0.16);
-  border: 1px solid rgba(90, 169, 255, 0.3);
+  color: #1c62c4;
+  background: rgba(47, 128, 237, 0.1);
+  border: 1px solid rgba(47, 128, 237, 0.28);
 }
 
 .msel-chip-x {
@@ -3296,12 +3355,12 @@
   border-radius: 50%;
   font-size: 14px;
   cursor: pointer;
-  color: #cfe0ff;
+  color: #1c62c4;
 }
 
 .msel-chip-x:hover {
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
+  background: rgba(47, 128, 237, 0.18);
+  color: var(--blue-500);
 }
 
 .msel-seta {
@@ -3310,8 +3369,8 @@
   top: 50%;
   width: 8px;
   height: 8px;
-  border-right: 2px solid var(--blue-300);
-  border-bottom: 2px solid var(--blue-300);
+  border-right: 2px solid var(--blue-500);
+  border-bottom: 2px solid var(--blue-500);
   transform: translateY(-70%) rotate(45deg);
   pointer-events: none;
 }
@@ -3324,26 +3383,30 @@
   right: 0;
   padding: 10px;
   border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--navy-700);
-  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.75);
+  border: 1px solid #d8e0ee;
+  background: #ffffff;
+  box-shadow: 0 24px 48px -20px rgba(16, 32, 63, 0.35);
 }
 
 .msel-busca {
   width: 100%;
   font: inherit;
   font-size: 14px;
-  color: #fff;
+  color: #10203f;
   padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(6, 13, 33, 0.7);
+  border: 1px solid #cdd6e8;
+  background: #ffffff;
   margin-bottom: 8px;
+}
+
+.msel-busca::placeholder {
+  color: #8a95af;
 }
 
 .msel-busca:focus {
   outline: none;
-  border-color: var(--blue-400);
+  border-color: var(--blue-500);
 }
 
 .msel-lista {
@@ -3361,12 +3424,12 @@
   padding: 8px 8px;
   border-radius: 8px;
   font-size: 13.5px;
-  color: #dfe7f8;
+  color: #2a3a5e;
   cursor: pointer;
 }
 
 .msel-item:hover {
-  background: rgba(90, 169, 255, 0.1);
+  background: rgba(47, 128, 237, 0.1);
 }
 
 .msel-item input {
@@ -3379,7 +3442,7 @@
 .msel-nada {
   padding: 10px 8px;
   font-size: 13px;
-  color: var(--text-dim);
+  color: #64708c;
 }
 
 .msel-add {
@@ -3392,14 +3455,14 @@
   text-align: left;
   padding: 10px 12px;
   border-radius: 8px;
-  color: var(--blue-300);
-  background: rgba(90, 169, 255, 0.1);
-  border: 1px dashed rgba(90, 169, 255, 0.4);
+  color: #1c62c4;
+  background: rgba(47, 128, 237, 0.08);
+  border: 1px dashed rgba(47, 128, 237, 0.4);
 }
 
 .msel-add:hover {
-  background: rgba(90, 169, 255, 0.18);
-  color: #fff;
+  background: rgba(47, 128, 237, 0.16);
+  color: var(--blue-500);
 }
 
 /* ---------- Banner de cookies (LGPD) ---------- */
