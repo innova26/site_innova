@@ -13,8 +13,19 @@ import EmBreve from './pages/EmBreve'
 import { ROUTES } from './routes'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
+import { useEffect, useState } from 'react'
+import { getConsent, subscribe } from './lib/cookieConsent'
+
+/* Só carregamos os scripts de análise se o usuário consentir (LGPD). */
+function useAnalyticsConsent() {
+  const [enabled, setEnabled] = useState(() => getConsent()?.analytics ?? false)
+  useEffect(() => subscribe((c) => setEnabled(c?.analytics ?? false)), [])
+  return enabled
+}
 
 function App() {
+  const analyticsEnabled = useAnalyticsConsent()
+
   return (
     <BrowserRouter>
       <Routes>
@@ -33,8 +44,12 @@ function App() {
         {/* área administrativa: fora do layout de marketing */}
         <Route path={ROUTES.admin} element={<Admin />} />
       </Routes>
-      <Analytics />
-      <SpeedInsights />
+      {analyticsEnabled && (
+        <>
+          <Analytics />
+          <SpeedInsights />
+        </>
+      )}
     </BrowserRouter>
   )
 }

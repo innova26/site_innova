@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import SiteHeader from './SiteHeader'
 import SiteFooter from './SiteFooter'
+import CookieConsent from './CookieConsent'
 
 function Layout() {
   const { pathname } = useLocation()
@@ -20,6 +21,8 @@ function Layout() {
       </main>
 
       <SiteFooter />
+
+      <CookieConsent />
     </div>
   )
 }
