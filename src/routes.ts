@@ -8,6 +8,7 @@ export const ROUTES = {
   corretoras: '/corretoras',
   sac: '/sac',
   admin: '/admin',
+  dashboardCredenciadas: '/dashboard-credenciadas',
 } as const
 
 /** Portais sao sistemas externos, por isso ficam fora do roteador. */

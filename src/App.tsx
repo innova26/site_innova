@@ -9,6 +9,7 @@ import Corretoras from './pages/Corretoras'
 import Sac from './pages/Sac'
 import RedeAtendimento from './pages/RedeAtendimento'
 import Admin from './pages/Admin'
+import DashboardCredenciadas from './pages/DashboardCredenciadas'
 import EmBreve from './pages/EmBreve'
 import { ROUTES } from './routes'
 import { Analytics } from '@vercel/analytics/react'
@@ -43,6 +44,10 @@ function App() {
 
         {/* área administrativa: fora do layout de marketing */}
         <Route path={ROUTES.admin} element={<Admin />} />
+        <Route
+          path={ROUTES.dashboardCredenciadas}
+          element={<DashboardCredenciadas />}
+        />
       </Routes>
       {analyticsEnabled && (
         <>
