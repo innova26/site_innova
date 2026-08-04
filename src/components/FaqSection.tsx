@@ -10,7 +10,7 @@ const FAQS = [
   {
     question: 'Quais empresas podem contratar o Plano Empresarial (PME)?',
     answer:
-      'Empresas a partir de 2 vidas já podem contratar o plano empresarial da Innova. Oferecemos condições especiais para pequenas e médias empresas de Porto Velho e região.',
+      'Empresas a partir de 3 vidas já podem contratar o plano empresarial da Innova. Oferecemos condições especiais para pequenas e médias empresas de Porto Velho e região.',
   },
   {
     question: 'Como posso consultar a rede credenciada do meu plano?',
@@ -30,7 +30,7 @@ const FAQS = [
 ]
 
 function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openIndex, setOpenIndex] = useState<number | nu"ll>(null)
   const listRef = useRevealOnScroll<HTMLDivElement>('.faq-item')
 
   const toggle = (index: number) =>
