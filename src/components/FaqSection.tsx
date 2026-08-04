@@ -30,7 +30,7 @@ const FAQS = [
 ]
 
 function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | nu"ll>(null)
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
   const listRef = useRevealOnScroll<HTMLDivElement>('.faq-item')
 
   const toggle = (index: number) =>
