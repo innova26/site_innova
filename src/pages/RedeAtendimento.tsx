@@ -16,6 +16,7 @@ import {
 import { carregarVisiveis } from '../data/redeRepo'
 
 const POR_PAGINA = 50
+const TIPOS_UNICOS: TipoRecurso[] = [...new Set(TIPOS)]
 
 /** Ícone (path do SVG 24x24) de acordo com o tipo de recurso. */
 const ICONE_TIPO: Record<TipoRecurso, string> = {
@@ -24,6 +25,58 @@ const ICONE_TIPO: Record<TipoRecurso, string> = {
   Laboratório: 'M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3',
   Consultório: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20a7.5 7.5 0 0 1 15 0',
   'Pronto atendimento': 'M12 7v10M7 12h10M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18z',
+}
+
+type PrestadorGrupo = {
+  id: string
+  tipo: TipoRecurso
+  nome: string
+  instituicao?: string
+  logo?: string
+  especialidades: string[]
+  redes: string[]
+  telefones: string[]
+  profissionais: string[]
+  endereco: string
+  prestadores: Prestador[]
+}
+
+function agruparPrestadoresPorTipoEndereco(lista: Prestador[]): PrestadorGrupo[] {
+  const grupos = new Map<string, PrestadorGrupo>()
+
+  for (const prestador of lista) {
+    const chave = `${prestador.tipo}||${prestador.endereco}`
+    const grupo = grupos.get(chave)
+
+    if (!grupo) {
+      grupos.set(chave, {
+        id: chave,
+        tipo: prestador.tipo,
+        nome: prestador.nome,
+        instituicao: prestador.instituicao,
+        logo: prestador.logo,
+        especialidades: [...new Set(prestador.especialidades)],
+        redes: [...new Set(prestador.redes)],
+        telefones: [...new Set(prestador.telefones)],
+        profissionais: prestador.profissional ? [prestador.profissional] : [],
+        endereco: prestador.endereco,
+        prestadores: [prestador],
+      })
+      continue
+    }
+
+    grupo.prestadores.push(prestador)
+    grupo.instituicao ??= prestador.instituicao
+    grupo.logo ??= prestador.logo
+    grupo.especialidades = [...new Set([...grupo.especialidades, ...prestador.especialidades])]
+    grupo.redes = [...new Set([...grupo.redes, ...prestador.redes])]
+    grupo.telefones = [...new Set([...grupo.telefones, ...prestador.telefones])]
+    if (prestador.profissional && !grupo.profissionais.includes(prestador.profissional)) {
+      grupo.profissionais.push(prestador.profissional)
+    }
+  }
+
+  return [...grupos.values()]
 }
 
 function IconePin() {
@@ -80,15 +133,15 @@ function IconeFone() {
 /** Transforma um telefone exibido em href tel: (mantém só os dígitos). */
 const telHref = (tel: string) => `tel:+55${tel.replace(/\D/g, '')}`
 
-function CardPrestador({ prestador }: { prestador: Prestador }) {
+function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
   return (
     <article className="rede-card">
       <header className="rede-card-topo">
-        {prestador.logo ? (
+        {grupo.logo ? (
           <span className="rede-card-logo">
             <img
-              src={prestador.logo}
-              alt={`Logo ${prestador.instituicao ?? prestador.nome}`}
+              src={grupo.logo}
+              alt={`Logo ${grupo.instituicao ?? grupo.nome}`}
               loading="lazy"
             />
           </span>
@@ -96,7 +149,7 @@ function CardPrestador({ prestador }: { prestador: Prestador }) {
           <span className="rede-card-icone" aria-hidden="true">
             <svg viewBox="0 0 24 24">
               <path
-                d={ICONE_TIPO[prestador.tipo]}
+                d={ICONE_TIPO[grupo.tipo]}
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.8"
@@ -107,36 +160,36 @@ function CardPrestador({ prestador }: { prestador: Prestador }) {
           </span>
         )}
         <div>
-          <h3>{prestador.nome}</h3>
-          {prestador.instituicao && (
-            <p className="rede-card-inst">{prestador.instituicao}</p>
+          <h3>{grupo.nome}</h3>
+          {grupo.instituicao && (
+            <p className="rede-card-inst">{grupo.instituicao}</p>
           )}
         </div>
-        <span className="rede-tag rede-tag-tipo">{prestador.tipo}</span>
+        <span className="rede-tag rede-tag-tipo">{grupo.tipo}</span>
       </header>
 
       <ul className="rede-chips" aria-label="Especialidades">
-        {prestador.especialidades.map((esp) => (
+        {grupo.especialidades.map((esp) => (
           <li key={esp} className="rede-chip">
             {esp}
           </li>
         ))}
       </ul>
 
-      {prestador.profissional && (
-        <p className="rede-card-linha">
+      {grupo.profissionais.map((profissional) => (
+        <p key={profissional} className="rede-card-linha">
           <span className="rede-card-ic">
             <IconePessoa />
           </span>
-          {prestador.profissional}
+          {profissional}
         </p>
-      )}
+      ))}
 
       <p className="rede-card-linha">
         <span className="rede-card-ic">
           <IconePin />
         </span>
-        {prestador.endereco}
+        {grupo.endereco}
       </p>
 
       <p className="rede-card-linha">
@@ -144,7 +197,7 @@ function CardPrestador({ prestador }: { prestador: Prestador }) {
           <IconeFone />
         </span>
         <span className="rede-fones">
-          {prestador.telefones.map((tel) => (
+          {grupo.telefones.map((tel) => (
             <a key={tel} href={telHref(tel)}>
               {tel}
             </a>
@@ -153,7 +206,7 @@ function CardPrestador({ prestador }: { prestador: Prestador }) {
       </p>
 
       <p className="rede-card-redes">
-        <span>Redes:</span> {prestador.redes.join(' · ')}
+        <span>Redes:</span> {grupo.redes.join(' · ')}
       </p>
     </article>
   )
@@ -192,12 +245,17 @@ function RedeAtendimento() {
     [prestadores, filtros],
   )
 
+  const resultadosAgrupados = useMemo(
+    () => agruparPrestadoresPorTipoEndereco(resultados),
+    [resultados],
+  )
+
   /* volta para a 1ª página sempre que os filtros mudam */
   useEffect(() => setPagina(1), [filtros])
 
-  const totalPaginas = Math.max(1, Math.ceil(resultados.length / POR_PAGINA))
+  const totalPaginas = Math.max(1, Math.ceil(resultadosAgrupados.length / POR_PAGINA))
   const paginaAtual = Math.min(pagina, totalPaginas)
-  const visiveisPagina = resultados.slice(
+  const visiveisPagina = resultadosAgrupados.slice(
     (paginaAtual - 1) * POR_PAGINA,
     paginaAtual * POR_PAGINA,
   )
@@ -305,7 +363,7 @@ function RedeAtendimento() {
                 onChange={(e) => alterar('tipo', e.target.value)}
               >
                 <option value="">Todos os tipos</option>
-                {TIPOS.map((t) => (
+                {TIPOS_UNICOS.map((t) => (
                   <option key={t} value={t}>
                     {t}
                   </option>
@@ -369,8 +427,8 @@ function RedeAtendimento() {
           {carregando ? null : resultados.length > 0 ? (
             <>
               <div className="rede-grid">
-                {visiveisPagina.map((p) => (
-                  <CardPrestador key={p.id} prestador={p} />
+                {visiveisPagina.map((grupo) => (
+                  <CardPrestador key={grupo.id} grupo={grupo} />
                 ))}
               </div>
 
