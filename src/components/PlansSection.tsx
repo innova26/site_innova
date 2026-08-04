@@ -101,7 +101,7 @@ const PLANS = [
     text: 'Cuide do seu sorriso com um plano odontológico nacional, sem carência e com cobertura para procedimentos essenciais. Ideal para empresas e grupos que valorizam prevenção e qualidade de vida.',
     features: [
       'Cobertura Ampla',
-      'Rede Nacional',
+      'Atendimento humanizado',
       'Benefícios Extras',
       'Adesão Simples',
     ],
