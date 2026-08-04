@@ -10,8 +10,8 @@ const BRUTA = [
   'ESSENCIAL RO II',
   'ESSENCIAL RR I',
   'MASTER RR I - BOA VISTA',
-  'FLEX',
-  'MASTER',
+  'REDE FLEX',
+  'REDE MASTER',
 ]
 
 /** Lista final: sem duplicatas e ordenada em pt-BR. */
