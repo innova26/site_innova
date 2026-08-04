@@ -425,6 +425,20 @@ export const STATS = {
   pendencias: TODOS_PRESTADORES.filter((p) => p.status !== 'Ativo').length,
 }
 
+/**
+ * Variação fictícia vs. o mês anterior, só para ilustrar os indicadores de
+ * tendência dos cartões (▲/▼). Não representa histórico real.
+ */
+export const TENDENCIAS: Record<'prestadores' | 'especialidades' | 'itensComValorMapeado' | 'contratosAtivos', number> = {
+  prestadores: 8,
+  especialidades: 2,
+  itensComValorMapeado: 134,
+  contratosAtivos: 5,
+}
+
+/** Índice de saúde da rede: % de contratos ativos sobre o total mapeado. */
+export const SAUDE_REDE = Math.round((STATS.contratosAtivos / STATS.prestadores) * 100)
+
 export const DISTRIBUICAO_PRESTADORES: { categoria: CategoriaServico; valor: number }[] =
   METAS.map((m) => ({ categoria: m.categoria, valor: m.total }))
 

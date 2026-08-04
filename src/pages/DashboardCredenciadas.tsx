@@ -4,8 +4,10 @@ import { supabase, supabaseConfigurado } from '../lib/supabase'
 import {
   DISTRIBUICAO_ITENS_CATALOGO,
   DISTRIBUICAO_PRESTADORES,
+  SAUDE_REDE,
   SITUACAO_REDE,
   STATS,
+  TENDENCIAS,
   TODOS_PRESTADORES,
   TOP_POR_VALOR,
   type CategoriaServico,
@@ -23,6 +25,19 @@ function statusCor(status: StatusRede): string {
   if (status === 'Ativo') return '#1f9d6e'
   if (status === 'Descredenciado') return '#d9534f'
   return '#e0902f'
+}
+
+/** Chip de tendência (▲/▼) usado nos cartões de estatística. */
+function TrendChip({ delta, sufixo = 'no mês' }: { delta: number; sufixo?: string }) {
+  const subiu = delta >= 0
+  return (
+    <span className={`dcx-trend ${subiu ? 'up' : 'down'}`}>
+      <span aria-hidden="true">{subiu ? '▲' : '▼'}</span>
+      {subiu ? '+' : ''}
+      {fmtInt(delta)}
+      <small>{sufixo}</small>
+    </span>
+  )
 }
 
 /* ====================== Login (gate reaproveitado do /admin) ====================== */
@@ -166,23 +181,53 @@ function Painel({ sessao }: { sessao: Session }) {
 
         <p className="dcx-usuario">{sessao.user.email} · dados mockados para visualização de layout</p>
 
+        {/* -------- índice de saúde da rede -------- */}
+        <div className="dcx-saude">
+          <div className="dcx-saude-info">
+            <p className="dcx-saude-eyebrow">Índice de saúde da rede</p>
+            <p className="dcx-saude-num">
+              {SAUDE_REDE}
+              <span>%</span>
+            </p>
+            <p className="dcx-saude-desc">
+              <strong>{fmtInt(STATS.contratosAtivos)}</strong> contratos ativos de{' '}
+              {fmtInt(STATS.prestadores)} prestadores · <strong>{STATS.pendencias}</strong> com pendência
+            </p>
+          </div>
+          <div className="dcx-saude-barra" role="img" aria-label={`${SAUDE_REDE}% da rede com contrato ativo`}>
+            <span className="dcx-saude-fill" style={{ width: `${SAUDE_REDE}%` }} />
+          </div>
+        </div>
+
         {/* -------- cartões de estatística -------- */}
         <div className="dcx-stats">
-          <div className="dcx-stat-card" style={{ borderLeftColor: '#1c2a4a' }}>
+          <div className="dcx-stat-card" data-accent="navy">
+            <div className="dcx-stat-topo">
+              <span>Prestadores na rede</span>
+              <TrendChip delta={TENDENCIAS.prestadores} />
+            </div>
             <strong>{fmtInt(STATS.prestadores)}</strong>
-            <span>Prestadores na rede</span>
           </div>
-          <div className="dcx-stat-card" style={{ borderLeftColor: '#1f9d6e' }}>
+          <div className="dcx-stat-card" data-accent="blue">
+            <div className="dcx-stat-topo">
+              <span>Especialidades / serviços distintos</span>
+              <TrendChip delta={TENDENCIAS.especialidades} />
+            </div>
             <strong>{fmtInt(STATS.especialidades)}</strong>
-            <span>Especialidades / serviços distintos</span>
           </div>
-          <div className="dcx-stat-card" style={{ borderLeftColor: '#e0902f' }}>
+          <div className="dcx-stat-card" data-accent="sky">
+            <div className="dcx-stat-topo">
+              <span>Itens com valor mapeado</span>
+              <TrendChip delta={TENDENCIAS.itensComValorMapeado} />
+            </div>
             <strong>{fmtInt(STATS.itensComValorMapeado)}</strong>
-            <span>Itens com valor mapeado</span>
           </div>
-          <div className="dcx-stat-card" style={{ borderLeftColor: '#132552' }}>
+          <div className="dcx-stat-card" data-accent="deep">
+            <div className="dcx-stat-topo">
+              <span>Contratos ativos</span>
+              <TrendChip delta={TENDENCIAS.contratosAtivos} />
+            </div>
             <strong>{fmtInt(STATS.contratosAtivos)}</strong>
-            <span>Contratos ativos</span>
             <small>{STATS.pendencias} com pendência</small>
           </div>
         </div>
@@ -239,7 +284,7 @@ function Painel({ sessao }: { sessao: Session }) {
             <p className="dcx-card-hint">Clique em um status para filtrar a lista</p>
 
             <div className="dcx-donut-bloco">
-              <Donut />
+              <Donut destaque={filtroStatus} />
               <div className="dcx-donut-legenda">
                 {SITUACAO_REDE.map((s) => (
                   <button
@@ -383,11 +428,22 @@ function Painel({ sessao }: { sessao: Session }) {
   )
 }
 
-function Donut() {
+function Donut({ destaque }: { destaque: StatusRede | 'todos' }) {
   const total = SITUACAO_REDE.reduce((s, x) => s + x.total, 0)
   const r = 15.9155
   let acumulado = 0
   const circ = 2 * Math.PI * r
+
+  const foco = destaque === 'todos' ? null : SITUACAO_REDE.find((s) => s.status === destaque)
+  const centroNum = foco ? foco.total : SITUACAO_REDE[0].total
+  const centroLabel = foco
+    ? foco.status === 'Ativo'
+      ? 'ativos'
+      : foco.status === 'Descredenciado'
+        ? 'fora'
+        : 'pendentes'
+    : 'ativos'
+  const centroCor = foco ? foco.cor : '#10203f'
 
   return (
     <svg viewBox="0 0 40 40" className="dcx-donut" role="img" aria-label="Situação da rede">
@@ -397,6 +453,7 @@ function Donut() {
         const comprimento = fracao * circ
         const offset = circ - acumulado
         acumulado += comprimento
+        const apagado = destaque !== 'todos' && s.status !== destaque
         return (
           <circle
             key={s.status}
@@ -405,18 +462,19 @@ function Donut() {
             r={r}
             fill="none"
             stroke={s.cor}
-            strokeWidth="6"
+            strokeWidth={apagado ? 5 : 6}
             strokeDasharray={`${comprimento} ${circ - comprimento}`}
             strokeDashoffset={offset}
             transform="rotate(-90 20 20)"
+            style={{ opacity: apagado ? 0.22 : 1, transition: 'opacity .25s ease, stroke-width .25s ease' }}
           />
         )
       })}
-      <text x="20" y="19" textAnchor="middle" className="dcx-donut-num">
-        {SITUACAO_REDE[0].total}
+      <text x="20" y="19" textAnchor="middle" className="dcx-donut-num" style={{ fill: centroCor }}>
+        {centroNum}
       </text>
       <text x="20" y="25" textAnchor="middle" className="dcx-donut-legenda-svg">
-        ativos
+        {centroLabel}
       </text>
     </svg>
   )

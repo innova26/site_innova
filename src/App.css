@@ -1458,6 +1458,7 @@
   color: #fff;
 }
 
+
 .page-title {
   font-size: clamp(34px, 4.6vw, 62px);
   line-height: 1.05;
@@ -3614,6 +3615,21 @@
 
 /* ==================== Dashboard Credenciadas (mockado) ==================== */
 
+/* ==================== Dashboard credenciadas (light refinado) ==================== */
+/* Tokens locais alinhados ao design system (navy + azul Innova). */
+.dcx {
+  --dcx-brand: #2f80ed;
+  --dcx-brand-strong: #1c5fd0;
+  --dcx-brand-soft: #e8f1fe;
+  --dcx-navy: #10203f;
+  --dcx-sky: #5aa9ff;
+  --dcx-grad: linear-gradient(90deg, #2f80ed, #5aa9ff);
+  --dcx-grad-navy: linear-gradient(90deg, #132552, #3b8ff5);
+  --dcx-border: #e3e8f2;
+  --dcx-shadow: 0 1px 2px rgba(16, 32, 63, 0.04), 0 10px 24px -14px rgba(16, 32, 63, 0.22);
+  --dcx-shadow-hover: 0 2px 6px rgba(16, 32, 63, 0.07), 0 18px 40px -16px rgba(47, 128, 237, 0.4);
+}
+
 .dcx-topo {
   display: flex;
   align-items: flex-start;
@@ -3646,7 +3662,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #1f9d6e;
+  color: var(--dcx-brand);
 }
 
 .dcx-sub {

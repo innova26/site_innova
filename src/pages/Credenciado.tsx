@@ -10,6 +10,7 @@ import {
   mascaraTelefone,
 } from '../utils/formulario'
 
+
 const UFS = [
   'Acre',
   'Alagoas',
