@@ -10,6 +10,7 @@ import Sac from './pages/Sac'
 import RedeAtendimento from './pages/RedeAtendimento'
 import Admin from './pages/Admin'
 import EmBreve from './pages/EmBreve'
+import PoliticaPrivacidade from './pages/PoliticaPrivacidade'
 import { ROUTES } from './routes'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
@@ -37,6 +38,7 @@ function App() {
           <Route path={ROUTES.corretoras} element={<Corretoras />} />
           <Route path={ROUTES.sac} element={<Sac />} />
           <Route path={ROUTES.rede} element={<RedeAtendimento />} />
+          <Route path={ROUTES.privacidade} element={<PoliticaPrivacidade />} />
 
           <Route path="*" element={<EmBreve />} />
         </Route>
