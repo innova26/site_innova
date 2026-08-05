@@ -91,16 +91,22 @@ function Sac() {
 
           <div className="mapa-bloco">
             <address className="endereco">
-              <strong>{CONTATOS.endereco.rua}</strong>
+              <strong>
+                <a
+                  href="https://www.google.com/maps/place/Av.+Sete+de+Setembro,+2153+-+Nossa+Sra.+das+Gra%C3%A7as,+Porto+Velho+-+RO,+78901-000/@-8.7619389,-63.8910633,17z/data=!3m1!4b1!4m6!3m5!1s0x92325cc6d0b0c4e9:0x1b160010fb809b76!8m2!3d-8.7619389!4d-63.8910633!16s%2Fg%2F11cnchyxk5?authuser=0&entry=ttu&g_ep=EgoyMDI2MDgwMi4wIKXMDSoASAFQAw%3D%3D"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {CONTATOS.endereco.rua}
+                </a>
+              </strong>
               <span>{CONTATOS.endereco.bairro}</span>
               <span>{CONTATOS.endereco.cidade}</span>
               <span>CEP {CONTATOS.endereco.cep}</span>
 
               <a
                 className="btn btn-primary"
-                href={`https://maps.google.com/?q=${encodeURIComponent(
-                  `${CONTATOS.endereco.rua}, ${CONTATOS.endereco.bairro}, ${CONTATOS.endereco.cidade}`,
-                )}`}
+                href="https://www.google.com/maps/place/Av.+Sete+de+Setembro,+2153+-+Nossa+Sra.+das+Gra%C3%A7as,+Porto+Velho+-+RO,+78901-000/@-8.7619389,-63.8910633,17z/data=!3m1!4b1!4m6!3m5!1s0x92325cc6d0b0c4e9:0x1b160010fb809b76!8m2!3d-8.7619389!4d-63.8910633!16s%2Fg%2F11cnchyxk5?authuser=0&entry=ttu&g_ep=EgoyMDI2MDgwMi4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noreferrer"
               >

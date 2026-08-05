@@ -172,7 +172,17 @@ function SiteFooter() {
                 <span className="contact-icon">
                   <PinIcon />
                 </span>
-                <span>{city}</span>
+                {city === 'Porto Velho' ? (
+                  <a
+                    href="https://www.google.com/maps/place/Av.+Sete+de+Setembro,+2153+-+Nossa+Sra.+das+Gra%C3%A7as,+Porto+Velho+-+RO,+78901-000/@-8.7619389,-63.8910633,17z/data=!3m1!4b1!4m6!3m5!1s0x92325cc6d0b0c4e9:0x1b160010fb809b76!8m2!3d-8.7619389!4d-63.8910633!16s%2Fg%2F11cnchyxk5?authuser=0&entry=ttu&g_ep=EgoyMDI2MDgwMi4wIKXMDSoASAFQAw%3D%3D"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {city}
+                  </a>
+                ) : (
+                  <span>{city}</span>
+                )}
               </li>
             ))}
           </ul>
