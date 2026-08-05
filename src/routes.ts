@@ -7,6 +7,7 @@ export const ROUTES = {
   credenciado: '/seja-um-credenciado',
   corretoras: '/corretoras',
   sac: '/sac',
+  privacidade: '/politica-de-privacidade',
   admin: '/admin',
 } as const
 

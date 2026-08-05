@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getConsent, setConsent } from '../lib/cookieConsent'
+import { ROUTES } from '../routes'
 
 /*
  * Banner de consentimento de cookies (LGPD).
@@ -52,7 +53,7 @@ function CookieConsent() {
             analisar o tráfego do site. Os cookies necessários são sempre
             ativos. Você pode aceitar todos, recusar os opcionais ou gerenciar
             suas preferências. Saiba mais na nossa{' '}
-            <a href="#privacidade">Política de Privacidade</a>.
+            <a href={ROUTES.privacidade}>Política de Privacidade</a>.
           </p>
 
           {showPrefs && (

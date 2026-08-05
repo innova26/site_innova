@@ -14,7 +14,7 @@ const NAV_LINKS = [
 
 const LEGAL_LINKS = [
   { label: 'Termos de Uso', href: '#termos' },
-  { label: 'Política de Privacidade', href: '#privacidade' },
+  { label: 'Política de Privacidade', href: ROUTES.privacidade },
   { label: 'Gerenciar Cookies', href: '#cookies' },
 ]
 
