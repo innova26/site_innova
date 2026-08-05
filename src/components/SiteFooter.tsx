@@ -23,8 +23,14 @@ const CITIES = [
     label: 'Porto Velho',
     href: 'https://www.google.com/maps/place/Av.+Sete+de+Setembro,+2153+-+Nossa+Sra.+das+Gra%C3%A7as,+Porto+Velho+-+RO,+78901-000/@-8.7619389,-63.8910633,17z/data=!3m1!4b1!4m6!3m5!1s0x92325cc6d0b0c4e9:0x1b160010fb809b76!8m2!3d-8.7619389!4d-63.8910633!16s%2Fg%2F11cnchyxk5?authuser=0&entry=ttu&g_ep=EgoyMDI2MDgwMi4wIKXMDSoASAFQAw%3D%3D',
   },
-  { label: 'Manaus' },
-  { label: 'Boa Vista' },
+  {
+    label: 'Manaus',
+    href: 'https://www.google.com.br/maps/place/Av.+Djalma+Batista,+375+-+Nossa+Sra.+das+Gracas,+Manaus+-+AM,+69050-010/@-3.1123492,-60.0244921,19z/data=!3m1!4b1!4m5!3m4!1s0x926c0558306ac5a7:0xfe036502defd64ce!8m2!3d-3.1123492!4d-60.0238484?entry=ttu&g_ep=EgoyMDI2MDgwMi4wIKXMDSoASAFQAw%3D%3D',
+  },
+  {
+    label: 'Boa Vista',
+    href: 'https://www.google.com/maps/place/Av.+M%C3%A1rio+Homem+de+Melo,+2127+-+quadra+149+-+Mecejana,+Boa+Vista+-+RR,+69304-360/@2.8219331,-60.695343,17z/data=!3m1!4b1!4m5!3m4!1s0x8d9305c17b889321:0x5c39d408bd3d1153!8m2!3d2.8219331!4d-60.6927681?entry=tts&g_ep=EgoyMDI1MDkyMy4wIPu8ASoASAFQAw%3D%3D&skid=c428c792-1e16-4ae4-84f0-49952b516ce6',
+  },
 ]
 
 function PhoneIcon() {
