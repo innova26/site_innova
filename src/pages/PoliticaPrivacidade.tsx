@@ -1,5 +1,3 @@
-import React from 'react'
-
 function PoliticaPrivacidade() {
   return (
     <main className="shell content">
