@@ -251,9 +251,26 @@ const ordenar = (valores: Iterable<string>) =>
   [...new Set(valores)].sort((a, b) => a.localeCompare(b, 'pt-BR'))
 
 /** Municípios de um estado (ou de todos, se `uf` vier vazio). */
+const normalizarMunicipio = (valor: string): string =>
+  valor
+    .trim()
+    .replace(/\s*\/\s*[A-Z]{2}\s*$/i, '')
+    .replace(/\s*-\s*[A-Z]{2}\s*$/i, '')
+    .replace(/\s*,\s*[A-Z]{2}\s*$/i, '')
+    .trim()
+
 export function municipiosDe(lista: Prestador[], uf: string): string[] {
   return ordenar(
-    lista.filter((p) => !uf || p.uf === uf).map((p) => p.municipio),
+    lista
+      .filter((p) => !uf || p.uf === uf)
+      .map((p) => normalizarMunicipio(p.municipio))
+      .filter((municipio, index, array) => {
+        const valor = municipio.trim()
+        if (!valor) return false
+        if (uf && valor.toUpperCase() === uf.toUpperCase()) return false
+        if (/^[A-Z]{2}$/i.test(valor)) return false
+        return array.indexOf(valor) === index
+      }),
   )
 }
 
