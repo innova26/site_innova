@@ -3646,3 +3646,66 @@
     flex-basis: 100%;
   }
 }
+
+/* ============================================================
+   Admin · Menu do Dashboard (/admin) e título de seção interna
+   ============================================================ */
+.admin-secao-titulo {
+  font: 600 20px 'Space Grotesk', 'Segoe UI', sans-serif;
+  margin: 0 0 18px;
+}
+
+.admin-menu {
+  padding-top: 6px;
+}
+
+.admin-menu-sub {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  margin: 0 0 16px;
+}
+
+.admin-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.admin-menu-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: inherit;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.admin-menu-card:hover {
+  border-color: var(--blue-400);
+  background: rgba(47, 128, 237, 0.08);
+  transform: translateY(-2px);
+}
+
+.admin-menu-card strong {
+  font: 600 17px 'Space Grotesk', 'Segoe UI', sans-serif;
+}
+
+.admin-menu-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.admin-menu-seta {
+  color: var(--blue-300);
+  font-size: 13px;
+  font-weight: 600;
+}

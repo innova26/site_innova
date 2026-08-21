@@ -13,9 +13,11 @@
     "@supabase/supabase-js": "^2.110.9",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
+    "lucide-react": "^0.550.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "^7.11.0"
+    "react-router-dom": "^7.11.0",
+    "recharts": "^2.15.0"
   },
   "devDependencies": {
     "@types/node": "^24.13.2",

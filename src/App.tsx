@@ -9,6 +9,9 @@ import Corretoras from './pages/Corretoras'
 import Sac from './pages/Sac'
 import RedeAtendimento from './pages/RedeAtendimento'
 import Admin from './pages/Admin'
+import AdminDashboardHome from './pages/AdminDashboardHome'
+import AdminCredenciadas from './pages/AdminCredenciadas'
+import AdminRedes from './pages/AdminRedes'
 import EmBreve from './pages/EmBreve'
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade'
 import { ROUTES } from './routes'
@@ -43,8 +46,14 @@ function App() {
           <Route path="*" element={<EmBreve />} />
         </Route>
 
-        {/* área administrativa: fora do layout de marketing */}
-        <Route path={ROUTES.admin} element={<Admin />} />
+        {/* área administrativa: fora do layout de marketing.
+            Admin.tsx cuida do login e, autenticado, mostra o menu (index)
+            ou uma das sub-páginas abaixo dentro do mesmo cabeçalho. */}
+        <Route path={ROUTES.admin} element={<Admin />}>
+          <Route index element={<AdminDashboardHome />} />
+          <Route path="credenciadas" element={<AdminCredenciadas />} />
+          <Route path="redes" element={<AdminRedes />} />
+        </Route>
       </Routes>
       {analyticsEnabled && (
         <>
