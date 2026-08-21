@@ -2969,6 +2969,22 @@
   background: rgba(10, 19, 48, 0.7);
 }
 
+.admin-login-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.admin-login-voltar:hover {
+  color: var(--blue-300);
+}
+
 .admin-login-card h1 {
   margin: 0 0 4px;
   font-size: 24px;
