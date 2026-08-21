@@ -128,6 +128,9 @@ const BRUTA = [
   'UROFLUXOMETRIA',
   'UROLOGIA',
   'US OU TC',
+  'ATENDIMENTO EM NUTROLOGIA',
+  'ATENDIMENTO EM ENDOCRINOLOGIA',
+  'ATENDIMENTO EM DERMATOLOGIA',
 ]
 
 /** Lista final: sem duplicatas e ordenada em pt-BR. */
