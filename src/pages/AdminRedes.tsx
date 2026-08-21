@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useMemo, useState } from 'react'
 import {
   Bar,
   BarChart,
@@ -11,15 +11,11 @@ import {
   YAxis,
 } from 'recharts'
 import { ChevronRight, Search } from 'lucide-react'
+import { carregarPrestadoresRedeEstatico } from '../data/redeDashboardEstatico'
 import {
-  carregarPrestadoresRede,
   cidadesDe,
   construirDashboardPorCidade,
-  excluirPrestadorRede,
-  salvarPrestadorRede,
   type DashboardCidade,
-  type PrestadorRede,
-  type PrestadorRedeInput,
 } from '../data/redeDashboardRepo'
 import './adminRedes.css'
 
@@ -54,18 +50,6 @@ const classeDoStatus = (status: string) =>
 const money = (value: number) =>
   value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 const integer = (value: number) => value.toLocaleString('pt-BR')
-
-/** Aceita "70", "70,50" ou "1.234,56" (padrão BR). Só trata "." como milhar
- * quando há vírgula decimal também — senão "70.5" digitado com ponto vira 70.5,
- * não 705. */
-const parseValor = (texto: string): number => {
-  const limpo = texto.trim()
-  if (!limpo) return NaN
-  const normalizado = limpo.includes(',')
-    ? limpo.replace(/\./g, '').replace(',', '.')
-    : limpo
-  return Number(normalizado)
-}
 
 /* ====================== subcomponentes de exibição ====================== */
 
@@ -163,10 +147,10 @@ function Distribution({
             <YAxis
               type="category"
               dataKey="name"
-              width={145}
+              width={158}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#61736d', fontSize: 12 }}
+              tick={{ fill: '#61736d', fontSize: 13 }}
             />
             <Tooltip cursor={{ fill: '#edf4f9' }} formatter={(v: number) => [integer(v), 'Prestadores']} />
             <Bar
@@ -261,14 +245,10 @@ function ProviderCard({
   item,
   aberto,
   onToggle,
-  onEditar,
-  onExcluir,
 }: {
   item: DashboardCidade['providers'][number]
   aberto: boolean
   onToggle: () => void
-  onEditar: () => void
-  onExcluir: () => void
 }) {
   return (
     <article className={`rd-provider${aberto ? ' open' : ''}`}>
@@ -293,14 +273,6 @@ function ProviderCard({
       </button>
       {aberto && (
         <div className="rd-provider-body">
-          <div className="rd-provider-actions">
-            <button type="button" className="admin-link" onClick={onEditar}>
-              Editar
-            </button>
-            <button type="button" className="admin-link admin-link-danger" onClick={onExcluir}>
-              Excluir
-            </button>
-          </div>
           {item.procedimentos.length ? (
             <table>
               <thead>
@@ -329,93 +301,17 @@ function ProviderCard({
   )
 }
 
-/* ====================== formulário (cria/edita prestador de rede) ====================== */
-
-type ProcedimentoFormRow = { id?: string; codigo: string; descricao: string; valor: string }
-type FormState = {
-  id?: string
-  cidade: string
-  nome: string
-  servico: string
-  macro: string
-  status: string
-  sheet: string
-  procedimentos: ProcedimentoFormRow[]
-}
-
-const formVazio = (cidade: string): FormState => ({
-  cidade,
-  nome: '',
-  servico: '',
-  macro: '',
-  status: 'Pendente',
-  sheet: '',
-  procedimentos: [],
-})
-
-const formDoPrestador = (p: PrestadorRede): FormState => ({
-  id: p.id,
-  cidade: p.cidade,
-  nome: p.nome,
-  servico: p.servico ?? '',
-  macro: p.macro,
-  status: p.status,
-  sheet: p.sheet ?? '',
-  procedimentos: p.procedimentos.map((x) => ({
-    id: x.id,
-    codigo: x.codigo ?? '',
-    descricao: x.descricao,
-    valor: String(x.valor).replace('.', ','),
-  })),
-})
-
-const prestadorDoForm = (f: FormState): PrestadorRedeInput => ({
-  id: f.id,
-  cidade: f.cidade.trim(),
-  nome: f.nome.trim(),
-  servico: f.servico.trim() || undefined,
-  macro: f.macro.trim(),
-  status: f.status.trim(),
-  sheet: f.sheet.trim() || undefined,
-  procedimentos: f.procedimentos
-    .filter((p) => p.descricao.trim())
-    .map((p) => ({
-      id: p.id,
-      codigo: p.codigo.trim() || undefined,
-      descricao: p.descricao.trim(),
-      valor: parseValor(p.valor),
-    })),
-})
-
 /* ====================== página ====================== */
 
 export default function AdminRedes() {
-  const [prestadores, setPrestadores] = useState<PrestadorRede[]>([])
-  const [carregando, setCarregando] = useState(true)
-  const [erro, setErro] = useState('')
-  const [cidade, setCidade] = useState('')
+  const [prestadores] = useState(() => carregarPrestadoresRedeEstatico())
+  const [cidade, setCidade] = useState(() => cidadesDe(prestadores)[0] ?? '')
   const [categoria, setCategoria] = useState('')
   const [status, setStatus] = useState('')
   const [busca, setBusca] = useState('')
   const [aberto, setAberto] = useState<string | null>(null)
-  const [form, setForm] = useState<FormState | null>(null)
-  const [salvando, setSalvando] = useState(false)
 
   const cidades = useMemo(() => cidadesDe(prestadores), [prestadores])
-
-  const recarregar = () => {
-    setCarregando(true)
-    setErro('')
-    carregarPrestadoresRede()
-      .then((lista) => {
-        setPrestadores(lista)
-        setCidade((atual) => atual || cidadesDe(lista)[0] || '')
-      })
-      .catch((e) => setErro(String(e)))
-      .finally(() => setCarregando(false))
-  }
-
-  useEffect(recarregar, [])
 
   const dash = useMemo(
     () => (cidade ? construirDashboardPorCidade(prestadores, cidade) : null),
@@ -437,54 +333,9 @@ export default function AdminRedes() {
       (p) =>
         (!categoria || p.macro === categoria) &&
         (!status || p.status === status) &&
-        (!termo ||
-          `${p.nome} ${p.servico ?? ''} ${p.macro}`.toLowerCase().includes(termo)),
+        (!termo || `${p.nome} ${p.servico ?? ''} ${p.macro}`.toLowerCase().includes(termo)),
     )
   }, [dash, categoria, status, busca])
-
-  const salvar = async (e: FormEvent) => {
-    e.preventDefault()
-    if (!form) return
-    setSalvando(true)
-    setErro('')
-    try {
-      await salvarPrestadorRede(prestadorDoForm(form))
-      setForm(null)
-      recarregar()
-    } catch (err) {
-      setErro('Não foi possível salvar: ' + String(err))
-    } finally {
-      setSalvando(false)
-    }
-  }
-
-  const excluir = async (p: PrestadorRede) => {
-    if (!confirm(`Excluir "${p.nome}" e todos os seus procedimentos?`)) return
-    try {
-      await excluirPrestadorRede(p.id)
-      recarregar()
-    } catch (err) {
-      setErro('Não foi possível excluir: ' + String(err))
-    }
-  }
-
-  const alterarLinha = (index: number, campo: keyof ProcedimentoFormRow, valor: string) =>
-    setForm((f) => {
-      if (!f) return f
-      const procedimentos = [...f.procedimentos]
-      procedimentos[index] = { ...procedimentos[index], [campo]: valor }
-      return { ...f, procedimentos }
-    })
-
-  const adicionarLinha = () =>
-    setForm((f) =>
-      f ? { ...f, procedimentos: [...f.procedimentos, { codigo: '', descricao: '', valor: '' }] } : f,
-    )
-
-  const removerLinha = (index: number) =>
-    setForm((f) =>
-      f ? { ...f, procedimentos: f.procedimentos.filter((_, i) => i !== index) } : f,
-    )
 
   return (
     <div className="rd-dashboard">
@@ -505,28 +356,9 @@ export default function AdminRedes() {
         )}
       </div>
 
-      {erro && (
-        <p className="erro admin-erro" role="alert">
-          {erro}
-        </p>
-      )}
-
-      {carregando ? (
-        <p className="admin-info">Carregando…</p>
-      ) : !dash || !dash.meta.total ? (
+      {!dash || !dash.meta.total ? (
         <div className="rd-card">
-          <p className="rd-empty">
-            Nenhum prestador cadastrado ainda{cidade ? ` em ${cidade}` : ''}.
-          </p>
-          <div style={{ textAlign: 'center' }}>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => setForm(formVazio(cidade || 'Ariquemes'))}
-            >
-              + Novo prestador
-            </button>
-          </div>
+          <p className="rd-empty">Nenhum prestador cadastrado ainda{cidade ? ` em ${cidade}` : ''}.</p>
         </div>
       ) : (
         <>
@@ -548,16 +380,9 @@ export default function AdminRedes() {
                 />
               </label>
               <span className="rd-result-count">{filtrados.length} encontrados</span>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => setForm(formVazio(cidade))}
-              >
-                + Novo prestador
-              </button>
             </div>
             <p className="rd-hint">
-              <ChevronRight /> Clique num prestador para ver ou editar a ficha completa.
+              <ChevronRight /> Clique num prestador para ver a ficha completa.
             </p>
             <div className="rd-table-head">
               <span />
@@ -573,146 +398,11 @@ export default function AdminRedes() {
                 item={item}
                 aberto={aberto === item.id}
                 onToggle={() => setAberto(aberto === item.id ? null : item.id)}
-                onEditar={() => setForm(formDoPrestador(item))}
-                onExcluir={() => excluir(item)}
               />
             ))}
             {!filtrados.length && <p className="rd-empty">Nenhum prestador encontrado com esses filtros.</p>}
           </section>
         </>
-      )}
-
-      {/* ---------- Modal do formulário (reaproveita o CSS do admin-modal) ---------- */}
-      {form && (
-        <div
-          className="admin-modal"
-          role="dialog"
-          aria-modal="true"
-          onClick={(e) => e.target === e.currentTarget && setForm(null)}
-        >
-          <form className="admin-form" onSubmit={salvar}>
-            <h2>{form.id ? 'Editar prestador de rede' : 'Novo prestador de rede'}</h2>
-
-            <div className="admin-form-linha">
-              <div className="campo">
-                <label htmlFor="rcidade">Cidade *</label>
-                <input
-                  id="rcidade"
-                  list="rd-cidades"
-                  value={form.cidade}
-                  onChange={(e) => setForm((f) => (f ? { ...f, cidade: e.target.value } : f))}
-                  required
-                />
-                <datalist id="rd-cidades">
-                  {cidades.map((c) => (
-                    <option key={c} value={c} />
-                  ))}
-                </datalist>
-              </div>
-              <div className="campo">
-                <label htmlFor="rstatus">Status *</label>
-                <input
-                  id="rstatus"
-                  list="rd-status"
-                  value={form.status}
-                  onChange={(e) => setForm((f) => (f ? { ...f, status: e.target.value } : f))}
-                  required
-                />
-                <datalist id="rd-status">
-                  {Object.keys(CORES_STATUS).map((s) => (
-                    <option key={s} value={s} />
-                  ))}
-                </datalist>
-              </div>
-            </div>
-
-            <div className="campo">
-              <label htmlFor="rnome">Nome *</label>
-              <input
-                id="rnome"
-                value={form.nome}
-                onChange={(e) => setForm((f) => (f ? { ...f, nome: e.target.value } : f))}
-                required
-              />
-            </div>
-
-            <div className="admin-form-linha">
-              <div className="campo">
-                <label htmlFor="rservico">Serviço</label>
-                <input
-                  id="rservico"
-                  value={form.servico}
-                  onChange={(e) => setForm((f) => (f ? { ...f, servico: e.target.value } : f))}
-                />
-              </div>
-              <div className="campo">
-                <label htmlFor="rmacro">
-                  Categoria (macro) <small>(usada no gráfico de distribuição)</small>
-                </label>
-                <input
-                  id="rmacro"
-                  list="rd-macros"
-                  value={form.macro}
-                  onChange={(e) => setForm((f) => (f ? { ...f, macro: e.target.value } : f))}
-                  required
-                />
-                <datalist id="rd-macros">
-                  {[...new Set(prestadores.map((p) => p.macro))].map((m) => (
-                    <option key={m} value={m} />
-                  ))}
-                </datalist>
-              </div>
-            </div>
-
-            <div className="campo">
-              <label>
-                Procedimentos <small>(código, descrição e valor de cada item negociado)</small>
-              </label>
-              <div className="rd-proc-list">
-                {form.procedimentos.map((row, index) => (
-                  <div className="rd-proc-row" key={index}>
-                    <input
-                      placeholder="Código"
-                      value={row.codigo}
-                      onChange={(e) => alterarLinha(index, 'codigo', e.target.value)}
-                    />
-                    <input
-                      placeholder="Descrição"
-                      value={row.descricao}
-                      onChange={(e) => alterarLinha(index, 'descricao', e.target.value)}
-                    />
-                    <input
-                      placeholder="Valor (R$)"
-                      inputMode="decimal"
-                      value={row.valor}
-                      onChange={(e) => alterarLinha(index, 'valor', e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      className="rd-proc-remover"
-                      aria-label="Remover procedimento"
-                      onClick={() => removerLinha(index)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <button type="button" className="btn btn-ghost" onClick={adicionarLinha}>
-                + Adicionar procedimento
-              </button>
-            </div>
-
-            <div className="admin-form-acoes">
-              <button type="button" className="btn btn-ghost" onClick={() => setForm(null)}>
-                Cancelar
-              </button>
-              <button type="submit" className="btn btn-primary" disabled={salvando}>
-                {salvando ? 'Salvando…' : 'Salvar'}
-              </button>
-            </div>
-          </form>
-        </div>
       )}
     </div>
   )

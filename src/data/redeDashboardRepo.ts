@@ -9,6 +9,12 @@
  */
 import { supabase } from '../lib/supabase'
 
+/** Erros do Supabase são objetos simples (sem `.toString()` útil) — isso
+ * garante que `String(erro)`/`erro.message` no /admin sempre mostrem o
+ * texto de verdade, em vez de "[object Object]". */
+const erroSupabase = (e: { message: string } | null): Error | null =>
+  e ? new Error(e.message) : null
+
 export type ProcedimentoRede = {
   id?: string
   codigo?: string
@@ -67,8 +73,8 @@ export async function carregarPrestadoresRede(): Promise<PrestadorRede[]> {
       .order('descricao'),
   ])
 
-  if (prestadoresRes.error) throw prestadoresRes.error
-  if (procedimentosRes.error) throw procedimentosRes.error
+  if (prestadoresRes.error) throw erroSupabase(prestadoresRes.error)
+  if (procedimentosRes.error) throw erroSupabase(procedimentosRes.error)
 
   const porPrestador = new Map<string, ProcedimentoRede[]>()
   for (const linha of procedimentosRes.data as LinhaProcedimentoDB[]) {
@@ -123,7 +129,7 @@ export async function salvarPrestadorRede(
     : supabase.from('dashboard_redes_prestadores').insert(linhaPrestador).select()
 
   const { data, error } = await query
-  if (error) throw error
+  if (error) throw erroSupabase(error)
   const prestadorSalvo = (data as LinhaPrestadorDB[])[0]
 
   // substitui os procedimentos atuais pelos do formulário
@@ -131,7 +137,7 @@ export async function salvarPrestadorRede(
     .from('dashboard_redes_procedimentos')
     .delete()
     .eq('prestador_id', prestadorSalvo.id)
-  if (erroExcluir) throw erroExcluir
+  if (erroExcluir) throw erroSupabase(erroExcluir)
 
   const procedimentosValidos = entrada.procedimentos.filter(
     (p) => p.descricao.trim() && Number.isFinite(p.valor),
@@ -150,7 +156,7 @@ export async function salvarPrestadorRede(
         })),
       )
       .select()
-    if (erroProc) throw erroProc
+    if (erroProc) throw erroSupabase(erroProc)
     procedimentosSalvos = dataProc as LinhaProcedimentoDB[]
   }
 
@@ -178,7 +184,7 @@ export async function excluirPrestadorRede(id: string): Promise<void> {
     .from('dashboard_redes_prestadores')
     .delete()
     .eq('id', id)
-  if (error) throw error
+  if (error) throw erroSupabase(error)
 }
 
 /* ====================== Agregações para o dashboard ====================== */
