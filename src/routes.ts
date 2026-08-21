@@ -9,6 +9,8 @@ export const ROUTES = {
   sac: '/sac',
   privacidade: '/politica-de-privacidade',
   admin: '/admin',
+  adminCredenciadas: '/admin/credenciadas',
+  adminRedes: '/admin/redes',
 } as const
 
 /** Portais sao sistemas externos, por isso ficam fora do roteador. */
