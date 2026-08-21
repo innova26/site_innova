@@ -52,6 +52,10 @@ function Login() {
   return (
     <section className="admin-login">
       <form className="admin-login-card" onSubmit={entrar}>
+        <Link className="admin-login-voltar" to={ROUTES.home}>
+          ← Voltar para o site
+        </Link>
+
         <h1>Admin · Innova</h1>
         <p className="admin-login-sub">Acesso restrito à equipe Innova.</p>
 
