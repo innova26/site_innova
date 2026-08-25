@@ -505,12 +505,14 @@
 .rd-provider-body .rd-code {
   color: var(--rd-muted);
   font-family: monospace;
-  white-space: nowrap;
+  /* códigos normais são curtos; quando a planilha jogou um texto longo na
+     coluna de código, quebra em vez de estourar a largura da tabela */
+  overflow-wrap: anywhere;
 }
 .rd-provider-body .rd-value {
   text-align: right;
   font-weight: 600;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 /* -------- ficha fiel à planilha (dentro do card do prestador) -------- */
 .rd-cadastro {
