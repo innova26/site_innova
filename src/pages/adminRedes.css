@@ -512,6 +512,106 @@
   font-weight: 600;
   white-space: nowrap;
 }
+/* -------- ficha fiel à planilha (dentro do card do prestador) -------- */
+.rd-cadastro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 26px;
+  margin: 2px 0 6px;
+  padding: 12px 14px;
+  background: var(--rd-surface);
+  border: 1px solid var(--rd-line);
+  border-radius: 10px;
+}
+.rd-cadastro div {
+  min-width: 0;
+}
+.rd-cadastro dt {
+  color: var(--rd-muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rd-cadastro dd {
+  margin: 1px 0 0;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.rd-ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rd-ficha-titulo {
+  margin: 12px 0 0;
+  font: 600 13px 'Space Grotesk', sans-serif;
+  color: var(--rd-petrol-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.rd-ficha-titulo:first-child {
+  margin-top: 0;
+}
+.rd-ficha-nota {
+  margin: 0;
+  padding: 10px 14px;
+  background: var(--rd-surface);
+  border-left: 3px solid var(--rd-green);
+  border-radius: 0 8px 8px 0;
+  color: var(--rd-ink);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+p.rd-ficha-nota {
+  color: var(--rd-muted);
+}
+.rd-nota-secao + .rd-nota-secao {
+  margin-top: 9px;
+}
+.rd-nota-titulo {
+  display: block;
+  color: var(--rd-petrol-dark);
+  font: 700 11px 'Space Grotesk', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.rd-ficha-nota p {
+  margin: 0;
+  color: var(--rd-muted);
+}
+.rd-ficha-nota ul {
+  margin: 0;
+  padding-left: 16px;
+  display: grid;
+  gap: 3px;
+}
+.rd-ficha-nota li {
+  color: var(--rd-muted);
+}
+.rd-ficha-nota li::marker {
+  color: var(--rd-green);
+}
+.rd-ficha-tabela {
+  overflow-x: auto;
+}
+/* linha que na planilha era um cabeçalho de coluna/seção repetido:
+   mesmo visual do cabeçalho da tabela (fundo + rótulo em maiúsculas) */
+.rd-provider-body tr.rd-linha-cabecalho th {
+  background: var(--rd-chip);
+  border-bottom: 1px solid var(--rd-line);
+  color: var(--rd-petrol-dark);
+  font: 700 10.5px 'Space Grotesk', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 7px 8px;
+  white-space: nowrap;
+}
+.rd-provider-body tr.rd-linha-cabecalho th.rd-value {
+  text-align: right;
+}
 .rd-provider-actions {
   display: flex;
   gap: 14px;

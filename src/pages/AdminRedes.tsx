@@ -15,7 +15,9 @@ import { carregarPrestadoresRedeEstatico } from '../data/redeDashboardEstatico'
 import {
   cidadesDe,
   construirDashboardPorCidade,
+  type BlocoFicha,
   type DashboardCidade,
+  type LinhaFicha,
 } from '../data/redeDashboardRepo'
 import './adminRedes.css'
 
@@ -50,6 +52,76 @@ const classeDoStatus = (status: string) =>
 const money = (value: number) =>
   value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 const integer = (value: number) => value.toLocaleString('pt-BR')
+
+/* -------- parser das notas de composição de pacote --------
+ * As notas vêm da planilha como um parágrafo corrido ("COMPREENDE: … NÃO
+ * COMPREENDE: … IMPORTANTE: …"). Aqui elas viram seções com título e lista,
+ * pra virar algo legível. É heurístico e conservador: na dúvida, mantém o
+ * texto como parágrafo em vez de quebrar frase no lugar errado. */
+
+type SecaoNota = { titulo?: string; itens: string[] }
+
+const TEM_MINUSCULA = /[a-zß-öø-ÿ]/
+/** Rótulos conhecidos que aparecem em Title-case no meio do texto. */
+const RE_ROTULO_CONHECIDO =
+  /^(?:n[ãa]o\s+)?(?:compreende|inclui|composi[çc][ãa]o|importante|obs(?:erva[çc][ãa]o)?|itens\s+(?:inclusos|exclusos))\s*:$/i
+/** Divisor: rótulo em CAIXA ALTA terminado em ":" OU rótulo conhecido. */
+const RE_ROTULO =
+  /([A-Z0-9À-Þ][A-Z0-9À-Þ()/.–\- ]*?[A-ZÀ-Þ]:|(?:N[ãa]o\s+)?(?:Compreende|Inclui|Composi[çc][ãa]o|Importante|Obs(?:erva[çc][ãa]o)?|Itens\s+(?:[Ii]nclusos|[Ee]xclusos)):)/g
+
+const ehRotulo = (parte: string) => {
+  if (!parte.endsWith(':')) return false
+  if (RE_ROTULO_CONHECIDO.test(parte.trim())) return true
+  const corpo = parte.replace(/:$/, '').trim()
+  return corpo.length >= 3 && !TEM_MINUSCULA.test(corpo) && /[A-ZÀ-Þ]$/.test(corpo)
+}
+
+const limparItem = (item: string) =>
+  item.replace(/^[\s\-–;:.]+/, '').replace(/[\s;.,]+$/, '').trim()
+
+/** Quebra um trecho em itens: por travessão/ponto-e-vírgula, ou por vírgula
+ * só quando é claramente uma lista curta (evita picar frases de prosa). */
+const emItens = (seg: string): string[] => {
+  const s = limparItem(seg)
+  if (!s) return []
+  if (/\s[-–]\s+|;\s+/.test(s))
+    return s.split(/\s[-–]\s+|;\s+/).map(limparItem).filter(Boolean)
+  const partes = s.split(/,\s*(?!\d)/).map(limparItem).filter(Boolean)
+  if (partes.length >= 3 && partes.every((p) => p.split(/\s+/).length <= 3)) return partes
+  return [s]
+}
+
+const parseComposicao = (nota: string): SecaoNota[] => {
+  let texto = nota.replace(/\s+/g, ' ').trim()
+  const secoes: SecaoNota[] = []
+
+  const abertura = texto.match(/^([^.\-–]{2,45}?):\s+/)
+  if (abertura && !/,/.test(abertura[1])) {
+    secoes.push({ titulo: abertura[1].trim(), itens: [] })
+    texto = texto.slice(abertura[0].length)
+  } else {
+    // título de abertura em CAIXA ALTA com travessão, sem ":" (ex.:
+    // "COMPOSIÇÃO - TAXA CIRÚRGICA POR PORTE" antes de "Compreende:")
+    const caps = texto.match(/^([A-Z0-9À-Þ][A-Z0-9À-Þ()/.%–\- ]*?[A-ZÀ-Þ])\s+(?=[A-ZÀ-Þ]?[a-zß-öø-ÿ])/)
+    if (caps && caps[1].length >= 6 && /[-–]/.test(caps[1])) {
+      secoes.push({ titulo: caps[1].trim(), itens: [] })
+      texto = texto.slice(caps[0].length)
+    }
+  }
+
+  for (const parte of texto.split(RE_ROTULO)) {
+    if (!parte || !parte.trim()) continue
+    if (ehRotulo(parte)) {
+      secoes.push({ titulo: parte.replace(/:$/, '').trim(), itens: [] })
+    } else {
+      const itens = emItens(parte)
+      const ultima = secoes[secoes.length - 1]
+      if (ultima && ultima.titulo && ultima.itens.length === 0) ultima.itens = itens
+      else if (itens.length) secoes.push({ itens })
+    }
+  }
+  return secoes.filter((s) => s.titulo || s.itens.length)
+}
 
 /* ====================== subcomponentes de exibição ====================== */
 
@@ -241,6 +313,84 @@ function StatusCard({
   )
 }
 
+/** Valor da coluna: preço vira moeda; texto (especialidade, nome de tabela)
+ * fica como está; vazio some. Espelha a planilha original. */
+const valorFicha = (valor: LinhaFicha['valor']) =>
+  typeof valor === 'number' ? money(valor) : valor || ''
+
+function NotaComposicao({ texto }: { texto: string }) {
+  const secoes = parseComposicao(texto)
+  if (!secoes.length) return <p className="rd-ficha-nota">{texto}</p>
+  return (
+    <div className="rd-ficha-nota">
+      {secoes.map((secao, i) => (
+        <div className="rd-nota-secao" key={i}>
+          {secao.titulo && <span className="rd-nota-titulo">{secao.titulo}</span>}
+          {secao.itens.length === 1 ? (
+            <p>{secao.itens[0]}</p>
+          ) : secao.itens.length > 1 ? (
+            <ul>
+              {secao.itens.map((item, j) => (
+                <li key={j}>{item}</li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function FichaBlocos({ ficha }: { ficha: BlocoFicha[] }) {
+  return (
+    <div className="rd-ficha">
+      {ficha.map((bloco, index) => {
+        if (bloco.tipo === 'titulo')
+          return (
+            <h4 className="rd-ficha-titulo" key={index}>
+              {bloco.texto}
+            </h4>
+          )
+        if (bloco.tipo === 'nota') return <NotaComposicao key={index} texto={bloco.texto} />
+        return (
+          <div className="rd-ficha-tabela" key={index}>
+            <table>
+              <thead>
+                <tr>
+                  {bloco.colunas.map((coluna, c) => (
+                    <th key={c} className={c === bloco.colunas.length - 1 ? 'rd-value' : undefined}>
+                      {coluna}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {bloco.linhas.map((linha, l) =>
+                  linha.cabecalho ? (
+                    <tr key={l} className="rd-linha-cabecalho">
+                      <th>{linha.codigo || ''}</th>
+                      <th>{linha.descricao || ''}</th>
+                      <th className="rd-value">
+                        {typeof linha.valor === 'string' ? linha.valor : ''}
+                      </th>
+                    </tr>
+                  ) : (
+                    <tr key={l}>
+                      <td className="rd-code">{linha.codigo || ''}</td>
+                      <td>{linha.descricao || ''}</td>
+                      <td className="rd-value">{valorFicha(linha.valor)}</td>
+                    </tr>
+                  ),
+                )}
+              </tbody>
+            </table>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 function ProviderCard({
   item,
   aberto,
@@ -273,13 +423,37 @@ function ProviderCard({
       </button>
       {aberto && (
         <div className="rd-provider-body">
-          {item.procedimentos.length ? (
+          {item.cadastro && (item.cadastro.razao || item.cadastro.cnpj || item.cadastro.cep) && (
+            <dl className="rd-cadastro">
+              {item.cadastro.razao && (
+                <div>
+                  <dt>Razão social</dt>
+                  <dd>{item.cadastro.razao}</dd>
+                </div>
+              )}
+              {item.cadastro.cnpj && (
+                <div>
+                  <dt>CNPJ</dt>
+                  <dd>{item.cadastro.cnpj}</dd>
+                </div>
+              )}
+              {item.cadastro.cep && (
+                <div>
+                  <dt>CEP</dt>
+                  <dd>{item.cadastro.cep}</dd>
+                </div>
+              )}
+            </dl>
+          )}
+          {item.ficha?.length ? (
+            <FichaBlocos ficha={item.ficha} />
+          ) : item.procedimentos.length ? (
             <table>
               <thead>
                 <tr>
                   <th>Código</th>
                   <th>Descrição</th>
-                  <th>Valor</th>
+                  <th className="rd-value">Valor</th>
                 </tr>
               </thead>
               <tbody>
