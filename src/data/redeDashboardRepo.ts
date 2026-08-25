@@ -22,6 +22,32 @@ export type ProcedimentoRede = {
   valor: number
 }
 
+/** Uma linha da ficha tal como veio da planilha. O valor pode ser um preço
+ *  (número) ou um texto (ex.: especialidade do profissional, nome de tabela);
+ *  `null` = célula vazia. */
+export type LinhaFicha = {
+  codigo?: string
+  descricao?: string
+  valor?: string | number | null
+  /** Linha que na planilha era um cabeçalho de coluna/seção repetido (ex.:
+   *  "SERVIÇO | DESCRIÇÃO | TABELA"), não um dado — renderizada como header. */
+  cabecalho?: boolean
+}
+
+/** Bloco da ficha preservando a estrutura original do Excel: seções (título),
+ *  notas de composição/metodologia e tabelas com suas próprias colunas. */
+export type BlocoFicha =
+  | { tipo: 'titulo'; texto: string }
+  | { tipo: 'nota'; texto: string }
+  | { tipo: 'tabela'; colunas: string[]; linhas: LinhaFicha[] }
+
+/** Cabeçalho cadastral que aparece no topo da planilha de cada prestador. */
+export type CadastroRede = {
+  razao?: string
+  cnpj?: string
+  cep?: string
+}
+
 export type PrestadorRede = {
   id: string
   cidade: string
@@ -31,6 +57,11 @@ export type PrestadorRede = {
   status: string
   sheet?: string
   procedimentos: ProcedimentoRede[]
+  /** Ficha completa como na planilha (corpo clínico, notas de composição,
+   *  títulos de seção). Presente na fonte estática; ausente no cadastro
+   *  editável do Supabase, que só guarda os procedimentos numéricos. */
+  ficha?: BlocoFicha[]
+  cadastro?: CadastroRede
 }
 
 /** Dados do formulário (sem id ao criar; procedimentos substituem os atuais ao salvar). */
