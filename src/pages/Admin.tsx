@@ -118,9 +118,8 @@ function AdminShell({ sessao }: { sessao: Session }) {
       <div className="shell">
         <header className="admin-topo">
           <div>
-            <h1 className="page-title admin-titulo">
-              {naRaiz ? 'Admin · Dashboard' : 'Admin'}
-            </h1>
+            <h1 className="page-title admin-titulo">Innova Planos de Saúde</h1>
+            <p className="admin-boasvindas">Seja bem-vindo</p>
             <p className="admin-usuario">{sessao.user.email}</p>
           </div>
           <div className="admin-acoes-topo">
@@ -129,7 +128,7 @@ function AdminShell({ sessao }: { sessao: Session }) {
                 ← Menu
               </Link>
             )}
-            {location.pathname !== ROUTES.adminRedes && (
+            {!naRaiz && location.pathname !== ROUTES.adminRedes && (
               <Link className="btn btn-ghost" to={ROUTES.rede}>
                 Ver página pública
               </Link>

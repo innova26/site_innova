@@ -3054,8 +3054,15 @@
   color: #10203f;
 }
 
+.admin-boasvindas {
+  margin: 8px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2b3a5e;
+}
+
 .admin-usuario {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   font-size: 13px;
   color: #64708c;
 }
@@ -3673,55 +3680,91 @@
 
 .admin-menu {
   padding-top: 6px;
+  max-width: 940px;
 }
 
 .admin-menu-sub {
-  color: var(--text-muted);
-  font-size: 13.5px;
-  margin: 0 0 16px;
+  color: #64708c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 18px;
 }
 
 .admin-menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
 }
 
 .admin-menu-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 22px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
-  color: inherit;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 26px 24px;
+  border-radius: 16px;
+  border: 1px solid #d3dcec;
+  background: #ffffff;
+  color: #1c2a4a;
+  box-shadow:
+    0 1px 2px rgba(16, 32, 63, 0.04),
+    0 6px 20px rgba(16, 32, 63, 0.05);
   transition:
-    border-color 0.15s ease,
-    background 0.15s ease,
-    transform 0.15s ease;
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
 }
 
 .admin-menu-card:hover {
-  border-color: var(--blue-400);
-  background: rgba(47, 128, 237, 0.08);
-  transform: translateY(-2px);
+  border-color: #2f80ed;
+  box-shadow:
+    0 2px 4px rgba(16, 32, 63, 0.06),
+    0 14px 32px rgba(47, 128, 237, 0.15);
+  transform: translateY(-3px);
+}
+
+.admin-menu-icone {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #eaf1fd;
+  color: #2f80ed;
+  transition: background 0.16s ease;
+}
+
+.admin-menu-icone svg {
+  width: 24px;
+  height: 24px;
+}
+
+.admin-menu-card:hover .admin-menu-icone {
+  background: #dbe8fd;
 }
 
 .admin-menu-card strong {
-  font: 600 17px 'Space Grotesk', 'Segoe UI', sans-serif;
+  font: 600 18px 'Space Grotesk', 'Segoe UI', sans-serif;
+  color: #10203f;
 }
 
 .admin-menu-card p {
   margin: 0;
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.5;
+  color: #5a6685;
+  font-size: 13.5px;
+  line-height: 1.55;
   flex: 1;
 }
 
 .admin-menu-seta {
-  color: var(--blue-300);
-  font-size: 13px;
-  font-weight: 600;
+  color: #2f80ed;
+  font-size: 13.5px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.admin-menu-card:hover .admin-menu-seta {
+  text-decoration: underline;
 }
