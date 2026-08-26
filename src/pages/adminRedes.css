@@ -505,14 +505,21 @@
 .rd-provider-body .rd-code {
   color: var(--rd-muted);
   font-family: monospace;
-  /* códigos normais são curtos; quando a planilha jogou um texto longo na
-     coluna de código, quebra em vez de estourar a largura da tabela */
-  overflow-wrap: anywhere;
+  /* código é um número TUSS sem espaços: com quebra só nos espaços (padrão),
+     ele nunca se parte em duas linhas. Se a planilha jogar um texto longo
+     aqui, ele ainda quebra normalmente (nas palavras) em vez de estourar. */
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .rd-provider-body .rd-value {
   text-align: right;
   font-weight: 600;
-  overflow-wrap: anywhere;
+  /* valor monetário ("R$ 200,00") não pode partir no meio do número; com
+     quebra só nos espaços (padrão) ele fica numa linha só, e textos longos
+     que às vezes caem nesta coluna (nome de tabela/especialidade) ainda
+     quebram normalmente. */
+  overflow-wrap: normal;
+  word-break: normal;
 }
 /* -------- ficha fiel à planilha (dentro do card do prestador) -------- */
 .rd-cadastro {
