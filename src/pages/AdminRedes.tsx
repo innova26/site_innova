@@ -352,13 +352,19 @@ function FichaBlocos({ ficha }: { ficha: BlocoFicha[] }) {
             </h4>
           )
         if (bloco.tipo === 'nota') return <NotaComposicao key={index} texto={bloco.texto} />
+        // Quando a coluna de código está vazia em todas as linhas (ex.: corpo
+        // clínico — médico não tem código), ela vira só ruído; some com ela.
+        // Só nas tabelas no formato padrão código/descrição/valor (3 colunas).
+        const semCodigo =
+          bloco.colunas.length === 3 && bloco.linhas.every((linha) => !linha.codigo)
+        const colunas = semCodigo ? bloco.colunas.slice(1) : bloco.colunas
         return (
           <div className="rd-ficha-tabela" key={index}>
             <table>
               <thead>
                 <tr>
-                  {bloco.colunas.map((coluna, c) => (
-                    <th key={c} className={c === bloco.colunas.length - 1 ? 'rd-value' : undefined}>
+                  {colunas.map((coluna, c) => (
+                    <th key={c} className={c === colunas.length - 1 ? 'rd-value' : undefined}>
                       {coluna}
                     </th>
                   ))}
@@ -368,7 +374,7 @@ function FichaBlocos({ ficha }: { ficha: BlocoFicha[] }) {
                 {bloco.linhas.map((linha, l) =>
                   linha.cabecalho ? (
                     <tr key={l} className="rd-linha-cabecalho">
-                      <th>{linha.codigo || ''}</th>
+                      {!semCodigo && <th>{linha.codigo || ''}</th>}
                       <th>{linha.descricao || ''}</th>
                       <th className="rd-value">
                         {typeof linha.valor === 'string' ? linha.valor : ''}
@@ -376,7 +382,7 @@ function FichaBlocos({ ficha }: { ficha: BlocoFicha[] }) {
                     </tr>
                   ) : (
                     <tr key={l}>
-                      <td className="rd-code">{linha.codigo || ''}</td>
+                      {!semCodigo && <td className="rd-code">{linha.codigo || ''}</td>}
                       <td>{linha.descricao || ''}</td>
                       <td className="rd-value">{valorFicha(linha.valor)}</td>
                     </tr>
