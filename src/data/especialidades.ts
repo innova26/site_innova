@@ -134,6 +134,8 @@ const BRUTA = [
   'ATENDIMENTO EM PROCTOLOGIA',
   'ATENDIMENTO EM PEDIATRIA',
   'ATENDIMENTO EM REUMATOLOGIA',
+  'ANÁLISES CLÍNICAS',
+  'EXAMES LABORATORIAIS',
 ]
 
 /** Lista final: sem duplicatas e ordenada em pt-BR. */
