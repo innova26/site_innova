@@ -313,30 +313,61 @@
   flex-wrap: wrap;
 }
 .rd-search {
-  position: relative;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex: 1;
   min-width: 200px;
-}
-.rd-search svg {
-  position: absolute;
-  left: 12px;
-  top: 13px;
-  color: var(--rd-muted);
-  width: 17px;
-}
-.rd-search input {
-  width: 100%;
   border: 1px solid var(--rd-line);
   background: var(--rd-surface);
   border-radius: 9px;
-  padding: 11px 12px 11px 36px;
+  padding-left: 12px;
+}
+.rd-search:focus-within {
+  border-color: var(--rd-green);
+  box-shadow: 0 0 0 3px #dff2e7;
+}
+.rd-search > svg {
+  flex: none;
+  color: var(--rd-muted);
+  width: 17px;
+  height: 17px;
+}
+.rd-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--rd-ink);
+  padding: 11px 0;
   outline: none;
   font-size: 14.5px;
 }
-.rd-search input:focus {
-  border-color: var(--rd-green);
-  box-shadow: 0 0 0 3px #dff2e7;
+.rd-search input::placeholder {
+  color: var(--rd-muted);
+}
+.rd-search-clear {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-right: 6px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--rd-muted);
+  cursor: pointer;
+}
+.rd-search-clear:hover {
+  background: var(--rd-line);
+  color: var(--rd-ink);
+}
+.rd-search-clear svg {
+  width: 15px;
+  height: 15px;
 }
 .rd-result-count {
   color: var(--rd-muted);

@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { ChevronRight, Search } from 'lucide-react'
+import { ChevronRight, Search, X } from 'lucide-react'
 import { carregarPrestadoresRedeEstatico } from '../data/redeDashboardEstatico'
 import {
   cidadesDe,
@@ -558,6 +558,16 @@ export default function AdminRedes() {
                   onChange={(e) => setBusca(e.target.value)}
                   placeholder="Buscar prestador ou serviço…"
                 />
+                {busca && (
+                  <button
+                    type="button"
+                    className="rd-search-clear"
+                    onClick={() => setBusca('')}
+                    aria-label="Limpar busca"
+                  >
+                    <X />
+                  </button>
+                )}
               </label>
               <span className="rd-result-count">{filtrados.length} encontrados</span>
             </div>
