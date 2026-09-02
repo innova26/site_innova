@@ -20,6 +20,10 @@ export type ProcedimentoRede = {
   codigo?: string
   descricao: string
   valor: number
+  /** Quando o procedimento tem mais de um preço (ex.: IOT-RO — Apartamento e
+   *  Enfermaria), todos os preços que entram na faixa/estatística do
+   *  prestador. O item continua contando como 1 na quantidade. */
+  valores?: number[]
 }
 
 /** Uma linha da ficha tal como veio da planilha. O valor pode ser um preço
@@ -32,6 +36,9 @@ export type LinhaFicha = {
   /** Linha que na planilha era um cabeçalho de coluna/seção repetido (ex.:
    *  "SERVIÇO | DESCRIÇÃO | TABELA"), não um dado — renderizada como header. */
   cabecalho?: boolean
+  /** Tabelas multi-coluna: células já alinhadas às `colunas` do bloco. Quando
+   *  presente, a ficha renderiza estas colunas em vez de código/descrição/valor. */
+  celulas?: (string | number | null)[]
 }
 
 /** Bloco da ficha preservando a estrutura original do Excel: seções (título),
@@ -250,7 +257,10 @@ export function construirDashboardPorCidade(
     if (p.servico) servicos.add(p.servico)
     totalProcedimentos += p.procedimentos.length
 
-    const valores = p.procedimentos.map((x) => x.valor)
+    // Faixa/estatística considera todos os preços do procedimento (ex.: IOT-RO
+    // conta Apartamento e Enfermaria), mas a quantidade (n) segue sendo o número
+    // de procedimentos, não de preços.
+    const valores = p.procedimentos.flatMap((x) => x.valores ?? [x.valor])
     const min = valores.length ? Math.min(...valores) : 0
     const max = valores.length ? Math.max(...valores) : 0
     const media = valores.length

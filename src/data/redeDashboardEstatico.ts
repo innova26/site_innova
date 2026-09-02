@@ -22,6 +22,13 @@ type LinhaTabelaJson = {
   val?: string | number | null
   num?: number | null
   extra?: string
+  /** Tabelas multi-coluna (ex.: IOT-RO, com Porte/Auxiliar/Apartamento/
+   *  Enfermaria): células já alinhadas às `cols` do bloco. Quando presente,
+   *  a ficha renderiza estas colunas em vez do padrão código/descrição/valor. */
+  cells?: (string | number | null)[]
+  /** Preços que contam para a faixa/estatística do prestador quando a linha
+   *  tem mais de um valor (ex.: Apartamento e Enfermaria). Default: [num]. */
+  nums?: number[]
 }
 
 type BlocoJson =
@@ -59,10 +66,12 @@ const procedimentosDoPrestador = (p: PrestadorJson): ProcedimentoRede[] => {
     if (bloco.type !== 'table') continue
     for (const row of bloco.rows) {
       if (typeof row.num !== 'number' || !row.desc?.trim()) continue
+      const valores = row.nums?.length ? row.nums : [row.num]
       linhas.push({
         codigo: row.cod?.trim() || undefined,
         descricao: row.desc.trim(),
         valor: row.num,
+        ...(valores.length > 1 ? { valores } : {}),
       })
     }
   }
@@ -127,6 +136,7 @@ const fichaDoPrestador = (p: PrestadorJson): BlocoFicha[] =>
           descricao: row.desc?.trim() || undefined,
           valor: valorDaLinha(row),
           cabecalho: ehLinhaCabecalho(row) || undefined,
+          ...(row.cells ? { celulas: row.cells } : {}),
         })),
       }
     }
