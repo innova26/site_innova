@@ -353,20 +353,33 @@ function FichaBlocos({ ficha }: { ficha: BlocoFicha[] }) {
           )
         if (bloco.tipo === 'nota') return <NotaComposicao key={index} texto={bloco.texto} />
         // Tabela multi-coluna (ex.: IOT-RO — Porte/Auxiliar/Apartamento/
-        // Enfermaria): cada linha traz as células já alinhadas às colunas.
-        // Número vira moeda (preços), texto sai como está.
+        // Enfermaria; ENDOGASTRO — pacote/códigos inclusos/valor): cada linha
+        // traz as células já alinhadas às colunas. O tipo de cada coluna é
+        // deduzido dos dados: coluna de VALOR (tem número → alinha à direita,
+        // vira moeda) e coluna de CÓDIGO (só dígitos, ex.: TUSS empilhados →
+        // fonte monoespaçada). O resto é texto normal.
         const multiColuna = bloco.linhas.some((linha) => linha.celulas)
-        if (multiColuna)
+        if (multiColuna) {
+          const dados = bloco.linhas.filter((linha) => !linha.cabecalho)
+          const colValor = bloco.colunas.map((_, c) =>
+            dados.some((linha) => typeof linha.celulas?.[c] === 'number'),
+          )
+          const colCodigo = bloco.colunas.map((_, c) => {
+            const vals = dados
+              .map((linha) => linha.celulas?.[c])
+              .filter((v) => v != null && v !== '')
+            return (
+              vals.length > 0 &&
+              vals.every((v) => typeof v === 'string' && /^[\d\s]+$/.test(v))
+            )
+          })
           return (
             <div className="rd-ficha-tabela rd-ficha-tabela--larga" key={index}>
               <table>
                 <thead>
                   <tr>
                     {bloco.colunas.map((coluna, c) => (
-                      <th
-                        key={c}
-                        className={c >= bloco.colunas.length - 2 ? 'rd-value' : undefined}
-                      >
+                      <th key={c} className={colValor[c] ? 'rd-value' : undefined}>
                         {coluna}
                       </th>
                     ))}
@@ -380,14 +393,13 @@ function FichaBlocos({ ficha }: { ficha: BlocoFicha[] }) {
                       <tr key={l} className={linha.cabecalho ? 'rd-linha-cabecalho' : undefined}>
                         {bloco.colunas.map((_, c) => {
                           const v = celulas[c]
-                          const ehValor = c >= bloco.colunas.length - 2
+                          const classe = colValor[c]
+                            ? 'rd-value'
+                            : !linha.cabecalho && colCodigo[c]
+                              ? 'rd-code'
+                              : undefined
                           return (
-                            <Cell
-                              key={c}
-                              className={
-                                ehValor ? 'rd-value' : c === 0 ? 'rd-code' : undefined
-                              }
-                            >
+                            <Cell key={c} className={classe}>
                               {typeof v === 'number' ? money(v) : v || ''}
                             </Cell>
                           )
@@ -399,6 +411,7 @@ function FichaBlocos({ ficha }: { ficha: BlocoFicha[] }) {
               </table>
             </div>
           )
+        }
         // Quando a coluna de código está vazia em todas as linhas (ex.: corpo
         // clínico — médico não tem código), ela vira só ruído; some com ela.
         // Só nas tabelas no formato padrão código/descrição/valor (3 colunas).
