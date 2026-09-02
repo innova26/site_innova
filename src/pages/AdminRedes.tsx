@@ -352,6 +352,53 @@ function FichaBlocos({ ficha }: { ficha: BlocoFicha[] }) {
             </h4>
           )
         if (bloco.tipo === 'nota') return <NotaComposicao key={index} texto={bloco.texto} />
+        // Tabela multi-coluna (ex.: IOT-RO — Porte/Auxiliar/Apartamento/
+        // Enfermaria): cada linha traz as células já alinhadas às colunas.
+        // Número vira moeda (preços), texto sai como está.
+        const multiColuna = bloco.linhas.some((linha) => linha.celulas)
+        if (multiColuna)
+          return (
+            <div className="rd-ficha-tabela rd-ficha-tabela--larga" key={index}>
+              <table>
+                <thead>
+                  <tr>
+                    {bloco.colunas.map((coluna, c) => (
+                      <th
+                        key={c}
+                        className={c >= bloco.colunas.length - 2 ? 'rd-value' : undefined}
+                      >
+                        {coluna}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {bloco.linhas.map((linha, l) => {
+                    const celulas = linha.celulas ?? []
+                    const Cell = linha.cabecalho ? 'th' : 'td'
+                    return (
+                      <tr key={l} className={linha.cabecalho ? 'rd-linha-cabecalho' : undefined}>
+                        {bloco.colunas.map((_, c) => {
+                          const v = celulas[c]
+                          const ehValor = c >= bloco.colunas.length - 2
+                          return (
+                            <Cell
+                              key={c}
+                              className={
+                                ehValor ? 'rd-value' : c === 0 ? 'rd-code' : undefined
+                              }
+                            >
+                              {typeof v === 'number' ? money(v) : v || ''}
+                            </Cell>
+                          )
+                        })}
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )
         // Quando a coluna de código está vazia em todas as linhas (ex.: corpo
         // clínico — médico não tem código), ela vira só ruído; some com ela.
         // Só nas tabelas no formato padrão código/descrição/valor (3 colunas).
