@@ -636,6 +636,16 @@ p.rd-ficha-nota {
 .rd-ficha-tabela {
   overflow-x: auto;
 }
+/* nas tabelas largas (multi-coluna), a célula de códigos traz vários códigos
+   TUSS separados por quebra de linha (ex.: ENDOGASTRO — códigos inclusos no
+   pacote); preserva as quebras para empilhá-los como na planilha. */
+.rd-ficha-tabela--larga td.rd-code {
+  white-space: pre-line;
+}
+.rd-ficha-tabela--larga td,
+.rd-ficha-tabela--larga th {
+  vertical-align: middle;
+}
 /* linha que na planilha era um cabeçalho de coluna/seção repetido:
    mesmo visual do cabeçalho da tabela (fundo + rótulo em maiúsculas) */
 .rd-provider-body tr.rd-linha-cabecalho th {
