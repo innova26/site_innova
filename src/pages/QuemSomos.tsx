@@ -2,6 +2,7 @@ import { type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { ROUTES } from '../routes'
+import familia from '../assets/familia.png'
 
 /* Pilares: titulo forte + complemento, como no site atual */
 const PILARES = [
@@ -100,32 +101,36 @@ function QuemSomos() {
   return (
     <>
       {/* ---------- Abertura ---------- */}
-      <section className="page-hero">
+      <section className="page-hero quem-hero">
         <div className="shell">
-          <nav className="crumbs" aria-label="Trilha">
-            <Link to={ROUTES.home}>Início</Link>
-            <span aria-hidden="true">/</span>
-            <span aria-current="page">Quem somos</span>
-          </nav>
+          <div className="quem-hero-copy">
+            <nav className="crumbs" aria-label="Trilha">
+              <Link to={ROUTES.home}>Início</Link>
+              <span aria-hidden="true">/</span>
+              <span aria-current="page">Quem somos</span>
+            </nav>
 
-          <h1 className="page-title">
-            Uma nova forma de cuidar
-            <br />
-            da sua <span className="accent">saúde</span>
-          </h1>
+            <h1 className="page-title">
+              Uma nova forma de cuidar
+              <br />
+              da sua <span className="accent">saúde</span>
+            </h1>
 
-          <p className="page-lead">
-            A Innova nasceu para transformar o acesso à saúde com inovação,
-            tecnologia e atendimento humanizado. Já em operação em Porto Velho e
-            em expansão para outras regiões, oferecemos planos acessíveis, com
-            uma rede credenciada qualificada e uma equipe preparada para atender
-            com agilidade e acolhimento.
-          </p>
+            <p className="page-lead">
+              A Innova nasceu para transformar o acesso à saúde com inovação,
+              tecnologia e atendimento humanizado. Já em operação em Porto Velho
+              e em expansão para outras regiões, oferecemos planos acessíveis,
+              com uma rede credenciada qualificada e uma equipe preparada para
+              atender com agilidade e acolhimento.
+            </p>
 
-          <p className="page-highlight">
-            Aqui, saúde é prioridade. E o cuidado é contínuo.
-          </p>
+            <p className="page-highlight">
+              Aqui, saúde é prioridade. E o cuidado é contínuo.
+            </p>
+          </div>
         </div>
+
+        <img className="quem-hero-img" src={familia} alt="Família sorrindo" />
       </section>
 
       {/* ---------- Expansão ---------- */}

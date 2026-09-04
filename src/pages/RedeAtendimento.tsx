@@ -14,6 +14,7 @@ import {
   type TipoRecurso,
 } from '../data/rede'
 import { carregarVisiveis } from '../data/redeRepo'
+import gps from '../assets/gps.png'
 
 const POR_PAGINA = 50
 const TIPOS_UNICOS: TipoRecurso[] = [...new Set(TIPOS)]
@@ -347,25 +348,29 @@ function RedeAtendimento() {
   return (
     <>
       {/* ---------- Abertura ---------- */}
-      <section className="page-hero">
-        <div className="shell">
-          <nav className="crumbs" aria-label="Trilha">
-            <Link to={ROUTES.home}>Início</Link>
-            <span aria-hidden="true">/</span>
-            <span aria-current="page">Rede de Atendimento</span>
-          </nav>
+      <section className="page-hero rede-hero">
+        <div className="shell rede-hero-inner">
+          <div className="rede-hero-copy">
+            <nav className="crumbs" aria-label="Trilha">
+              <Link to={ROUTES.home}>Início</Link>
+              <span aria-hidden="true">/</span>
+              <span aria-current="page">Rede de Atendimento</span>
+            </nav>
 
-          <h1 className="page-title">
-            Encontre a rede
-            <br />
-            <span className="accent">credenciada</span> perto de você
-          </h1>
+            <h1 className="page-title">
+              Encontre a rede
+              <br />
+              <span className="accent">credenciada</span> perto de você
+            </h1>
 
-          <p className="page-lead">
-            Filtre por estado, cidade, plano, tipo de recurso e especialidade
-            para localizar hospitais, clínicas, laboratórios e profissionais
-            credenciados à Innova.
-          </p>
+            <p className="page-lead">
+              Filtre por estado, cidade, plano, tipo de recurso e especialidade
+              para localizar hospitais, clínicas, laboratórios e profissionais
+              credenciados à Innova.
+            </p>
+          </div>
+
+          <img className="rede-hero-img" src={gps} alt="Mapa de localização da rede" />
         </div>
       </section>
 

@@ -1440,6 +1440,92 @@
     linear-gradient(180deg, var(--navy-800), var(--navy-900));
 }
 
+/* --- Quem somos: hero com foto da familia a direita --- */
+.quem-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.quem-hero .shell {
+  position: relative;
+  z-index: 2;
+}
+
+/* mantem o texto na metade esquerda, sem passar sob a foto */
+.quem-hero-copy {
+  max-width: 560px;
+}
+
+/* foto ocupa a metade direita na altura do bloco de texto, alinhada a base */
+.quem-hero-img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  height: 100%;
+  object-fit: contain;
+  object-position: right bottom;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 900px) {
+  /* em telas menores a foto sai para o texto ocupar a largura toda */
+  .quem-hero-img {
+    display: none;
+  }
+
+  .quem-hero-copy {
+    max-width: 100%;
+  }
+}
+
+/* --- Rede de Atendimento: hero com ilustracao (gps) a direita --- */
+.rede-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+/* layout em duas colunas dentro do container: texto | ilustracao */
+.rede-hero-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+  position: relative;
+  z-index: 2;
+}
+
+.rede-hero-copy {
+  max-width: 560px;
+}
+
+.rede-hero-img {
+  justify-self: end;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 900px) {
+  .rede-hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .rede-hero-img {
+    display: none;
+  }
+
+  .rede-hero-copy {
+    max-width: 100%;
+  }
+}
+
 .crumbs {
   display: flex;
   align-items: center;
@@ -1919,7 +2005,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(32px, 5vw, 64px);
-  align-items: center;
+  /* alinha as colunas pelo topo: sem isso a coluna de texto (mais curta)
+     fica centralizada e "desce", deixando um vao no topo */
+  align-items: start;
 }
 
 .cotacao-copy .page-lead {
