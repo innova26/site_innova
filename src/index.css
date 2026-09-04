@@ -1,25 +1,28 @@
 :root {
-  /* Brand palette (dark navy + blue) */
-  --navy-900: #060d21;
-  --navy-800: #0a1330;
-  --navy-700: #0e1c44;
-  --navy-600: #132552;
+  /* Brand palette — tema claro (design2.0): fundo azul claro + navy/royal da marca.
+     Os nomes --navy-* passam a representar as SUPERFICIES claras (fundos das
+     secoes), e --text* passam a ser o navy de marca. Assim, todas as regras
+     baseadas em tokens migram para o tema claro automaticamente. */
+  --navy-900: #eaf3ff; /* superficie base (mais clara) */
+  --navy-800: #dcebff; /* superficie um pouco mais saturada */
+  --navy-700: #cfe3ff;
+  --navy-600: #c2d9fb;
 
-  --blue-500: #2f80ed;
-  --blue-400: #3b8ff5;
-  --blue-300: #5aa9ff;
-  --blue-200: #8ec6ff;
+  --blue-500: #2456c9; /* azul royal da marca (destaques) */
+  --blue-400: #2f6ad4;
+  --blue-300: #3f7fe0;
+  --blue-200: #6fa2ec;
 
-  --text: #ffffff;
-  --text-muted: #a9b6d6;
-  --text-dim: #7f8db3;
-  --border: rgba(255, 255, 255, 0.1);
+  --text: #14245e; /* navy de marca (texto principal) */
+  --text-muted: #41507a;
+  --text-dim: #6b7a99;
+  --border: rgba(20, 36, 94, 0.12);
 
   --sans: 'Segoe UI', system-ui, Roboto, Helvetica, Arial, sans-serif;
 
   font: 16px/1.5 var(--sans);
   color: var(--text);
-  color-scheme: dark;
+  color-scheme: light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -40,7 +43,7 @@ body {
   background:
     radial-gradient(
       1200px 800px at 78% 32%,
-      rgba(47, 128, 237, 0.22),
+      rgba(47, 128, 237, 0.14),
       transparent 60%
     ),
     linear-gradient(160deg, var(--navy-800) 0%, var(--navy-900) 60%);

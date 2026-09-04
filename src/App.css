@@ -3768,3 +3768,256 @@
 .admin-menu-card:hover .admin-menu-seta {
   text-decoration: underline;
 }
+
+/* ============================================================
+   TEMA CLARO (design2.0) — correcoes de superficie
+   ------------------------------------------------------------
+   Converte as areas antes escuras (header, hero, planos, footer,
+   formularios, SAC, cookie, login) para o fundo azul claro com
+   navy/royal da marca. Os fundos de secao ja migraram via tokens
+   em index.css; aqui tratamos os valores que estavam fixos em
+   branco (texto) ou em vidro escuro (cartoes/campos).
+   Superficies auxiliares reutilizadas abaixo. */
+:root {
+  --surface: #ffffff;
+  --surface-soft: #f4f9ff;
+  --surface-border: #dbe6fb;
+  --surface-tint: rgba(36, 86, 201, 0.07);
+  --field-bg: #ffffff;
+  --field-border: #cdd6e8;
+  --field-placeholder: #8a95af;
+}
+
+/* --- Logo branca sobre "chip" navy (header e footer) --- */
+.brand-logo {
+  background: var(--text);
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* --- Header --- */
+.site-header {
+  border-bottom: 1px solid var(--surface-border);
+  box-shadow: 0 10px 30px -22px rgba(20, 40, 94, 0.35);
+}
+.nav-link {
+  color: var(--text-muted);
+}
+.nav-link:hover,
+.nav-link.is-active,
+.nav-group.is-open .nav-trigger {
+  color: var(--text);
+}
+.nav-btn {
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+}
+.nav-btn:hover,
+.nav-btn:focus-visible {
+  background: var(--surface-tint);
+  color: var(--text);
+}
+.nav-btn-admin {
+  border-color: var(--blue-400);
+  color: var(--blue-500);
+}
+.nav-submenu {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 24px 48px -26px rgba(20, 40, 94, 0.35);
+}
+.nav-submenu a:hover {
+  background: var(--surface-tint);
+  color: var(--text);
+}
+.burger {
+  background: var(--surface-tint);
+}
+.burger span {
+  background: var(--text);
+}
+.mobile-menu {
+  background: var(--surface);
+}
+.mobile-nav .nav-link {
+  border-bottom: 1px solid var(--surface-border);
+}
+
+/* --- Botao fantasma (hero e afins) --- */
+.btn-ghost {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--field-border);
+}
+.btn-ghost:hover {
+  background: var(--surface-tint);
+  border-color: var(--blue-400);
+}
+
+/* --- Hero --- */
+.eco-title {
+  color: var(--text);
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 18px 40px -18px rgba(20, 40, 94, 0.28);
+}
+.hero-card strong {
+  color: var(--text);
+}
+
+/* --- Planos --- */
+.section-title.on-dark {
+  color: var(--text);
+}
+.plan-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+}
+.plan-card:hover {
+  border-color: var(--blue-300);
+  box-shadow: 0 26px 60px -30px rgba(20, 40, 94, 0.4);
+}
+.plan-card.is-featured {
+  border-color: var(--blue-400);
+  background: linear-gradient(180deg, #eef4ff, var(--surface));
+  box-shadow: 0 22px 60px -32px rgba(36, 86, 201, 0.55);
+}
+.plan-name {
+  color: var(--text);
+}
+.plan-features li {
+  color: var(--text);
+  background: var(--surface-soft);
+  border: 1px solid var(--surface-border);
+}
+.plan-card:hover .plan-features li {
+  background: #e9f1ff;
+}
+.plan-cta {
+  color: var(--text);
+  background: var(--surface-tint);
+}
+
+/* --- Footer --- */
+.footer-col h2,
+.soon-title {
+  color: var(--text);
+}
+.footer-col ul a:hover {
+  color: var(--text);
+}
+
+/* --- Quem somos --- */
+.page-title {
+  color: var(--text);
+}
+.crumbs a:hover {
+  color: var(--text);
+}
+.page-highlight {
+  color: var(--text);
+  background: var(--surface-tint);
+}
+.mvv-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+}
+.cta-inner h2 {
+  color: var(--text);
+}
+
+/* --- Campos de formulario (tema global escuro -> claro) --- */
+.campo label {
+  color: var(--text);
+}
+.campo input,
+.campo select,
+.campo textarea {
+  color: var(--text);
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
+}
+.campo select option {
+  background: var(--surface);
+  color: var(--text);
+}
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: var(--field-placeholder);
+}
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  background: var(--field-bg);
+  box-shadow: 0 0 0 4px rgba(36, 86, 201, 0.16);
+}
+
+/* --- Cotacao --- */
+.diferenciais strong {
+  color: var(--text);
+}
+.cotacao-form {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 30px 70px -40px rgba(20, 40, 94, 0.35);
+}
+.cotacao-form h2,
+.cotacao-ok .page-lead strong {
+  color: var(--text);
+}
+
+/* --- Credenciado --- */
+.form-largo legend {
+  border-bottom: 1px solid var(--surface-border);
+}
+.arquivo {
+  border: 1px dashed var(--field-border);
+  background: var(--surface-soft);
+}
+.arquivo:hover {
+  background: var(--surface-tint);
+}
+.arquivo-texto strong {
+  color: var(--text);
+}
+
+/* --- SAC --- */
+.canal-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+}
+.canal-card.is-destaque {
+  border-color: var(--blue-400);
+  background: linear-gradient(180deg, #eef4ff, var(--surface));
+}
+.canal-card h2 {
+  color: var(--text);
+}
+.canal-numero:hover,
+.sac-email:hover,
+.sac-ok h2 {
+  color: var(--text);
+}
+
+/* --- Admin login (fora das faixas claras) --- */
+.admin-login-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 30px 70px -40px rgba(20, 40, 94, 0.35);
+}
+.admin-login-card h1 {
+  color: var(--text);
+}
+
+/* --- Banner de cookies --- */
+.cookie-inner {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 24px 60px -30px rgba(20, 40, 94, 0.35);
+}
+.cookie-link:hover {
+  color: var(--text);
+}
