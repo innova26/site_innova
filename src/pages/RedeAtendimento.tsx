@@ -133,7 +133,37 @@ function IconeFone() {
 /** Transforma um telefone exibido em href tel: (mantém só os dígitos). */
 const telHref = (tel: string) => `tel:+55${tel.replace(/\D/g, '')}`
 
+/** Quantos médicos aparecem antes de recolher o restante em "Ver todos". */
+const MAX_MEDICOS_VISIVEIS = 9
+
+/**
+ * Remove duplicatas ignorando caixa e espaços nas pontas, preservando a
+ * primeira forma encontrada. Evita, por exemplo, dezenas de chips
+ * "PEDIATRIA" idênticos quando cada profissional repete a especialidade.
+ */
+function normalizarLista(itens: string[]): string[] {
+  const vistos = new Map<string, string>()
+  for (const item of itens) {
+    const limpo = item.trim()
+    const chave = limpo.toLocaleUpperCase('pt-BR')
+    if (limpo && !vistos.has(chave)) vistos.set(chave, limpo)
+  }
+  return [...vistos.values()]
+}
+
 function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
+  const [expandido, setExpandido] = useState(false)
+
+  const especialidades = normalizarLista(grupo.especialidades)
+  const medicos = normalizarLista(grupo.profissionais)
+  const redes = normalizarLista(grupo.redes)
+  const telefones = normalizarLista(grupo.telefones)
+
+  const medicosVisiveis = expandido
+    ? medicos
+    : medicos.slice(0, MAX_MEDICOS_VISIVEIS)
+  const temMais = medicos.length > MAX_MEDICOS_VISIVEIS
+
   return (
     <article className="rede-card">
       <header className="rede-card-topo">
@@ -168,46 +198,81 @@ function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
         <span className="rede-tag rede-tag-tipo">{grupo.tipo}</span>
       </header>
 
-      <ul className="rede-chips" aria-label="Especialidades">
-        {grupo.especialidades.map((esp) => (
-          <li key={esp} className="rede-chip">
-            {esp}
-          </li>
-        ))}
-      </ul>
+      {especialidades.length > 0 && (
+        <section className="rede-card-secao">
+          <p className="rede-card-label">
+            {especialidades.length > 1 ? 'Especialidades' : 'Especialidade'}
+            <span className="rede-card-contagem">{especialidades.length}</span>
+          </p>
+          <ul className="rede-chips" aria-label="Especialidades">
+            {especialidades.map((esp) => (
+              <li key={esp} className="rede-chip">
+                {esp}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-      {grupo.profissionais.map((profissional) => (
-        <p key={profissional} className="rede-card-linha">
+      {medicos.length > 0 && (
+        <section className="rede-card-secao">
+          <p className="rede-card-label">
+            Corpo clínico
+            <span className="rede-card-contagem">
+              {medicos.length}{' '}
+              {medicos.length === 1 ? 'profissional' : 'profissionais'}
+            </span>
+          </p>
+          <ul className="rede-medicos">
+            {medicosVisiveis.map((medico) => (
+              <li key={medico}>
+                <IconePessoa />
+                {medico}
+              </li>
+            ))}
+          </ul>
+          {temMais && (
+            <button
+              type="button"
+              className="rede-ver-todos"
+              aria-expanded={expandido}
+              onClick={() => setExpandido((v) => !v)}
+            >
+              {expandido ? 'Ver menos' : `Ver todos (${medicos.length})`}
+            </button>
+          )}
+        </section>
+      )}
+
+      <div className="rede-card-info">
+        <p className="rede-card-linha">
           <span className="rede-card-ic">
-            <IconePessoa />
+            <IconePin />
           </span>
-          {profissional}
+          {grupo.endereco}
         </p>
-      ))}
 
-      <p className="rede-card-linha">
-        <span className="rede-card-ic">
-          <IconePin />
-        </span>
-        {grupo.endereco}
-      </p>
+        {telefones.length > 0 && (
+          <p className="rede-card-linha">
+            <span className="rede-card-ic">
+              <IconeFone />
+            </span>
+            <span className="rede-fones">
+              {telefones.map((tel) => (
+                <a key={tel} href={telHref(tel)}>
+                  {tel}
+                </a>
+              ))}
+            </span>
+          </p>
+        )}
+      </div>
 
-      <p className="rede-card-linha">
-        <span className="rede-card-ic">
-          <IconeFone />
-        </span>
-        <span className="rede-fones">
-          {grupo.telefones.map((tel) => (
-            <a key={tel} href={telHref(tel)}>
-              {tel}
-            </a>
-          ))}
-        </span>
-      </p>
-
-      <p className="rede-card-redes">
-        <span>Redes:</span> {grupo.redes.join(' · ')}
-      </p>
+      {redes.length > 0 && (
+        <p className="rede-card-redes">
+          <span>Redes:</span> {redes.join(' · ')}
+        </p>
+      )}
     </article>
   )
 }
