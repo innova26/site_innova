@@ -14,7 +14,7 @@ import {
   type TipoRecurso,
 } from '../data/rede'
 import { carregarVisiveis } from '../data/redeRepo'
-import gps from '../assets/gps.png'
+import gps from '../assets/gps.webp'
 
 const POR_PAGINA = 50
 const TIPOS_UNICOS: TipoRecurso[] = [...new Set(TIPOS)]

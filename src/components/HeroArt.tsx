@@ -1,4 +1,4 @@
-import medicoHero from '../assets/medicohero.png'
+import medicoHero from '../assets/medicohero.webp'
 
 function HeroArt() {
   return (

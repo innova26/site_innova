@@ -2,7 +2,7 @@ import { type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { useRevealOnScroll } from '../hooks/useRevealOnScroll'
 import { ROUTES } from '../routes'
-import familia from '../assets/familia.png'
+import familia from '../assets/familia.webp'
 
 /* Pilares: titulo forte + complemento, como no site atual */
 const PILARES = [
