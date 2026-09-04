@@ -130,11 +130,9 @@ function IconeFone() {
   )
 }
 
-/** Transforma um telefone exibido em href tel: (mantém só os dígitos). */
-const telHref = (tel: string) => `tel:+55${tel.replace(/\D/g, '')}`
-
-/** Quantos médicos aparecem antes de recolher o restante em "Ver todos". */
-const MAX_MEDICOS_VISIVEIS = 9
+/** Monta a URL de busca do endereço no Google Maps. */
+const mapsHref = (endereco: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`
 
 /**
  * Remove duplicatas ignorando caixa e espaços nas pontas, preservando a
@@ -151,18 +149,33 @@ function normalizarLista(itens: string[]): string[] {
   return [...vistos.values()]
 }
 
-function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
-  const [expandido, setExpandido] = useState(false)
+/**
+ * Muitas entradas trazem vários profissionais concatenados numa única string,
+ * com separadores variados:
+ *   - "DRA JULIA ... | DR LUCAS ... | DR MARCELO ..."        (pipe)
+ *   - "DRA. ARISE ... (Pediatria), DR. ADRIANO ... (Pediatra)" (vírgula antes de DR/DRA)
+ * Quebramos em ambos, preservando a especialidade entre parênteses de cada nome
+ * e aceitando "DR"/"DRA" com ou sem ponto.
+ */
+function separarMedicos(entradas: string[]): string[] {
+  const todos: string[] = []
+  for (const entrada of entradas) {
+    const partes = entrada
+      .split(/\s*\|\s*/)
+      .flatMap((parte) => parte.split(/\s*,\s*(?=DRA?\.?\s)/i))
+    for (const parte of partes) {
+      const nome = parte.trim()
+      if (nome) todos.push(nome)
+    }
+  }
+  return todos
+}
 
+function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
   const especialidades = normalizarLista(grupo.especialidades)
-  const medicos = normalizarLista(grupo.profissionais)
+  const medicos = normalizarLista(separarMedicos(grupo.profissionais))
   const redes = normalizarLista(grupo.redes)
   const telefones = normalizarLista(grupo.telefones)
-
-  const medicosVisiveis = expandido
-    ? medicos
-    : medicos.slice(0, MAX_MEDICOS_VISIVEIS)
-  const temMais = medicos.length > MAX_MEDICOS_VISIVEIS
 
   return (
     <article className="rede-card">
@@ -189,11 +202,40 @@ function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
             </svg>
           </span>
         )}
-        <div>
+        <div className="rede-card-identidade">
           <h3>{grupo.nome}</h3>
           {grupo.instituicao && (
             <p className="rede-card-inst">{grupo.instituicao}</p>
           )}
+
+          <div className="rede-card-contato">
+            <p className="rede-card-linha">
+              <span className="rede-card-ic">
+                <IconePin />
+              </span>
+              <a
+                className="rede-endereco-link"
+                href={mapsHref(grupo.endereco)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {grupo.endereco}
+              </a>
+            </p>
+
+            {telefones.length > 0 && (
+              <p className="rede-card-linha">
+                <span className="rede-card-ic">
+                  <IconeFone />
+                </span>
+                <span className="rede-fones">
+                  {telefones.map((tel) => (
+                    <span key={tel}>{tel}</span>
+                  ))}
+                </span>
+              </p>
+            )}
+          </div>
         </div>
         <span className="rede-tag rede-tag-tipo">{grupo.tipo}</span>
       </header>
@@ -224,49 +266,15 @@ function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
             </span>
           </p>
           <ul className="rede-medicos">
-            {medicosVisiveis.map((medico) => (
+            {medicos.map((medico) => (
               <li key={medico}>
                 <IconePessoa />
                 {medico}
               </li>
             ))}
           </ul>
-          {temMais && (
-            <button
-              type="button"
-              className="rede-ver-todos"
-              aria-expanded={expandido}
-              onClick={() => setExpandido((v) => !v)}
-            >
-              {expandido ? 'Ver menos' : `Ver todos (${medicos.length})`}
-            </button>
-          )}
         </section>
       )}
-
-      <div className="rede-card-info">
-        <p className="rede-card-linha">
-          <span className="rede-card-ic">
-            <IconePin />
-          </span>
-          {grupo.endereco}
-        </p>
-
-        {telefones.length > 0 && (
-          <p className="rede-card-linha">
-            <span className="rede-card-ic">
-              <IconeFone />
-            </span>
-            <span className="rede-fones">
-              {telefones.map((tel) => (
-                <a key={tel} href={telHref(tel)}>
-                  {tel}
-                </a>
-              ))}
-            </span>
-          </p>
-        )}
-      </div>
 
       {redes.length > 0 && (
         <p className="rede-card-redes">
