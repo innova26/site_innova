@@ -15,6 +15,7 @@ const NAV_LINKS = [
 const LEGAL_LINKS = [
   { label: 'Termos de Uso', href: '#termos' },
   { label: 'Política de Privacidade', href: ROUTES.privacidade },
+  { label: 'Informações Regulatórias', href: ROUTES.regulatoria },
   { label: 'Gerenciar Cookies', href: '#cookies' },
 ]
 
@@ -154,7 +155,11 @@ function SiteFooter() {
           <ul>
             {LEGAL_LINKS.map((link) => (
               <li key={link.label}>
-                <a href={link.href}>{link.label}</a>
+                {link.href.startsWith('/') ? (
+                  <Link to={link.href}>{link.label}</Link>
+                ) : (
+                  <a href={link.href}>{link.label}</a>
+                )}
               </li>
             ))}
           </ul>
