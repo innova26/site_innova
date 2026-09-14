@@ -50,15 +50,6 @@ const ICONS = {
       />
     </>
   ),
-  tooth: (
-    <path
-      d="M12 3c2 0 3-1 5 0s2.5 3.4 2 6c-.5 2.4-1 3.4-1.4 6-.3 2-1 3.4-2.1 3.4-1.3 0-1.4-2-1.8-4-.2-1-.7-1.6-1.7-1.6s-1.5.6-1.7 1.6c-.4 2-.5 4-1.8 4-1.1 0-1.8-1.4-2.1-3.4-.4-2.6-.9-3.6-1.4-6-.5-2.6 0-5 2-6s3 0 5 0z"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinejoin="round"
-    />
-  ),
 }
 
 const PLANS = [
@@ -91,21 +82,6 @@ const PLANS = [
       'Atendimento humanizado',
     ],
     featured: true,
-  },
-  {
-    id: 'odontologico',
-    icon: ICONS.tooth,
-    name: 'Plano',
-    highlight: 'Odontológico',
-    tagline: 'Sorrir com saúde é essencial',
-    text: 'Cuide do seu sorriso com um plano odontológico nacional, sem carência e com cobertura para procedimentos essenciais. Ideal para empresas e grupos que valorizam prevenção e qualidade de vida.',
-    features: [
-      'Cobertura Ampla',
-      'Atendimento humanizado',
-      'Benefícios Extras',
-      'Adesão Simples',
-    ],
-    featured: false,
   },
 ]
 
