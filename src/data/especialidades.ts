@@ -136,6 +136,9 @@ const BRUTA = [
   'ATENDIMENTO EM REUMATOLOGIA',
   'ANÁLISES CLÍNICAS',
   'EXAMES LABORATORIAIS',
+  'AUDIOMETRIA TONAL',
+  'AUDIOMETRIA VOCAL',
+  'IMPEDANCIOMETRIA'
 ]
 
 /** Lista final: sem duplicatas e ordenada em pt-BR. */
