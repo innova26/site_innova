@@ -134,7 +134,7 @@ function PlansSection() {
           <h2 className="section-title on-dark">
             Conheça nossos planos e
             <br />
-            escolha <span className="accent">o melhor para você</span>
+            {' '}escolha <span className="accent">o melhor para você</span>
           </h2>
 
           <p className="section-lead on-dark">

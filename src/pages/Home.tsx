@@ -12,7 +12,7 @@ function Home() {
             <p className="eyebrow">Sua saúde em boas mãos, sem burocracia.</p>
 
             <h1 className="hero-title">
-              A evolução do seu plano de saúde
+                      A evolução do seu plano de saúde,
               <br />
               <span className="accent">o futuro começa aqui.</span>
             </h1>
