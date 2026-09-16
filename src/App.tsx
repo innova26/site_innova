@@ -14,6 +14,7 @@ import AdminCredenciadas from './pages/AdminCredenciadas'
 import AdminRedes from './pages/AdminRedes'
 import EmBreve from './pages/EmBreve'
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade'
+import InformacoesRegulatorias from './pages/InformacoesRegulatorias'
 import { ROUTES } from './routes'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
@@ -42,6 +43,7 @@ function App() {
           <Route path={ROUTES.sac} element={<Sac />} />
           <Route path={ROUTES.rede} element={<RedeAtendimento />} />
           <Route path={ROUTES.privacidade} element={<PoliticaPrivacidade />} />
+          <Route path={ROUTES.regulatoria} element={<InformacoesRegulatorias />} />
 
           <Route path="*" element={<EmBreve />} />
         </Route>

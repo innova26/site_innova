@@ -8,6 +8,7 @@ export const ROUTES = {
   corretoras: '/corretoras',
   sac: '/sac',
   privacidade: '/politica-de-privacidade',
+  regulatoria: '/informacoes-regulatorias',
   admin: '/admin',
   adminCredenciadas: '/admin/credenciadas',
   adminRedes: '/admin/redes',

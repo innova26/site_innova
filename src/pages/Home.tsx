@@ -12,14 +12,10 @@ function Home() {
             <p className="eyebrow">Sua saúde em boas mãos, sem burocracia.</p>
 
             <h1 className="hero-title">
-              A evolução do seu plano de saúde
+                      A evolução do seu plano de saúde,
               <br />
               <span className="accent">o futuro começa aqui.</span>
             </h1>
-
-            <p className="hero-lead">
-              O futuro da saúde começa aqui.
-            </p>
 
             <div className="hero-actions">
               <a className="btn btn-primary" href="https://portal.innovaoperadora.com.br/portal_beneficiario/home" target="_blank" rel="noopener noreferrer">
