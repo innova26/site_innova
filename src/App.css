@@ -4094,10 +4094,7 @@
 
 /* --- Logo branca sobre "chip" navy (header e footer) --- */
 .brand-logo {
-  background: var(--text);
-  padding: 8px 12px;
-  border-radius: 10px;
-  box-sizing: border-box;
+  display: block;
 }
 
 /* --- Header --- */
