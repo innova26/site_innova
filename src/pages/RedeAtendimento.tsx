@@ -14,6 +14,7 @@ import {
   type TipoRecurso,
 } from '../data/rede'
 import { carregarVisiveis } from '../data/redeRepo'
+import gps from '../assets/gps.webp'
 
 const POR_PAGINA = 50
 const TIPOS_UNICOS: TipoRecurso[] = [...new Set(TIPOS)]
@@ -130,10 +131,53 @@ function IconeFone() {
   )
 }
 
-/** Transforma um telefone exibido em href tel: (mantém só os dígitos). */
-const telHref = (tel: string) => `tel:+55${tel.replace(/\D/g, '')}`
+/** Monta a URL de busca do endereço no Google Maps. */
+const mapsHref = (endereco: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`
+
+/**
+ * Remove duplicatas ignorando caixa e espaços nas pontas, preservando a
+ * primeira forma encontrada. Evita, por exemplo, dezenas de chips
+ * "PEDIATRIA" idênticos quando cada profissional repete a especialidade.
+ */
+function normalizarLista(itens: string[]): string[] {
+  const vistos = new Map<string, string>()
+  for (const item of itens) {
+    const limpo = item.trim()
+    const chave = limpo.toLocaleUpperCase('pt-BR')
+    if (limpo && !vistos.has(chave)) vistos.set(chave, limpo)
+  }
+  return [...vistos.values()]
+}
+
+/**
+ * Muitas entradas trazem vários profissionais concatenados numa única string,
+ * com separadores variados:
+ *   - "DRA JULIA ... | DR LUCAS ... | DR MARCELO ..."        (pipe)
+ *   - "DRA. ARISE ... (Pediatria), DR. ADRIANO ... (Pediatra)" (vírgula antes de DR/DRA)
+ * Quebramos em ambos, preservando a especialidade entre parênteses de cada nome
+ * e aceitando "DR"/"DRA" com ou sem ponto.
+ */
+function separarMedicos(entradas: string[]): string[] {
+  const todos: string[] = []
+  for (const entrada of entradas) {
+    const partes = entrada
+      .split(/\s*\|\s*/)
+      .flatMap((parte) => parte.split(/\s*,\s*(?=DRA?\.?\s)/i))
+    for (const parte of partes) {
+      const nome = parte.trim()
+      if (nome) todos.push(nome)
+    }
+  }
+  return todos
+}
 
 function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
+  const especialidades = normalizarLista(grupo.especialidades)
+  const medicos = normalizarLista(separarMedicos(grupo.profissionais))
+  const redes = normalizarLista(grupo.redes)
+  const telefones = normalizarLista(grupo.telefones)
+
   return (
     <article className="rede-card">
       <header className="rede-card-topo">
@@ -159,55 +203,85 @@ function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
             </svg>
           </span>
         )}
-        <div>
+        <div className="rede-card-identidade">
           <h3>{grupo.nome}</h3>
           {grupo.instituicao && (
             <p className="rede-card-inst">{grupo.instituicao}</p>
           )}
+
+          <div className="rede-card-contato">
+            <p className="rede-card-linha">
+              <span className="rede-card-ic">
+                <IconePin />
+              </span>
+              <a
+                className="rede-endereco-link"
+                href={mapsHref(grupo.endereco)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {grupo.endereco}
+              </a>
+            </p>
+
+            {telefones.length > 0 && (
+              <p className="rede-card-linha">
+                <span className="rede-card-ic">
+                  <IconeFone />
+                </span>
+                <span className="rede-fones">
+                  {telefones.map((tel) => (
+                    <span key={tel}>{tel}</span>
+                  ))}
+                </span>
+              </p>
+            )}
+          </div>
         </div>
         <span className="rede-tag rede-tag-tipo">{grupo.tipo}</span>
       </header>
 
-      <ul className="rede-chips" aria-label="Especialidades">
-        {grupo.especialidades.map((esp) => (
-          <li key={esp} className="rede-chip">
-            {esp}
-          </li>
-        ))}
-      </ul>
+      {especialidades.length > 0 && (
+        <section className="rede-card-secao">
+          <p className="rede-card-label">
+            {especialidades.length > 1 ? 'Especialidades' : 'Especialidade'}
+            <span className="rede-card-contagem">{especialidades.length}</span>
+          </p>
+          <ul className="rede-chips" aria-label="Especialidades">
+            {especialidades.map((esp) => (
+              <li key={esp} className="rede-chip">
+                {esp}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-      {grupo.profissionais.map((profissional) => (
-        <p key={profissional} className="rede-card-linha">
-          <span className="rede-card-ic">
-            <IconePessoa />
-          </span>
-          {profissional}
+      {medicos.length > 0 && (
+        <section className="rede-card-secao">
+          <p className="rede-card-label">
+            Corpo clínico
+            <span className="rede-card-contagem">
+              {medicos.length}{' '}
+              {medicos.length === 1 ? 'profissional' : 'profissionais'}
+            </span>
+          </p>
+          <ul className="rede-medicos">
+            {medicos.map((medico) => (
+              <li key={medico}>
+                <IconePessoa />
+                {medico}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {redes.length > 0 && (
+        <p className="rede-card-redes">
+          <span>Redes:</span> {redes.join(' · ')}
         </p>
-      ))}
-
-      <p className="rede-card-linha">
-        <span className="rede-card-ic">
-          <IconePin />
-        </span>
-        {grupo.endereco}
-      </p>
-
-      <p className="rede-card-linha">
-        <span className="rede-card-ic">
-          <IconeFone />
-        </span>
-        <span className="rede-fones">
-          {grupo.telefones.map((tel) => (
-            <a key={tel} href={telHref(tel)}>
-              {tel}
-            </a>
-          ))}
-        </span>
-      </p>
-
-      <p className="rede-card-redes">
-        <span>Redes:</span> {grupo.redes.join(' · ')}
-      </p>
+      )}
     </article>
   )
 }
@@ -274,25 +348,29 @@ function RedeAtendimento() {
   return (
     <>
       {/* ---------- Abertura ---------- */}
-      <section className="page-hero">
-        <div className="shell">
-          <nav className="crumbs" aria-label="Trilha">
-            <Link to={ROUTES.home}>Início</Link>
-            <span aria-hidden="true">/</span>
-            <span aria-current="page">Rede de Atendimento</span>
-          </nav>
+      <section className="page-hero rede-hero">
+        <div className="shell rede-hero-inner">
+          <div className="rede-hero-copy">
+            <nav className="crumbs" aria-label="Trilha">
+              <Link to={ROUTES.home}>Início</Link>
+              <span aria-hidden="true">/</span>
+              <span aria-current="page">Rede de Atendimento</span>
+            </nav>
 
-          <h1 className="page-title">
-            Encontre a rede
-            <br />
-            <span className="accent">credenciada</span> perto de você
-          </h1>
+            <h1 className="page-title">
+              Encontre a rede
+              <br />
+              <span className="accent">credenciada</span> perto de você
+            </h1>
 
-          <p className="page-lead">
-            Filtre por estado, cidade, plano, tipo de recurso e especialidade
-            para localizar hospitais, clínicas, laboratórios e profissionais
-            credenciados à Innova.
-          </p>
+            <p className="page-lead">
+              Filtre por estado, cidade, plano, tipo de recurso e especialidade
+              para localizar hospitais, clínicas, laboratórios e profissionais
+              credenciados à Innova.
+            </p>
+          </div>
+
+          <img className="rede-hero-img" src={gps} alt="Mapa de localização da rede" />
         </div>
       </section>
 

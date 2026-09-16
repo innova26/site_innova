@@ -1580,6 +1580,92 @@
     linear-gradient(180deg, var(--navy-800), var(--navy-900));
 }
 
+/* --- Quem somos: hero com foto da familia a direita --- */
+.quem-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.quem-hero .shell {
+  position: relative;
+  z-index: 2;
+}
+
+/* mantem o texto na metade esquerda, sem passar sob a foto */
+.quem-hero-copy {
+  max-width: 560px;
+}
+
+/* foto ocupa a metade direita na altura do bloco de texto, alinhada a base */
+.quem-hero-img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  height: 100%;
+  object-fit: contain;
+  object-position: right bottom;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 900px) {
+  /* em telas menores a foto sai para o texto ocupar a largura toda */
+  .quem-hero-img {
+    display: none;
+  }
+
+  .quem-hero-copy {
+    max-width: 100%;
+  }
+}
+
+/* --- Rede de Atendimento: hero com ilustracao (gps) a direita --- */
+.rede-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+/* layout em duas colunas dentro do container: texto | ilustracao */
+.rede-hero-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+  position: relative;
+  z-index: 2;
+}
+
+.rede-hero-copy {
+  max-width: 560px;
+}
+
+.rede-hero-img {
+  justify-self: end;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 900px) {
+  .rede-hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .rede-hero-img {
+    display: none;
+  }
+
+  .rede-hero-copy {
+    max-width: 100%;
+  }
+}
+
 .crumbs {
   display: flex;
   align-items: center;
@@ -2059,7 +2145,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(32px, 5vw, 64px);
-  align-items: center;
+  /* alinha as colunas pelo topo: sem isso a coluna de texto (mais curta)
+     fica centralizada e "desce", deixando um vao no topo */
+  align-items: start;
 }
 
 .cotacao-copy .page-lead {
@@ -2832,9 +2920,11 @@
 }
 
 /* --- grade de cards --- */
+/* 1 card por linha, ocupando a largura toda: com o card largo, o corpo
+   clinico se distribui em varias colunas (ver .rede-medicos) */
 .rede-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 20px;
 }
 
@@ -2904,6 +2994,77 @@
   grid-template-columns: auto 1fr auto;
   align-items: start;
   gap: 12px;
+}
+
+/* --- secoes rotuladas do card (design2.0) --- */
+.rede-card-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 14px;
+  border-top: 1px solid #eef2f9;
+}
+
+.rede-card-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64708c;
+}
+
+.rede-card-contagem {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--blue-500);
+  background: rgba(36, 86, 201, 0.1);
+  border: 1px solid rgba(36, 86, 201, 0.22);
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+/* profissionais em colunas automaticas: a quantidade de colunas acompanha a
+   largura do card (cada medico e um item proprio, uma linha por medico) */
+.rede-medicos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 250px;
+  column-gap: 28px;
+}
+
+.rede-medicos li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 9px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #2a3a5e;
+  /* nao deixa um nome ser cortado entre duas colunas */
+  break-inside: avoid;
+}
+
+.rede-medicos li svg {
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: var(--blue-500);
+}
+
+/* contato (endereco + telefone) logo abaixo do nome, no cabecalho */
+.rede-card-contato {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
 }
 
 .rede-card-icone {
@@ -3012,13 +3173,16 @@
   gap: 4px 12px;
 }
 
-.rede-fones a {
-  color: #1c62c4;
+/* endereco vira link para o Google Maps */
+.rede-endereco-link {
+  color: inherit;
+  text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.rede-fones a:hover {
+.rede-endereco-link:hover {
   color: var(--blue-500);
+  text-decoration: underline;
 }
 
 .rede-card-redes {
@@ -3907,4 +4071,257 @@
 
 .admin-menu-card:hover .admin-menu-seta {
   text-decoration: underline;
+}
+
+/* ============================================================
+   TEMA CLARO (design2.0) — correcoes de superficie
+   ------------------------------------------------------------
+   Converte as areas antes escuras (header, hero, planos, footer,
+   formularios, SAC, cookie, login) para o fundo azul claro com
+   navy/royal da marca. Os fundos de secao ja migraram via tokens
+   em index.css; aqui tratamos os valores que estavam fixos em
+   branco (texto) ou em vidro escuro (cartoes/campos).
+   Superficies auxiliares reutilizadas abaixo. */
+:root {
+  --surface: #ffffff;
+  --surface-soft: #f4f9ff;
+  --surface-border: #dbe6fb;
+  --surface-tint: rgba(36, 86, 201, 0.07);
+  --field-bg: #ffffff;
+  --field-border: #cdd6e8;
+  --field-placeholder: #8a95af;
+}
+
+/* --- Logo branca sobre "chip" navy (header e footer) --- */
+.brand-logo {
+  background: var(--text);
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* --- Header --- */
+.site-header {
+  border-bottom: 1px solid var(--surface-border);
+  box-shadow: 0 10px 30px -22px rgba(20, 40, 94, 0.35);
+}
+.nav-link {
+  color: var(--text-muted);
+}
+.nav-link:hover,
+.nav-link.is-active,
+.nav-group.is-open .nav-trigger {
+  color: var(--text);
+}
+.nav-btn {
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+}
+.nav-btn:hover,
+.nav-btn:focus-visible {
+  background: var(--surface-tint);
+  color: var(--text);
+}
+.nav-btn-admin {
+  border-color: var(--blue-400);
+  color: var(--blue-500);
+}
+.nav-submenu {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 24px 48px -26px rgba(20, 40, 94, 0.35);
+}
+.nav-submenu a:hover {
+  background: var(--surface-tint);
+  color: var(--text);
+}
+.burger {
+  background: var(--surface-tint);
+}
+.burger span {
+  background: var(--text);
+}
+.mobile-menu {
+  background: var(--surface);
+}
+.mobile-nav .nav-link {
+  border-bottom: 1px solid var(--surface-border);
+}
+
+/* --- Botao fantasma (hero e afins) --- */
+.btn-ghost {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--field-border);
+}
+.btn-ghost:hover {
+  background: var(--surface-tint);
+  border-color: var(--blue-400);
+}
+
+/* --- Hero --- */
+.eco-title {
+  color: var(--text);
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 18px 40px -18px rgba(20, 40, 94, 0.28);
+}
+.hero-card strong {
+  color: var(--text);
+}
+
+/* --- Planos --- */
+.section-title.on-dark {
+  color: var(--text);
+}
+.plan-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+}
+.plan-card:hover {
+  border-color: var(--blue-300);
+  box-shadow: 0 26px 60px -30px rgba(20, 40, 94, 0.4);
+}
+.plan-card.is-featured {
+  border-color: var(--blue-400);
+  background: linear-gradient(180deg, #eef4ff, var(--surface));
+  box-shadow: 0 22px 60px -32px rgba(36, 86, 201, 0.55);
+}
+.plan-name {
+  color: var(--text);
+}
+.plan-features li {
+  color: var(--text);
+  background: var(--surface-soft);
+  border: 1px solid var(--surface-border);
+}
+.plan-card:hover .plan-features li {
+  background: #e9f1ff;
+}
+.plan-cta {
+  color: var(--text);
+  background: var(--surface-tint);
+}
+
+/* --- Footer --- */
+.footer-col h2,
+.soon-title {
+  color: var(--text);
+}
+.footer-col ul a:hover {
+  color: var(--text);
+}
+
+/* --- Quem somos --- */
+.page-title {
+  color: var(--text);
+}
+.crumbs a:hover {
+  color: var(--text);
+}
+.page-highlight {
+  color: var(--text);
+  background: var(--surface-tint);
+}
+.mvv-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+}
+.cta-inner h2 {
+  color: var(--text);
+}
+
+/* --- Campos de formulario (tema global escuro -> claro) --- */
+.campo label {
+  color: var(--text);
+}
+.campo input,
+.campo select,
+.campo textarea {
+  color: var(--text);
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
+}
+.campo select option {
+  background: var(--surface);
+  color: var(--text);
+}
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: var(--field-placeholder);
+}
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  background: var(--field-bg);
+  box-shadow: 0 0 0 4px rgba(36, 86, 201, 0.16);
+}
+
+/* --- Cotacao --- */
+.diferenciais strong {
+  color: var(--text);
+}
+.cotacao-form {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 30px 70px -40px rgba(20, 40, 94, 0.35);
+}
+.cotacao-form h2,
+.cotacao-ok .page-lead strong {
+  color: var(--text);
+}
+
+/* --- Credenciado --- */
+.form-largo legend {
+  border-bottom: 1px solid var(--surface-border);
+}
+.arquivo {
+  border: 1px dashed var(--field-border);
+  background: var(--surface-soft);
+}
+.arquivo:hover {
+  background: var(--surface-tint);
+}
+.arquivo-texto strong {
+  color: var(--text);
+}
+
+/* --- SAC --- */
+.canal-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+}
+.canal-card.is-destaque {
+  border-color: var(--blue-400);
+  background: linear-gradient(180deg, #eef4ff, var(--surface));
+}
+.canal-card h2 {
+  color: var(--text);
+}
+.canal-numero:hover,
+.sac-email:hover,
+.sac-ok h2 {
+  color: var(--text);
+}
+
+/* --- Admin login (fora das faixas claras) --- */
+.admin-login-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 30px 70px -40px rgba(20, 40, 94, 0.35);
+}
+.admin-login-card h1 {
+  color: var(--text);
+}
+
+/* --- Banner de cookies --- */
+.cookie-inner {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 24px 60px -30px rgba(20, 40, 94, 0.35);
+}
+.cookie-link:hover {
+  color: var(--text);
 }

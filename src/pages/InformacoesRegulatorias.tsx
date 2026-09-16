@@ -25,27 +25,23 @@ const INFORMACOES: InformacaoRegulatoria[] = [
           como objetivo a diluição do risco desses contratos para aplicação do
           reajuste ao consumidor, conferindo maior equilíbrio no índice
           calculado em razão do maior número de beneficiários considerados.
-          Índice por agrupamento ficou em <strong>5,11%</strong>. A partir de
-          <strong> 01/10/2026</strong>.
         </p>
-
-        <h3 id="reajuste-planos-coletivos">Reajuste para planos coletivos</h3>
         <p>
           O reajuste do Plano de Saúde Innova, para planos coletivos com até 29
-          vidas que fizerem parte do agrupamento de contratos, conforme determina
-          a Resolução Normativa nº 565/2022, será aplicado no período abaixo
-          informado, conforme mês de aniversário do contrato. Consulte o
+          vidas que fizerem parte do agrupamento de contratos, conforme
+          determina a Resolução Normativa Nº 565/2022, será aplicado no período
+          abaixo informado, conforme mês de aniversário do contrato. Consulte o
           percentual de reajuste e a relação dos contratos:
         </p>
 
         <div className="regulatoria-detalhe">
           <h4>Reajuste do Plano de Saúde Innova para Contratos com até 29 vidas - RN 565</h4>
           <p>
-            O reajuste do Plano de Saúde Innova para planos coletivos com até 29
-            vidas que fizeram parte do agrupamento de contratos, conforme
-            determina a Resolução Normativa nº 565/22, é de <strong>5,11%</strong>,
-            aplicado no período de outubro de 2026 a outubro de 2027, conforme o
-            mês de aniversário do contrato.
+            O reajuste do Plano de Saúde Innova para planos coletivos empresariais
+            com até 29 vidas que fizeram parte do agrupamento de contratos,
+            conforme determina a Resolução Normativa nº 565/22, é de
+            <strong> 5,11%</strong>, aplicado no período de outubro de 2026 a
+            setembro de 2027, conforme o mês de aniversário do contrato.
           </p>
           <p>Veja a relação abaixo:</p>
         </div>
