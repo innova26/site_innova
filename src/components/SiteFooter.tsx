@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { PORTAIS, ROUTES } from '../routes'
 import { CONTATOS, linkWhatsapp } from '../contatos'
-import logoInnova from '../assets/logoinnova.png'
+import logoInnova from '../assets/logoinnova_azul.png'
 
 const NAV_LINKS = [
   { label: 'Início', to: ROUTES.home },

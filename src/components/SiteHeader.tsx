@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { NAV_ITEMS, ROUTES } from '../routes'
-import logoInnova from '../assets/logoinnova.png'
+import logoInnova from '../assets/logoinnova_azul.png'
 
 function Caret() {
   return (
