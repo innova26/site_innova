@@ -4322,3 +4322,83 @@
 .cookie-link:hover {
   color: var(--text);
 }
+
+/* ---------- Popup de comunicado (aviso) ---------- */
+.aviso-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 40px);
+  background: rgba(10, 19, 48, 0.62);
+  backdrop-filter: blur(4px);
+  animation: aviso-fade 0.25s ease both;
+}
+
+.aviso-dialog {
+  position: relative;
+  max-width: min(460px, 100%);
+  max-height: 100%;
+  animation: aviso-pop 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.aviso-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.6);
+}
+
+.aviso-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--text, #14253f);
+  cursor: pointer;
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.45);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.aviso-close:hover {
+  transform: scale(1.08);
+  background: #f1f4fb;
+}
+
+@keyframes aviso-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes aviso-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aviso-overlay,
+  .aviso-dialog {
+    animation: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .aviso-close {
+    top: 8px;
+    right: 8px;
+  }
+}
