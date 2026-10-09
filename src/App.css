@@ -4323,6 +4323,335 @@
   color: var(--text);
 }
 
+/* ========== Pagina Aplicativo ========== */
+.app-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.app-hero-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(24px, 5vw, 72px);
+  position: relative;
+  z-index: 2;
+}
+
+.app-hero-copy {
+  max-width: 580px;
+}
+
+.app-note {
+  margin: 16px 0 0;
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+
+/* --- Botoes das lojas --- */
+.store-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.store-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  border-radius: 14px;
+  background: #0b1220;
+  color: #fff;
+  border: 1px solid #0b1220;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.store-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px -14px rgba(11, 18, 32, 0.6);
+  background: #121c31;
+}
+
+.store-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.store-btn-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.store-btn-text small {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.store-btn-text strong {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+/* --- Mockups dos celulares --- */
+.app-hero-art {
+  position: relative;
+  justify-self: end;
+  width: min(420px, 42vw);
+  height: 520px;
+}
+
+.app-phone {
+  position: absolute;
+  border-radius: 34px;
+  background: #0b1220;
+  padding: 8px;
+  box-shadow: 0 40px 80px -30px rgba(20, 40, 94, 0.55);
+  overflow: hidden;
+}
+
+.app-phone img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 28px;
+}
+
+.app-phone--front {
+  width: 250px;
+  height: 510px;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.app-phone--back {
+  width: 230px;
+  height: 468px;
+  left: 0;
+  top: 10px;
+  transform: rotate(-6deg);
+  opacity: 0.96;
+  z-index: 1;
+}
+
+/* --- Recursos --- */
+.app-recursos {
+  padding-block: clamp(56px, 8vw, 96px);
+}
+
+.recursos-head {
+  max-width: 680px;
+  margin: 0 auto clamp(32px, 5vw, 52px);
+  text-align: center;
+}
+
+.recursos-head .section-eyebrow {
+  justify-content: center;
+}
+
+.recursos-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.recurso-card {
+  padding: 30px 24px;
+  border-radius: 18px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--surface-border, #e2e8f2);
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.55s ease var(--delay, 0ms),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.recurso-card[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.recurso-card:hover {
+  border-color: var(--blue-400);
+  box-shadow: 0 22px 44px -24px rgba(47, 128, 237, 0.5);
+}
+
+.recurso-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  color: #fff;
+  background: linear-gradient(180deg, var(--blue-400), var(--blue-500));
+  box-shadow: 0 10px 22px -12px rgba(47, 128, 237, 0.9);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.recurso-icone svg {
+  width: 24px;
+  height: 24px;
+}
+
+.recurso-card:hover .recurso-icone {
+  transform: translateY(-3px) scale(1.07);
+}
+
+.recurso-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 10px;
+}
+
+.recurso-card p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --- Como comecar --- */
+.app-passos {
+  padding-block: clamp(56px, 8vw, 96px);
+  background:
+    radial-gradient(
+      800px 420px at 50% 0%,
+      rgba(47, 128, 237, 0.18),
+      transparent 65%
+    ),
+    var(--navy-900);
+}
+
+.passos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.passo-card {
+  position: relative;
+  padding: 32px 26px;
+  border-radius: 18px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--surface-border, #e2e8f2);
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.55s ease var(--delay, 0ms),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms);
+}
+
+.passo-card[data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.passo-numero {
+  display: inline-block;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--blue-400);
+  margin-bottom: 14px;
+}
+
+.passo-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 10px;
+}
+
+.passo-card p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --- CTA download --- */
+.app-cta {
+  padding-block: clamp(48px, 6vw, 80px);
+  background: linear-gradient(160deg, var(--navy-800), var(--navy-900));
+  border-top: 1px solid var(--border);
+}
+
+.app-cta-inner {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: clamp(24px, 4vw, 48px);
+  align-items: center;
+}
+
+.app-cta-inner h2 {
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: var(--text);
+  margin: 0 0 14px;
+}
+
+.app-cta-inner p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 560px;
+}
+
+.store-buttons--on-dark {
+  margin-top: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recurso-card,
+  .recurso-icone,
+  .passo-card,
+  .store-btn {
+    transition: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .recursos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .app-hero-inner,
+  .app-cta-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .app-hero-art {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .recursos-grid,
+  .passos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .store-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
 /* ---------- Popup de comunicado (aviso) ---------- */
 .aviso-overlay {
   position: fixed;

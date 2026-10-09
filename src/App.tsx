@@ -6,6 +6,7 @@ import QuemSomos from './pages/QuemSomos'
 import Cotacao from './pages/Cotacao'
 import Credenciado from './pages/Credenciado'
 import Corretoras from './pages/Corretoras'
+import Aplicativo from './pages/Aplicativo'
 import Sac from './pages/Sac'
 import RedeAtendimento from './pages/RedeAtendimento'
 import Admin from './pages/Admin'
@@ -40,6 +41,7 @@ function App() {
           <Route path={ROUTES.cotacao} element={<Cotacao />} />
           <Route path={ROUTES.credenciado} element={<Credenciado />} />
           <Route path={ROUTES.corretoras} element={<Corretoras />} />
+          <Route path={ROUTES.aplicativo} element={<Aplicativo />} />
           <Route path={ROUTES.sac} element={<Sac />} />
           <Route path={ROUTES.rede} element={<RedeAtendimento />} />
           <Route path={ROUTES.privacidade} element={<PoliticaPrivacidade />} />

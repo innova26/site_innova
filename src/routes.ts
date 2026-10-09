@@ -6,6 +6,7 @@ export const ROUTES = {
   cotacao: '/cotacao',
   credenciado: '/seja-um-credenciado',
   corretoras: '/corretoras',
+  aplicativo: '/aplicativo',
   sac: '/sac',
   privacidade: '/politica-de-privacidade',
   regulatoria: '/informacoes-regulatorias',
@@ -29,6 +30,7 @@ export const NAV_ITEMS = [
   { label: 'Cotação', to: ROUTES.cotacao },
   { label: 'Seja um credenciado', to: ROUTES.credenciado },
   { label: 'Corretoras', to: ROUTES.corretoras },
+  { label: 'Aplicativo', to: ROUTES.aplicativo },
   { label: 'Portais', submenu: PORTAIS },
   { label: 'SAC', to: ROUTES.sac },
 ]
@@ -38,5 +40,6 @@ export const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.cotacao]: 'Cotação',
   [ROUTES.credenciado]: 'Seja um credenciado',
   [ROUTES.corretoras]: 'Corretoras',
+  [ROUTES.aplicativo]: 'Aplicativo',
   [ROUTES.sac]: 'SAC',
 }
