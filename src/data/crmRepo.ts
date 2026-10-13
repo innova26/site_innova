@@ -50,6 +50,22 @@ function daLinha(l: LinhaCRM): SolicitacaoCRM {
   }
 }
 
+/**
+ * Dispara o aviso por e-mail entre etapas (best-effort).
+ * Não propaga erro: a notificação não deve travar a ação do usuário.
+ */
+export async function notificar(
+  evento: 'nova' | 'autorizada',
+  id: string,
+): Promise<void> {
+  if (!supabase) return
+  try {
+    await supabase.functions.invoke('crm-notificar', { body: { evento, id } })
+  } catch (e) {
+    console.warn('Falha ao notificar etapa do CRM:', e)
+  }
+}
+
 /** Papel do usuário logado no CRM (null = sem acesso). */
 export async function meuPapel(): Promise<PapelCRM | null> {
   if (!supabase) return null

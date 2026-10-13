@@ -18,6 +18,7 @@ import {
   criarSolicitacao,
   listarSolicitacoes,
   meuPapel,
+  notificar,
 } from '../data/crmRepo'
 
 /* ============================================================
@@ -134,6 +135,7 @@ export default function AdminCRM() {
       const nova = await atualizarSolicitacao(id, patch)
       setLista((atual) => atual.map((s) => (s.id === id ? nova : s)))
       setSelecionada((atual) => (atual && atual.id === id ? nova : atual))
+      if (patch.autorizacao === 'sim') void notificar('autorizada', id)
     } catch (e) {
       setErro('Não foi possível salvar a alteração: ' + String(e))
     }
@@ -157,6 +159,7 @@ export default function AdminCRM() {
       })
       setLista((atual) => [nova, ...atual])
       setForm(null)
+      void notificar('nova', nova.id)
     } catch (err) {
       setErro('Não foi possível criar a solicitação: ' + String(err))
     }
