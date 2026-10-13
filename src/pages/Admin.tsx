@@ -128,11 +128,14 @@ function AdminShell({ sessao }: { sessao: Session }) {
                 ← Menu
               </Link>
             )}
-            {!naRaiz && location.pathname !== ROUTES.adminRedes && (
-              <Link className="btn btn-ghost" to={ROUTES.rede}>
-                Ver página pública
-              </Link>
-            )}
+            {!naRaiz &&
+              location.pathname !== ROUTES.adminRedes &&
+              location.pathname !== ROUTES.adminCrm &&
+              location.pathname !== ROUTES.adminCrmUsuarios && (
+                <Link className="btn btn-ghost" to={ROUTES.rede}>
+                  Ver página pública
+                </Link>
+              )}
             <button
               type="button"
               className="btn btn-ghost"

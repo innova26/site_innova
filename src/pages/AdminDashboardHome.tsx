@@ -39,6 +39,25 @@ function IconeRedes() {
   )
 }
 
+function IconeCrm() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4 5h16" />
+      <path d="M4 5v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5" />
+      <path d="M9 10h6M9 14h4" />
+      <path d="m15.5 17 1.5 1.5 3-3" />
+    </svg>
+  )
+}
+
 const OPCOES: {
   to: string
   titulo: string
@@ -58,6 +77,13 @@ const OPCOES: {
     descricao:
       'Panorama da rede negociada por cidade — KPIs, distribuição por serviço/status e cadastro dos procedimentos de cada prestador.',
     icone: <IconeRedes />,
+  },
+  {
+    to: ROUTES.adminCrm,
+    titulo: 'Controle de CRM',
+    descricao:
+      'Fluxo de CM e reembolsos entre atendimento, enfermagem e financeiro — abertura, autorização, agendamento e pagamento.',
+    icone: <IconeCrm />,
   },
 ]
 
