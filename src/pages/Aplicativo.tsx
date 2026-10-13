@@ -5,14 +5,10 @@ import { ROUTES } from '../routes'
 import appHome from '../assets/app-home.png'
 import appCarteirinha from '../assets/app-carteirinha.png'
 
-/*
- * Links das lojas. Substituir pelos endereços reais do app quando publicado.
- * Enquanto não estiverem no ar, os botões abrem a busca da loja pelo nome.
- */
+/* Links oficiais das lojas. */
 const APP_STORE_URL = 'https://apps.apple.com/br/app/acesso-innova/id6794425548'
-/* App ainda não indexado na Play Store. Descomentar quando tiver o link. */
-// const PLAY_STORE_URL =
-//   'https://play.google.com/store/apps/details?id=br.com.innovaoperadora'
+const PLAY_STORE_URL =
+  'https://play.google.com/store/apps/details?id=br.com.solus.innovasaude'
 
 /* Recursos disponíveis no aplicativo (espelham o menu principal do app). */
 const RECURSOS = [
@@ -47,7 +43,7 @@ const PASSOS = [
   {
     numero: '01',
     titulo: 'Baixe o aplicativo',
-    texto: 'Disponível gratuitamente na App Store, para iPhone. Em breve também para Android.',
+    texto: 'Disponível gratuitamente na App Store (iPhone) e no Google Play (Android).',
   },
   {
     numero: '02',
@@ -72,17 +68,16 @@ function AppleIcon() {
   )
 }
 
-/* Ícone do Google Play — reativar junto com o botão quando o app indexar. */
-// function PlayIcon() {
-//   return (
-//     <svg viewBox="0 0 512 512" aria-hidden="true" height={26}>
-//       <path fill="#00d2ff" d="M47 24C38 29 32 39 32 53v406c0 14 6 24 15 29l236-232z" />
-//       <path fill="#00f076" d="M47 24c7-4 16-3 25 2l317 183-73 72z" />
-//       <path fill="#ffce00" d="M389 209 462 251c16 9 16 33 0 42l-73 42-74-84z" />
-//       <path fill="#ff3a44" d="M47 488c9 5 18 6 25 2l241-139-73-72z" />
-//     </svg>
-//   )
-// }
+function PlayIcon() {
+  return (
+    <svg viewBox="0 0 512 512" aria-hidden="true" height={26}>
+      <path fill="#00d2ff" d="M47 24C38 29 32 39 32 53v406c0 14 6 24 15 29l236-232z" />
+      <path fill="#00f076" d="M47 24c7-4 16-3 25 2l317 183-73 72z" />
+      <path fill="#ffce00" d="M389 209 462 251c16 9 16 33 0 42l-73 42-74-84z" />
+      <path fill="#ff3a44" d="M47 488c9 5 18 6 25 2l241-139-73-72z" />
+    </svg>
+  )
+}
 
 function StoreButtons({ className = '' }: { className?: string }) {
   return (
@@ -103,7 +98,6 @@ function StoreButtons({ className = '' }: { className?: string }) {
         </span>
       </a>
 
-      {/* App ainda não indexado na Play Store. Descomentar quando tiver o link.
       <a
         className="store-btn"
         href={PLAY_STORE_URL}
@@ -119,7 +113,6 @@ function StoreButtons({ className = '' }: { className?: string }) {
           <strong>Google Play</strong>
         </span>
       </a>
-      */}
     </div>
   )
 }
@@ -159,9 +152,7 @@ function Aplicativo() {
 
             <StoreButtons />
 
-            <p className="app-note">
-              Download gratuito na App Store. Em breve também para Android.
-            </p>
+            <p className="app-note">Download gratuito para iPhone e Android.</p>
           </div>
 
           <div className="app-hero-art" aria-hidden="true">
@@ -254,9 +245,8 @@ function Aplicativo() {
           <div>
             <h2>Baixe agora e tenha a Innova com você</h2>
             <p>
-              Gratuito para beneficiários. Já disponível para iPhone na App
-              Store — rápido, seguro e sempre atualizado. Em breve também para
-              Android.
+              Gratuito para beneficiários. Disponível para iPhone e Android —
+              rápido, seguro e sempre atualizado.
             </p>
           </div>
           <StoreButtons className="store-buttons--on-dark" />
