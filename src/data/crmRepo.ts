@@ -93,6 +93,7 @@ export async function listarSolicitacoes(): Promise<SolicitacaoCRM[]> {
 }
 
 export type NovaSolicitacao = {
+  protocolo: string
   solicitante: string
   beneficiario: string
   procedimento: string
@@ -109,6 +110,8 @@ export async function criarSolicitacao(dados: NovaSolicitacao): Promise<Solicita
   const { data, error } = await supabase
     .from('crm_solicitacoes')
     .insert({
+      // vazio deixa o trigger gerar CRM-AAAA-00001; preenchido usa o informado
+      protocolo: dados.protocolo.trim() || null,
       solicitante: dados.solicitante,
       beneficiario: dados.beneficiario,
       procedimento: dados.procedimento,
