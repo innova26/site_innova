@@ -13,6 +13,7 @@ import Admin from './pages/Admin'
 import AdminDashboardHome from './pages/AdminDashboardHome'
 import AdminCredenciadas from './pages/AdminCredenciadas'
 import AdminRedes from './pages/AdminRedes'
+import AdminCRM from './pages/AdminCRM'
 import EmBreve from './pages/EmBreve'
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade'
 import InformacoesRegulatorias from './pages/InformacoesRegulatorias'
@@ -57,6 +58,7 @@ function App() {
           <Route index element={<AdminDashboardHome />} />
           <Route path="credenciadas" element={<AdminCredenciadas />} />
           <Route path="redes" element={<AdminRedes />} />
+          <Route path="crm" element={<AdminCRM />} />
         </Route>
       </Routes>
       {analyticsEnabled && (
