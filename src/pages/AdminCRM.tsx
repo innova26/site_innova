@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
+import { ROUTES } from '../routes'
 import {
   STATUS_FINANCEIRO,
   PAPEL_LABEL,
@@ -184,7 +186,14 @@ export default function AdminCRM() {
     <div className="crm">
       <div className="crm-topo">
         <h2 className="admin-secao-titulo">Controle de CRM · CM e Reembolsos</h2>
-        <span className="crm-papel-badge">{PAPEL_LABEL[papel]}</span>
+        <div className="crm-topo-acoes">
+          {papel === 'admin' && (
+            <Link className="btn btn-ghost" to={ROUTES.adminCrmUsuarios}>
+              Usuários
+            </Link>
+          )}
+          <span className="crm-papel-badge">{PAPEL_LABEL[papel]}</span>
+        </div>
       </div>
 
       {erro && (

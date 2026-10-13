@@ -5109,6 +5109,51 @@ button.crm-card:hover {
   border-color: var(--tom-recusado-bg);
 }
 
+/* ---- gestão de usuários ---- */
+.crm-sel-papel {
+  padding: 6px 9px;
+  border: 1px solid var(--field-border);
+  border-radius: 8px;
+  background: var(--field-bg);
+  color: var(--text);
+  font-size: 13px;
+}
+.crm-switch {
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  border: none;
+  background: #cbd5e1;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  padding: 0;
+}
+.crm-switch span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s ease;
+}
+.crm-switch.on {
+  background: var(--tom-ok);
+}
+.crm-switch.on span {
+  transform: translateX(18px);
+}
+.crm-topo-acoes {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.crm-ok {
+  color: var(--tom-ok);
+}
+
 @media (max-width: 760px) {
   .crm-cards {
     grid-template-columns: repeat(2, 1fr);

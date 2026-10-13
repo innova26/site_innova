@@ -19,10 +19,14 @@ end $$;
 create table if not exists public.crm_perfis (
   user_id uuid primary key references auth.users(id) on delete cascade,
   nome text,
+  email text,
   papel text not null check (papel in ('atendimento','enfermagem','financeiro','admin')),
   ativo boolean not null default true,
   created_at timestamptz not null default now()
 );
+
+-- (idempotente) garante a coluna email se a tabela já existia
+alter table public.crm_perfis add column if not exists email text;
 
 -- Papel do usuário atual. SECURITY DEFINER para poder ser usado dentro
 -- das policies sem recursão de RLS.

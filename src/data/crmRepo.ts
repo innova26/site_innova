@@ -158,3 +158,58 @@ export async function atualizarSolicitacao(
   if (error) throw error
   return daLinha(data as LinhaCRM)
 }
+
+/* ============================================================
+ * Gestão de usuários (admin) — via Edge Function crm-usuarios
+ * ========================================================== */
+export type UsuarioCRM = {
+  user_id: string
+  nome: string
+  email: string
+  papel: PapelCRM
+  ativo: boolean
+}
+
+async function invocarUsuarios(
+  acao: string,
+  extra: Record<string, unknown> = {},
+): Promise<Record<string, unknown>> {
+  if (!supabase) throw new Error('Supabase indisponível.')
+  const { data, error } = await supabase.functions.invoke('crm-usuarios', {
+    body: { acao, ...extra },
+  })
+  if (error) {
+    let msg = error.message
+    try {
+      const ctx = (error as { context?: Response }).context
+      const corpo = ctx ? await ctx.json() : null
+      if (corpo?.error) msg = corpo.error
+    } catch {
+      /* mantém msg padrão */
+    }
+    throw new Error(msg)
+  }
+  return data as Record<string, unknown>
+}
+
+export async function listarUsuarios(): Promise<UsuarioCRM[]> {
+  const data = await invocarUsuarios('listar')
+  return (data.usuarios as UsuarioCRM[]) ?? []
+}
+
+export async function convidarUsuario(
+  nome: string,
+  email: string,
+  papel: PapelCRM,
+): Promise<UsuarioCRM> {
+  const data = await invocarUsuarios('convidar', { nome, email, papel })
+  return data.usuario as UsuarioCRM
+}
+
+export async function atualizarUsuario(
+  user_id: string,
+  patch: { papel?: PapelCRM; ativo?: boolean },
+): Promise<UsuarioCRM> {
+  const data = await invocarUsuarios('atualizar', { user_id, ...patch })
+  return data.usuario as UsuarioCRM
+}
