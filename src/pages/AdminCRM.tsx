@@ -37,6 +37,7 @@ const FILTROS = [
 ] as const
 
 type FormNova = {
+  protocolo: string
   solicitante: string
   beneficiario: string
   procedimento: string
@@ -49,6 +50,7 @@ type FormNova = {
 }
 
 const FORM_VAZIO: FormNova = {
+  protocolo: '',
   solicitante: '',
   beneficiario: '',
   procedimento: '',
@@ -150,6 +152,7 @@ export default function AdminCRM() {
     setErro('')
     try {
       const nova = await criarSolicitacao({
+        protocolo: form.protocolo.trim(),
         solicitante: form.solicitante.trim(),
         beneficiario: form.beneficiario.trim(),
         procedimento: form.procedimento.trim(),
@@ -354,6 +357,17 @@ function FormNovaSolicitacao({
     <div className="crm-overlay" role="dialog" aria-modal="true" onClick={onCancelar}>
       <form className="crm-modal" onClick={(e) => e.stopPropagation()} onSubmit={onSalvar}>
         <h3>Nova solicitação</h3>
+
+        <div className="campo">
+          <label htmlFor="n-protocolo">Protocolo</label>
+          <input
+            id="n-protocolo"
+            placeholder="Protocolo do sistema de origem"
+            value={form.protocolo}
+            onChange={(e) => set('protocolo', e.target.value)}
+            required
+          />
+        </div>
 
         <div className="linha">
           <div className="campo">
