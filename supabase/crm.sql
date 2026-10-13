@@ -211,12 +211,12 @@ create policy "crm excluir"
   using (public.crm_papel() = 'admin');
 
 -- ============================================================
--- 6) CADASTRO DE USUÁRIOS (faça para cada pessoa da equipe)
+-- 6) ADMIN INICIAL (bootstrap — faça só uma vez)
 --    1. Crie o usuário em Authentication → Users (e-mail + senha).
---    2. Copie o UUID do usuário e rode um insert como abaixo.
+--    2. Copie o UUID desse usuário (coluna "User UID") e cole abaixo
+--       no lugar de 'SEU-UUID-AQUI'. Depois rode este insert.
+--    A partir daí, os demais usuários são criados pela tela
+--    CRM → Usuários (sem precisar de SQL).
 -- ============================================================
--- insert into public.crm_perfis (user_id, nome, papel) values
---   ('00000000-0000-0000-0000-000000000000', 'Fulana',  'atendimento'),
---   ('11111111-1111-1111-1111-111111111111', 'Beltrana','enfermagem'),
---   ('22222222-2222-2222-2222-222222222222', 'Ciclano', 'financeiro'),
---   ('33333333-3333-3333-3333-333333333333', 'Gestor',  'admin');
+-- insert into public.crm_perfis (user_id, nome, email, papel)
+-- values ('SEU-UUID-AQUI', 'Khemraj Junior', 'khemraj.junior@innovaoperadora.com.br', 'admin');
