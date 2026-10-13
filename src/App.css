@@ -4652,6 +4652,108 @@
   }
 }
 
+/* ---------- Modal de divulgação do app ---------- */
+.promo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 40px);
+  background: rgba(10, 19, 48, 0.62);
+  backdrop-filter: blur(4px);
+  animation: aviso-fade 0.25s ease both;
+}
+
+.promo-dialog {
+  position: relative;
+  width: min(820px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.6);
+  animation: aviso-pop 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.promo-img-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.promo-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 20px 20px 0 0;
+}
+
+.promo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: clamp(16px, 2.6vw, 24px);
+}
+
+.promo-actions .btn-primary {
+  flex: 0 0 auto;
+}
+
+.promo-later {
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 4px;
+  transition: color 0.2s ease;
+}
+
+.promo-later:hover {
+  color: var(--text);
+}
+
+.promo-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #14253f;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.45);
+  transition: transform 0.15s ease, background 0.15s ease;
+  z-index: 2;
+}
+
+.promo-close:hover {
+  transform: scale(1.08);
+  background: #fff;
+}
+
+@media (max-width: 560px) {
+  .promo-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .promo-actions .btn-primary {
+    justify-content: center;
+  }
+}
+
 /* ---------- Popup de comunicado (aviso) ---------- */
 .aviso-overlay {
   position: fixed;
