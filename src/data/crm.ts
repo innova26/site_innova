@@ -26,6 +26,13 @@ export const STATUS_FINANCEIRO: StatusFinanceiro[] = [
 
 export const FORMAS_PAGAMENTO = ['Pix'] as const
 
+/**
+ * STANDBY dos avisos automáticos entre etapas (e-mail via crm-notificar).
+ * Enquanto `false`, nenhuma notificação é disparada ao criar/autorizar.
+ * Para religar, basta trocar para `true` (a função já está deployada).
+ */
+export const AVISOS_ATIVOS = false
+
 export type SolicitacaoCRM = {
   id: string
   protocolo: string
