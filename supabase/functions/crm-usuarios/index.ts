@@ -28,17 +28,36 @@ const REMETENTE =
 
 const PAPEIS = ['atendimento', 'enfermagem', 'financeiro', 'admin']
 
-async function enviarConvite(email: string, nome: string, link: string) {
+// Gera uma senha provisória legível (sem caracteres ambíguos).
+function gerarSenha(): string {
+  const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
+  const num = '23456789'
+  const low = 'abcdefghijkmnpqrstuvwxyz'
+  const todos = abc + num + low
+  const bytes = crypto.getRandomValues(new Uint8Array(12))
+  let s =
+    abc[bytes[0] % abc.length] +
+    num[bytes[1] % num.length] +
+    low[bytes[2] % low.length]
+  for (let i = 3; i < bytes.length; i++) s += todos[bytes[i] % todos.length]
+  return s
+}
+
+// Envia o acesso (e-mail + senha provisória) pelo Resend. Não usa link de
+// uso único, que o Microsoft/Exchange costuma pré-abrir e invalidar.
+async function enviarAcesso(email: string, nome: string, senha: string, loginUrl: string) {
   if (!RESEND_API_KEY) return false
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:480px">
-      <h2>Bem-vindo(a) ao CRM da Innova</h2>
+      <h2>Seu acesso ao CRM da Innova</h2>
       <p>Olá${nome ? ', ' + nome.split(' ')[0] : ''}! Sua conta de acesso ao Controle de CRM foi criada.</p>
-      <p>Clique no botão abaixo para definir sua senha e acessar:</p>
-      <p style="margin:24px 0">
-        <a href="${link}" style="background:#2456c9;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:bold">Definir minha senha</a>
-      </p>
-      <p style="color:#888;font-size:12px">Se você não esperava este convite, ignore este e-mail.</p>
+      <p>Entre com estes dados:</p>
+      <table cellpadding="0" style="border-collapse:collapse;font-size:15px">
+        <tr><td style="padding:4px 10px"><strong>Endereço</strong></td><td style="padding:4px 10px"><a href="${loginUrl}">${loginUrl}</a></td></tr>
+        <tr><td style="padding:4px 10px"><strong>E-mail</strong></td><td style="padding:4px 10px">${email}</td></tr>
+        <tr><td style="padding:4px 10px"><strong>Senha provisória</strong></td><td style="padding:4px 10px"><code style="font-size:16px">${senha}</code></td></tr>
+      </table>
+      <p style="color:#888;font-size:12px;margin-top:20px">Guarde esta senha em local seguro. Se você não esperava este acesso, ignore este e-mail.</p>
     </div>`
   try {
     const resp = await fetch('https://api.resend.com/emails', {
@@ -54,10 +73,10 @@ async function enviarConvite(email: string, nome: string, link: string) {
         html,
       }),
     })
-    if (!resp.ok) console.error('Resend convite falhou:', resp.status, await resp.text())
+    if (!resp.ok) console.error('Resend acesso falhou:', resp.status, await resp.text())
     return resp.ok
   } catch (e) {
-    console.error('Erro ao enviar convite:', e)
+    console.error('Erro ao enviar acesso:', e)
     return false
   }
 }
@@ -128,52 +147,51 @@ Deno.serve(async (req) => {
       return json({ error: 'Dados inválidos.' }, 422)
     }
 
-    // Tenta como usuário novo (invite). generateLink NÃO envia e-mail —
-    // o envio é feito pelo Resend logo abaixo, sem depender do SMTP do Auth.
-    const inv = await admin.auth.admin.generateLink({
-      type: 'invite',
-      email,
-      options: { data: { nome }, redirectTo: REDIRECT },
-    })
-
-    let user = inv.data?.user ?? null
-    let link = inv.data?.properties?.action_link ?? null
+    // Cria o usuário com uma senha provisória e já confirma o e-mail,
+    // para a pessoa entrar direto em /admin — sem link de uso único.
+    const senha = gerarSenha()
+    let userId: string | null = null
     let jaExistia = false
 
-    // Se o e-mail já existe, gera um link de recuperação (definir nova senha)
-    // para o usuário existente, em vez de falhar com "já cadastrado".
-    if (inv.error) {
-      const msg = (inv.error.message || '').toLowerCase()
+    const cr = await admin.auth.admin.createUser({
+      email,
+      password: senha,
+      email_confirm: true,
+      user_metadata: { nome },
+    })
+
+    if (cr.data?.user) {
+      userId = cr.data.user.id
+    } else {
+      // Já existe: localiza o usuário e redefine a senha provisória.
+      const msg = (cr.error?.message || '').toLowerCase()
       const existe =
-        (inv.error as { code?: string }).code === 'email_exists' ||
+        (cr.error as { code?: string } | null)?.code === 'email_exists' ||
         msg.includes('already') ||
         msg.includes('registered') ||
         msg.includes('exists')
       if (!existe) {
-        return json({ error: 'Não foi possível convidar: ' + inv.error.message }, 400)
+        return json({ error: 'Não foi possível cadastrar: ' + (cr.error?.message ?? '') }, 400)
       }
       jaExistia = true
-      const rec = await admin.auth.admin.generateLink({
-        type: 'recovery',
-        email,
-        options: { redirectTo: REDIRECT },
-      })
-      if (rec.error || !rec.data?.user || !rec.data.properties?.action_link) {
-        return json(
-          { error: 'Usuário já existe, mas não foi possível gerar o link de acesso: ' + (rec.error?.message ?? '') },
-          400,
-        )
+      // generateLink devolve o usuário existente (ignoramos o link).
+      const look = await admin.auth.admin.generateLink({ type: 'recovery', email })
+      const existente = look.data?.user
+      if (look.error || !existente) {
+        return json({ error: 'Usuário já existe, mas não foi localizado: ' + (look.error?.message ?? '') }, 400)
       }
-      user = rec.data.user
-      link = rec.data.properties.action_link
-    }
-
-    if (!user || !link) {
-      return json({ error: 'Não foi possível convidar: link indisponível.' }, 400)
+      userId = existente.id
+      const upd = await admin.auth.admin.updateUserById(userId, {
+        password: senha,
+        email_confirm: true,
+      })
+      if (upd.error) {
+        return json({ error: 'Não foi possível redefinir a senha: ' + upd.error.message }, 400)
+      }
     }
 
     const { error: errPerfil } = await admin.from('crm_perfis').upsert({
-      user_id: user.id,
+      user_id: userId,
       nome,
       email,
       papel,
@@ -181,13 +199,13 @@ Deno.serve(async (req) => {
     })
     if (errPerfil) return json({ error: errPerfil.message }, 500)
 
-    const enviado = await enviarConvite(email, nome, link)
+    const enviado = await enviarAcesso(email, nome, senha, REDIRECT)
 
     return json({
       ok: true,
       enviado,
       jaExistia,
-      usuario: { user_id: user.id, nome, email, papel, ativo: true },
+      usuario: { user_id: userId, nome, email, papel, ativo: true },
     })
   }
 

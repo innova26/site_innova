@@ -78,7 +78,7 @@ export default function AdminCRMUsuarios() {
       const novo = await convidarUsuario(form.nome.trim(), form.email.trim(), form.papel)
       setLista((atual) => [...atual, novo])
       setForm(null)
-      setAviso(`Convite enviado para ${novo.email}.`)
+      setAviso(`Acesso enviado para ${novo.email} (e-mail com a senha provisória).`)
     } catch (err) {
       setErro('Não foi possível convidar: ' + String(err))
     } finally {
@@ -219,8 +219,8 @@ export default function AdminCRMUsuarios() {
             </div>
 
             <p className="crm-aviso">
-              Ao criar, o usuário recebe um e-mail para definir a própria senha e
-              já entra com o papel escolhido.
+              Ao criar, o usuário recebe um e-mail com uma senha provisória e já
+              entra em /admin com o papel escolhido.
             </p>
 
             <div className="crm-modal-acoes">
