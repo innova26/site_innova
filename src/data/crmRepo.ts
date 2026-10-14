@@ -162,6 +162,13 @@ export async function atualizarSolicitacao(
   return daLinha(data as LinhaCRM)
 }
 
+/** Exclui uma solicitação (RLS permite apenas admin). */
+export async function excluirSolicitacao(id: string): Promise<void> {
+  if (!supabase) throw new Error('Supabase indisponível.')
+  const { error } = await supabase.from('crm_solicitacoes').delete().eq('id', id)
+  if (error) throw error
+}
+
 /* ============================================================
  * Gestão de usuários (admin) — via Edge Function crm-usuarios
  * ========================================================== */

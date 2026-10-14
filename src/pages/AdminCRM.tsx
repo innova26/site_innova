@@ -19,6 +19,7 @@ import {
 import {
   atualizarSolicitacao,
   criarSolicitacao,
+  excluirSolicitacao,
   listarSolicitacoes,
   meuPapel,
   notificar,
@@ -143,6 +144,19 @@ export default function AdminCRM() {
       if (AVISOS_ATIVOS && patch.autorizacao === 'sim') void notificar('autorizada', id)
     } catch (e) {
       setErro('Não foi possível salvar a alteração: ' + String(e))
+    }
+  }
+
+  const excluir = async (s: SolicitacaoCRM) => {
+    if (!confirm(`Excluir a solicitação ${s.protocolo} (${s.beneficiario})? Essa ação não pode ser desfeita.`))
+      return
+    setErro('')
+    try {
+      await excluirSolicitacao(s.id)
+      setLista((atual) => atual.filter((x) => x.id !== s.id))
+      setSelecionada(null)
+    } catch (e) {
+      setErro('Não foi possível excluir: ' + String(e))
     }
   }
 
@@ -332,6 +346,7 @@ export default function AdminCRM() {
           papel={papel}
           onFechar={() => setSelecionada(null)}
           onAtualizar={atualizar}
+          onExcluir={excluir}
         />
       )}
     </div>
@@ -484,11 +499,13 @@ function DetalheSolicitacao({
   papel,
   onFechar,
   onAtualizar,
+  onExcluir,
 }: {
   s: SolicitacaoCRM
   papel: PapelCRM
   onFechar: () => void
   onAtualizar: (id: string, patch: Partial<SolicitacaoCRM>) => void
+  onExcluir: (s: SolicitacaoCRM) => void
 }) {
   const et = etapaAtual(s)
   const [dataPrev, setDataPrev] = useState(s.dataPrevistaPagamento ?? '')
@@ -647,6 +664,14 @@ function DetalheSolicitacao({
           <section className="crm-bloco">
             <h4>Observações</h4>
             <p className="crm-obs">{s.observacoes}</p>
+          </section>
+        )}
+
+        {papel === 'admin' && (
+          <section className="crm-bloco crm-excluir">
+            <button type="button" className="btn btn-ghost crm-btn-recusar" onClick={() => onExcluir(s)}>
+              Excluir solicitação
+            </button>
           </section>
         )}
       </aside>
