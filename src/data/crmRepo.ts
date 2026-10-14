@@ -216,3 +216,19 @@ export async function atualizarUsuario(
   const data = await invocarUsuarios('atualizar', { user_id, ...patch })
   return data.usuario as UsuarioCRM
 }
+
+export async function redefinirSenha(user_id: string): Promise<boolean> {
+  const data = await invocarUsuarios('redefinir_senha', { user_id })
+  return Boolean(data.enviado)
+}
+
+export async function removerUsuario(user_id: string): Promise<void> {
+  await invocarUsuarios('remover', { user_id })
+}
+
+/** Id do usuário logado (para esconder ações sobre a própria conta). */
+export async function meuUserId(): Promise<string | null> {
+  if (!supabase) return null
+  const { data } = await supabase.auth.getUser()
+  return data.user?.id ?? null
+}

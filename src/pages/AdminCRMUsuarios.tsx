@@ -7,6 +7,9 @@ import {
   convidarUsuario,
   listarUsuarios,
   meuPapel,
+  meuUserId,
+  redefinirSenha,
+  removerUsuario,
   type UsuarioCRM,
 } from '../data/crmRepo'
 
@@ -25,14 +28,17 @@ export default function AdminCRMUsuarios() {
   const [salvando, setSalvando] = useState(false)
   const [erro, setErro] = useState('')
   const [aviso, setAviso] = useState('')
+  const [meuId, setMeuId] = useState<string | null>(null)
+  const [ocupado, setOcupado] = useState<string | null>(null)
 
   useEffect(() => {
     let vivo = true
     ;(async () => {
       try {
-        const p = await meuPapel()
+        const [p, id] = await Promise.all([meuPapel(), meuUserId()])
         if (!vivo) return
         setPapel(p)
+        setMeuId(id)
         if (p === 'admin') {
           const us = await listarUsuarios()
           if (vivo) setLista(us)
@@ -65,6 +71,37 @@ export default function AdminCRMUsuarios() {
       setLista((atual) => atual.map((x) => (x.user_id === u.user_id ? novo : x)))
     } catch (e) {
       setErro(String(e))
+    }
+  }
+
+  const redefinir = async (u: UsuarioCRM) => {
+    if (!confirm(`Enviar uma nova senha provisória para ${u.nome || u.email}?`)) return
+    setErro('')
+    setAviso('')
+    setOcupado(u.user_id)
+    try {
+      await redefinirSenha(u.user_id)
+      setAviso(`Nova senha provisória enviada para ${u.email}.`)
+    } catch (e) {
+      setErro(String(e))
+    } finally {
+      setOcupado(null)
+    }
+  }
+
+  const remover = async (u: UsuarioCRM) => {
+    if (!confirm(`Remover ${u.nome || u.email}? O acesso dessa pessoa será apagado.`)) return
+    setErro('')
+    setAviso('')
+    setOcupado(u.user_id)
+    try {
+      await removerUsuario(u.user_id)
+      setLista((atual) => atual.filter((x) => x.user_id !== u.user_id))
+      setAviso(`${u.nome || u.email} foi removido.`)
+    } catch (e) {
+      setErro(String(e))
+    } finally {
+      setOcupado(null)
     }
   }
 
@@ -130,12 +167,13 @@ export default function AdminCRMUsuarios() {
               <th>E-mail</th>
               <th>Papel</th>
               <th>Ativo</th>
+              <th aria-label="Ações" />
             </tr>
           </thead>
           <tbody>
             {lista.length === 0 && (
               <tr>
-                <td colSpan={4} className="admin-td-vazio">
+                <td colSpan={5} className="admin-td-vazio">
                   Nenhum usuário cadastrado ainda.
                 </td>
               </tr>
@@ -170,6 +208,26 @@ export default function AdminCRMUsuarios() {
                   >
                     <span />
                   </button>
+                </td>
+                <td className="admin-td-acoes">
+                  <button
+                    type="button"
+                    className="admin-link"
+                    disabled={ocupado === u.user_id}
+                    onClick={() => redefinir(u)}
+                  >
+                    Redefinir senha
+                  </button>
+                  {u.user_id !== meuId && (
+                    <button
+                      type="button"
+                      className="admin-link admin-link-danger"
+                      disabled={ocupado === u.user_id}
+                      onClick={() => remover(u)}
+                    >
+                      Remover
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

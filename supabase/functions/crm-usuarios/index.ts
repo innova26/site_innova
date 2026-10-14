@@ -237,5 +237,43 @@ Deno.serve(async (req) => {
     return json({ ok: true, usuario: data })
   }
 
+  // --- redefinir senha (gera nova provisória e envia por e-mail) ---
+  if (acao === 'redefinir_senha') {
+    const userId = String(body.user_id ?? '')
+    if (!userId) return json({ error: 'user_id obrigatório.' }, 422)
+
+    const { data: alvo } = await admin
+      .from('crm_perfis')
+      .select('email, nome')
+      .eq('user_id', userId)
+      .maybeSingle()
+    if (!alvo?.email) return json({ error: 'Usuário sem e-mail no perfil.' }, 400)
+
+    const senha = gerarSenha()
+    const upd = await admin.auth.admin.updateUserById(userId, {
+      password: senha,
+      email_confirm: true,
+    })
+    if (upd.error) return json({ error: upd.error.message }, 500)
+
+    const enviado = await enviarAcesso(alvo.email, alvo.nome ?? '', senha, REDIRECT)
+    return json({ ok: true, enviado })
+  }
+
+  // --- remover usuário (apaga o login e o perfil) ---
+  if (acao === 'remover') {
+    const userId = String(body.user_id ?? '')
+    if (!userId) return json({ error: 'user_id obrigatório.' }, 422)
+    if (userId === solicitante.id) {
+      return json({ error: 'Você não pode remover o próprio usuário.' }, 409)
+    }
+
+    const del = await admin.auth.admin.deleteUser(userId)
+    if (del.error) return json({ error: del.error.message }, 500)
+    // o perfil cai por cascata (FK on delete cascade); garante mesmo assim
+    await admin.from('crm_perfis').delete().eq('user_id', userId)
+    return json({ ok: true })
+  }
+
   return json({ error: 'Ação desconhecida.' }, 400)
 })
