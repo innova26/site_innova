@@ -1,5 +1,5 @@
 /**
- * Controle de CRM — CM e Reembolsos.
+ * Controle de CRM — CM.
  *
  * Tipos, helpers de fluxo e dados de exemplo (em memória) para montar o
  * frontend. A persistência real (Supabase) entra depois, trocando este módulo

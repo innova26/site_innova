@@ -1,5 +1,5 @@
 -- ============================================================
--- Controle de CRM — CM e Reembolsos
+-- Controle de CRM — CM
 -- Rode este script no SQL Editor do Supabase (uma vez).
 --
 -- Fluxo: Atendimento abre → Enfermagem autoriza → Financeiro paga.

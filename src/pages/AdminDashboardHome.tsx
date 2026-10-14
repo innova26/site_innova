@@ -82,7 +82,7 @@ const OPCOES: {
     to: ROUTES.adminCrm,
     titulo: 'Controle de CRM',
     descricao:
-      'Fluxo de CM e reembolsos entre atendimento, enfermagem e financeiro — abertura, autorização, agendamento e pagamento.',
+      'Fluxo de CM entre atendimento, enfermagem e financeiro — abertura, autorização, agendamento e pagamento.',
     icone: <IconeCrm />,
   },
 ]
