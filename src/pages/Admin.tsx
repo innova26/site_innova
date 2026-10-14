@@ -108,10 +108,102 @@ function Login() {
   )
 }
 
+/* ====================== Trocar senha ====================== */
+function TrocarSenha({ onFechar }: { onFechar: () => void }) {
+  const [senha, setSenha] = useState('')
+  const [confirma, setConfirma] = useState('')
+  const [erro, setErro] = useState('')
+  const [salvando, setSalvando] = useState(false)
+  const [ok, setOk] = useState(false)
+
+  const salvar = async (e: FormEvent) => {
+    e.preventDefault()
+    setErro('')
+    if (senha.length < 6) {
+      setErro('A senha deve ter ao menos 6 caracteres.')
+      return
+    }
+    if (senha !== confirma) {
+      setErro('As senhas não coincidem.')
+      return
+    }
+    setSalvando(true)
+    const { error } = await supabase!.auth.updateUser({ password: senha })
+    setSalvando(false)
+    if (error) {
+      setErro('Não foi possível trocar a senha: ' + error.message)
+      return
+    }
+    setOk(true)
+  }
+
+  return (
+    <div className="crm-overlay" role="dialog" aria-modal="true" onClick={onFechar}>
+      <form className="crm-modal" onClick={(e) => e.stopPropagation()} onSubmit={salvar}>
+        <h3>Trocar senha</h3>
+
+        {ok ? (
+          <>
+            <p className="admin-info crm-ok" role="status">
+              Senha alterada com sucesso.
+            </p>
+            <div className="crm-modal-acoes">
+              <button type="button" className="btn btn-primary" onClick={onFechar}>
+                Fechar
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="campo">
+              <label htmlFor="ts-nova">Nova senha</label>
+              <input
+                id="ts-nova"
+                type="password"
+                autoComplete="new-password"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                required
+              />
+            </div>
+            <div className="campo">
+              <label htmlFor="ts-conf">Confirmar nova senha</label>
+              <input
+                id="ts-conf"
+                type="password"
+                autoComplete="new-password"
+                value={confirma}
+                onChange={(e) => setConfirma(e.target.value)}
+                required
+              />
+            </div>
+
+            {erro && (
+              <p className="erro" role="alert">
+                {erro}
+              </p>
+            )}
+
+            <div className="crm-modal-acoes">
+              <button type="button" className="btn btn-ghost" onClick={onFechar}>
+                Cancelar
+              </button>
+              <button type="submit" className="btn btn-primary" disabled={salvando}>
+                {salvando ? 'Salvando…' : 'Salvar'}
+              </button>
+            </div>
+          </>
+        )}
+      </form>
+    </div>
+  )
+}
+
 /* ====================== Layout autenticado (menu + sub-páginas) ====================== */
 function AdminShell({ sessao }: { sessao: Session }) {
   const location = useLocation()
   const naRaiz = location.pathname === ROUTES.admin
+  const [trocarSenha, setTrocarSenha] = useState(false)
 
   return (
     <section className="admin">
@@ -139,12 +231,21 @@ function AdminShell({ sessao }: { sessao: Session }) {
             <button
               type="button"
               className="btn btn-ghost"
+              onClick={() => setTrocarSenha(true)}
+            >
+              Trocar senha
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost"
               onClick={() => supabase!.auth.signOut()}
             >
               Sair
             </button>
           </div>
         </header>
+
+        {trocarSenha && <TrocarSenha onFechar={() => setTrocarSenha(false)} />}
 
         <Outlet />
       </div>
