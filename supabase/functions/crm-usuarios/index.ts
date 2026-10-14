@@ -128,21 +128,52 @@ Deno.serve(async (req) => {
       return json({ error: 'Dados inválidos.' }, 422)
     }
 
-    // cria o usuário e gera o link de convite (NÃO envia e-mail aqui —
-    // o envio é feito pelo Resend logo abaixo, sem depender do SMTP do Auth)
-    const { data: gen, error: errGen } = await admin.auth.admin.generateLink({
+    // Tenta como usuário novo (invite). generateLink NÃO envia e-mail —
+    // o envio é feito pelo Resend logo abaixo, sem depender do SMTP do Auth.
+    const inv = await admin.auth.admin.generateLink({
       type: 'invite',
       email,
       options: { data: { nome }, redirectTo: REDIRECT },
     })
 
-    const link = gen?.properties?.action_link
-    if (errGen || !gen?.user || !link) {
-      return json({ error: 'Não foi possível convidar: ' + (errGen?.message ?? 'link indisponível') }, 400)
+    let user = inv.data?.user ?? null
+    let link = inv.data?.properties?.action_link ?? null
+    let jaExistia = false
+
+    // Se o e-mail já existe, gera um link de recuperação (definir nova senha)
+    // para o usuário existente, em vez de falhar com "já cadastrado".
+    if (inv.error) {
+      const msg = (inv.error.message || '').toLowerCase()
+      const existe =
+        (inv.error as { code?: string }).code === 'email_exists' ||
+        msg.includes('already') ||
+        msg.includes('registered') ||
+        msg.includes('exists')
+      if (!existe) {
+        return json({ error: 'Não foi possível convidar: ' + inv.error.message }, 400)
+      }
+      jaExistia = true
+      const rec = await admin.auth.admin.generateLink({
+        type: 'recovery',
+        email,
+        options: { redirectTo: REDIRECT },
+      })
+      if (rec.error || !rec.data?.user || !rec.data.properties?.action_link) {
+        return json(
+          { error: 'Usuário já existe, mas não foi possível gerar o link de acesso: ' + (rec.error?.message ?? '') },
+          400,
+        )
+      }
+      user = rec.data.user
+      link = rec.data.properties.action_link
+    }
+
+    if (!user || !link) {
+      return json({ error: 'Não foi possível convidar: link indisponível.' }, 400)
     }
 
     const { error: errPerfil } = await admin.from('crm_perfis').upsert({
-      user_id: gen.user.id,
+      user_id: user.id,
       nome,
       email,
       papel,
@@ -155,7 +186,8 @@ Deno.serve(async (req) => {
     return json({
       ok: true,
       enviado,
-      usuario: { user_id: gen.user.id, nome, email, papel, ativo: true },
+      jaExistia,
+      usuario: { user_id: user.id, nome, email, papel, ativo: true },
     })
   }
 
