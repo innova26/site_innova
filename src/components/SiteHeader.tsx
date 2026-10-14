@@ -148,6 +148,10 @@ function SiteHeader() {
           {renderLinks(closeAll)}
         </nav>
 
+        <Link className="nav-btn nav-btn-admin mobile-admin" to={ROUTES.admin} onClick={closeAll}>
+          Admin
+        </Link>
+
         <a className="btn btn-primary" href="#contato" onClick={closeAll}>
           FALE COM ESPECIALISTA
         </a>

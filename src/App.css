@@ -403,6 +403,13 @@
   margin: 22px clamp(24px, 5vw, 72px) 0;
 }
 
+/* Botao Admin dentro do menu mobile (fora do .nav do desktop) */
+.mobile-admin {
+  display: flex;
+  justify-content: center;
+  margin: 22px clamp(24px, 5vw, 72px) 0;
+}
+
 .header-cta {
   margin-left: 6px;
   font-size: 13px;
