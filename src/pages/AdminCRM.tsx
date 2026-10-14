@@ -203,7 +203,7 @@ export default function AdminCRM() {
   return (
     <div className="crm">
       <div className="crm-topo">
-        <h2 className="admin-secao-titulo">Controle de CRM · CM</h2>
+        <h2 className="admin-secao-titulo">Controle de CRM</h2>
         <div className="crm-topo-acoes">
           {papel === 'admin' && (
             <Link className="btn btn-ghost" to={ROUTES.adminCrmUsuarios}>
