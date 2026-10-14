@@ -1463,8 +1463,10 @@
     backdrop-filter: none;
     display: grid;
     grid-template-rows: 0fr;
+    max-height: 0;
     overflow: hidden;
     transition:
+      max-height 0.3s ease,
       grid-template-rows 0.3s ease,
       opacity 0.25s ease,
       visibility 0.3s;
@@ -1472,6 +1474,7 @@
 
   .mobile-nav .nav-group.is-open .nav-submenu {
     grid-template-rows: 1fr;
+    max-height: 500px;
   }
 
   .mobile-nav .nav-submenu li {
