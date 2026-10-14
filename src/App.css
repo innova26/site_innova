@@ -3374,6 +3374,23 @@
 .admin-acoes-topo {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 560px) {
+  .admin-topo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-acoes-topo {
+    width: 100%;
+  }
+
+  .admin-acoes-topo .btn {
+    flex: 1 1 auto;
+    text-align: center;
+  }
 }
 
 .admin-erro {
