@@ -203,6 +203,9 @@ function TrocarSenha({ onFechar }: { onFechar: () => void }) {
 function AdminShell({ sessao }: { sessao: Session }) {
   const location = useLocation()
   const naRaiz = location.pathname === ROUTES.admin
+  const naCrm = (
+    [ROUTES.adminCrm, ROUTES.adminCrmUsuarios, ROUTES.adminCrmPainel] as string[]
+  ).includes(location.pathname)
   const [trocarSenha, setTrocarSenha] = useState(false)
 
   return (
@@ -220,21 +223,20 @@ function AdminShell({ sessao }: { sessao: Session }) {
                 ← Menu
               </Link>
             )}
-            {!naRaiz &&
-              location.pathname !== ROUTES.adminRedes &&
-              location.pathname !== ROUTES.adminCrm &&
-              location.pathname !== ROUTES.adminCrmUsuarios && (
-                <Link className="btn btn-ghost" to={ROUTES.rede}>
-                  Ver página pública
-                </Link>
-              )}
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={() => setTrocarSenha(true)}
-            >
-              Trocar senha
-            </button>
+            {!naRaiz && location.pathname !== ROUTES.adminRedes && !naCrm && (
+              <Link className="btn btn-ghost" to={ROUTES.rede}>
+                Ver página pública
+              </Link>
+            )}
+            {!naCrm && (
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => setTrocarSenha(true)}
+              >
+                Trocar senha
+              </button>
+            )}
             <button
               type="button"
               className="btn btn-ghost"
