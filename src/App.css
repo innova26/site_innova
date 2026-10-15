@@ -5181,6 +5181,52 @@ button.crm-card:hover {
   color: var(--tom-ok);
 }
 
+/* ---- anexos ---- */
+.crm-anexos-bloco {
+  margin-top: 14px;
+}
+.crm-anexos-bloco > .crm-campo-rot {
+  display: block;
+  margin-bottom: 6px;
+}
+.crm-anexos-lista {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.crm-anexos-lista li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--text);
+}
+.crm-anexos-lista li span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crm-anexo-add {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border: 1px dashed var(--field-border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--blue-500);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.crm-anexo-add:hover {
+  border-color: var(--blue-300);
+  background: var(--surface-tint);
+}
+
 @media (max-width: 760px) {
   .crm-cards {
     grid-template-columns: repeat(2, 1fr);

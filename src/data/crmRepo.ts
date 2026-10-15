@@ -162,10 +162,125 @@ export async function atualizarSolicitacao(
   return daLinha(data as LinhaCRM)
 }
 
-/** Exclui uma solicitação (RLS permite apenas admin). */
+/** Exclui uma solicitação (RLS permite apenas admin), limpando os anexos. */
 export async function excluirSolicitacao(id: string): Promise<void> {
   if (!supabase) throw new Error('Supabase indisponível.')
+  // remove os arquivos do Storage antes (evita órfãos; as linhas caem por cascata)
+  const { data: anexos } = await supabase
+    .from('crm_anexos')
+    .select('path')
+    .eq('solicitacao_id', id)
+  const paths = (anexos ?? []).map((a) => a.path as string)
+  if (paths.length) await supabase.storage.from(BUCKET_ANEXOS).remove(paths)
+
   const { error } = await supabase.from('crm_solicitacoes').delete().eq('id', id)
+  if (error) throw error
+}
+
+/* ============================================================
+ * Anexos (documentos do atendimento + recibo do financeiro)
+ * ========================================================== */
+const BUCKET_ANEXOS = 'crm-anexos'
+
+export type TipoAnexo = 'documento' | 'recibo'
+
+export type AnexoCRM = {
+  id: string
+  solicitacaoId: string
+  tipo: TipoAnexo
+  nome: string
+  path: string
+  tamanho: number | null
+  mime: string | null
+  createdAt: string
+}
+
+type LinhaAnexo = {
+  id: string
+  solicitacao_id: string
+  tipo: TipoAnexo
+  nome: string
+  path: string
+  tamanho: number | null
+  mime: string | null
+  created_at: string
+}
+
+function daAnexo(l: LinhaAnexo): AnexoCRM {
+  return {
+    id: l.id,
+    solicitacaoId: l.solicitacao_id,
+    tipo: l.tipo,
+    nome: l.nome,
+    path: l.path,
+    tamanho: l.tamanho,
+    mime: l.mime,
+    createdAt: l.created_at,
+  }
+}
+
+export async function listarAnexos(solicitacaoId: string): Promise<AnexoCRM[]> {
+  if (!supabase) return []
+  const { data, error } = await supabase
+    .from('crm_anexos')
+    .select('*')
+    .eq('solicitacao_id', solicitacaoId)
+    .order('created_at', { ascending: true })
+  if (error) throw error
+  return (data as LinhaAnexo[]).map(daAnexo)
+}
+
+export async function enviarAnexo(
+  solicitacaoId: string,
+  tipo: TipoAnexo,
+  arquivo: File,
+): Promise<AnexoCRM> {
+  if (!supabase) throw new Error('Supabase indisponível.')
+  const ext = (arquivo.name.split('.').pop() || 'bin').toLowerCase()
+  const path = `${solicitacaoId}/${tipo}/${crypto.randomUUID()}.${ext}`
+
+  const { error: upErr } = await supabase.storage
+    .from(BUCKET_ANEXOS)
+    .upload(path, arquivo, { contentType: arquivo.type, upsert: false })
+  if (upErr) throw upErr
+
+  const { data: auth } = await supabase.auth.getUser()
+  const { data, error } = await supabase
+    .from('crm_anexos')
+    .insert({
+      solicitacao_id: solicitacaoId,
+      tipo,
+      nome: arquivo.name,
+      path,
+      tamanho: arquivo.size,
+      mime: arquivo.type || null,
+      uploaded_by: auth.user?.id ?? null,
+    })
+    .select('*')
+    .single()
+
+  if (error) {
+    // desfaz o upload se não conseguiu gravar o metadado
+    await supabase.storage.from(BUCKET_ANEXOS).remove([path])
+    throw error
+  }
+  return daAnexo(data as LinhaAnexo)
+}
+
+/** Link temporário (1h) para baixar/visualizar o anexo. */
+export async function urlAnexo(path: string): Promise<string> {
+  if (!supabase) throw new Error('Supabase indisponível.')
+  const { data, error } = await supabase.storage
+    .from(BUCKET_ANEXOS)
+    .createSignedUrl(path, 3600)
+  if (error || !data) throw error ?? new Error('Link indisponível.')
+  return data.signedUrl
+}
+
+export async function excluirAnexo(anexo: AnexoCRM): Promise<void> {
+  if (!supabase) throw new Error('Supabase indisponível.')
+  await supabase.storage.from(BUCKET_ANEXOS).remove([anexo.path])
+  const { error } = await supabase.from('crm_anexos').delete().eq('id', anexo.id)
   if (error) throw error
 }
 

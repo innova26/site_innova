@@ -19,10 +19,16 @@ import {
 import {
   atualizarSolicitacao,
   criarSolicitacao,
+  excluirAnexo,
   excluirSolicitacao,
+  enviarAnexo,
+  listarAnexos,
   listarSolicitacoes,
   meuPapel,
   notificar,
+  urlAnexo,
+  type AnexoCRM,
+  type TipoAnexo,
 } from '../data/crmRepo'
 
 /* ============================================================
@@ -160,8 +166,7 @@ export default function AdminCRM() {
     }
   }
 
-  const criar = async (e: FormEvent) => {
-    e.preventDefault()
+  const criar = async (documentos: File[]) => {
     if (!form) return
     setErro('')
     try {
@@ -177,6 +182,14 @@ export default function AdminCRM() {
         dadosBancarios: form.dadosBancarios.trim(),
         observacoes: form.observacoes.trim(),
       })
+      // anexa os documentos (best-effort — não bloqueia a criação)
+      for (const doc of documentos) {
+        try {
+          await enviarAnexo(nova.id, 'documento', doc)
+        } catch (e) {
+          console.warn('Falha ao anexar documento:', e)
+        }
+      }
       setLista((atual) => [nova, ...atual])
       setForm(null)
       if (AVISOS_ATIVOS) void notificar('nova', nova.id)
@@ -334,7 +347,7 @@ export default function AdminCRM() {
         <FormNovaSolicitacao
           form={form}
           setForm={setForm as (f: FormNova) => void}
-          onSalvar={criar}
+          onCriar={criar}
           onCancelar={() => setForm(null)}
         />
       )}
@@ -359,18 +372,47 @@ export default function AdminCRM() {
 function FormNovaSolicitacao({
   form,
   setForm,
-  onSalvar,
+  onCriar,
   onCancelar,
 }: {
   form: FormNova
   setForm: (f: FormNova) => void
-  onSalvar: (e: FormEvent) => void
+  onCriar: (documentos: File[]) => void | Promise<void>
   onCancelar: () => void
 }) {
   const set = (campo: keyof FormNova, valor: string) => setForm({ ...form, [campo]: valor })
+  const [docs, setDocs] = useState<File[]>([])
+  const [salvando, setSalvando] = useState(false)
+  const [erroArquivo, setErroArquivo] = useState('')
+
+  const adicionarDocs = (arquivos: FileList | null) => {
+    if (!arquivos) return
+    setErroArquivo('')
+    const novos: File[] = []
+    for (const f of Array.from(arquivos)) {
+      if (!TIPOS_ANEXO_ACEITOS.includes(f.type)) {
+        setErroArquivo('Envie apenas PDF, JPG ou PNG.')
+        continue
+      }
+      if (f.size > TAMANHO_MAX_ANEXO) {
+        setErroArquivo('Cada arquivo deve ter até 10 MB.')
+        continue
+      }
+      novos.push(f)
+    }
+    if (novos.length) setDocs((atual) => [...atual, ...novos])
+  }
+
+  const enviar = async (e: FormEvent) => {
+    e.preventDefault()
+    setSalvando(true)
+    await onCriar(docs)
+    setSalvando(false)
+  }
+
   return (
     <div className="crm-overlay" role="dialog" aria-modal="true">
-      <form className="crm-modal" onSubmit={onSalvar}>
+      <form className="crm-modal" onSubmit={enviar}>
         <h3>Nova solicitação</h3>
 
         <div className="campo">
@@ -478,12 +520,50 @@ function FormNovaSolicitacao({
           />
         </div>
 
+        <div className="campo">
+          <label>Documentos <span className="opcional">(PDF, JPG ou PNG)</span></label>
+          {docs.length > 0 && (
+            <ul className="crm-anexos-lista">
+              {docs.map((d, i) => (
+                <li key={`${d.name}-${i}`}>
+                  <span>{d.name}</span>
+                  <button
+                    type="button"
+                    className="admin-link admin-link-danger"
+                    onClick={() => setDocs((atual) => atual.filter((_, j) => j !== i))}
+                  >
+                    remover
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <label className="crm-anexo-add">
+            <input
+              type="file"
+              accept="application/pdf,image/jpeg,image/png"
+              multiple
+              hidden
+              onChange={(e) => {
+                adicionarDocs(e.target.files)
+                e.target.value = ''
+              }}
+            />
+            <span>+ Anexar documento</span>
+          </label>
+          {erroArquivo && (
+            <span className="erro" role="alert">
+              {erroArquivo}
+            </span>
+          )}
+        </div>
+
         <div className="crm-modal-acoes">
           <button type="button" className="btn btn-ghost" onClick={onCancelar}>
             Cancelar
           </button>
-          <button type="submit" className="btn btn-primary">
-            Criar solicitação
+          <button type="submit" className="btn btn-primary" disabled={salvando}>
+            {salvando ? 'Criando…' : 'Criar solicitação'}
           </button>
         </div>
       </form>
@@ -540,6 +620,15 @@ function DetalheSolicitacao({
             <Campo rot="Término / prazo" val={formatarData(s.termino)} />
           </div>
           <Campo rot="Dados bancários (Pix)" val={s.dadosBancarios || '—'} />
+
+          <div className="crm-anexos-bloco">
+            <span className="crm-campo-rot">Documentos</span>
+            <Anexos
+              solicitacaoId={s.id}
+              tipo="documento"
+              podeEnviar={podeEditarAtendimento(papel)}
+            />
+          </div>
         </section>
 
         {/* ---- Enfermagem ---- */}
@@ -656,6 +745,15 @@ function DetalheSolicitacao({
                   </div>
                 </div>
               )}
+
+              <div className="crm-anexos-bloco">
+                <span className="crm-campo-rot">Recibo de pagamento</span>
+                <Anexos
+                  solicitacaoId={s.id}
+                  tipo="recibo"
+                  podeEnviar={podeEditarFinanceiro(papel)}
+                />
+              </div>
             </>
           )}
         </section>
@@ -684,6 +782,144 @@ function Campo({ rot, val }: { rot: string; val: string }) {
     <div className="crm-campo-ro">
       <span className="crm-campo-rot">{rot}</span>
       <span className="crm-campo-val">{val}</span>
+    </div>
+  )
+}
+
+const TIPOS_ANEXO_ACEITOS = ['application/pdf', 'image/jpeg', 'image/png']
+const TAMANHO_MAX_ANEXO = 10 * 1024 * 1024 // 10 MB
+
+function mensagemErro(e: unknown): string {
+  if (e instanceof Error) return e.message
+  if (e && typeof e === 'object' && 'message' in e) return String((e as { message: unknown }).message)
+  return String(e)
+}
+
+/* ============================================================
+ * Anexos de uma solicitação (documentos ou recibo)
+ * ========================================================== */
+function Anexos({
+  solicitacaoId,
+  tipo,
+  podeEnviar,
+}: {
+  solicitacaoId: string
+  tipo: TipoAnexo
+  podeEnviar: boolean
+}) {
+  const [itens, setItens] = useState<AnexoCRM[]>([])
+  const [carregando, setCarregando] = useState(true)
+  const [enviando, setEnviando] = useState(false)
+  const [erro, setErro] = useState('')
+
+  useEffect(() => {
+    let vivo = true
+    ;(async () => {
+      try {
+        const a = await listarAnexos(solicitacaoId)
+        if (vivo) setItens(a.filter((x) => x.tipo === tipo))
+      } catch (e) {
+        if (vivo) setErro(mensagemErro(e))
+      } finally {
+        if (vivo) setCarregando(false)
+      }
+    })()
+    return () => {
+      vivo = false
+    }
+  }, [solicitacaoId, tipo])
+
+  const enviar = async (arquivo?: File) => {
+    if (!arquivo) return
+    setErro('')
+    if (!TIPOS_ANEXO_ACEITOS.includes(arquivo.type)) {
+      setErro('Envie apenas PDF, JPG ou PNG.')
+      return
+    }
+    if (arquivo.size > TAMANHO_MAX_ANEXO) {
+      setErro('Arquivo acima de 10 MB.')
+      return
+    }
+    setEnviando(true)
+    try {
+      const novo = await enviarAnexo(solicitacaoId, tipo, arquivo)
+      setItens((x) => [...x, novo])
+    } catch (e) {
+      setErro('Não foi possível enviar: ' + mensagemErro(e))
+    } finally {
+      setEnviando(false)
+    }
+  }
+
+  const abrir = async (a: AnexoCRM) => {
+    setErro('')
+    try {
+      const url = await urlAnexo(a.path)
+      window.open(url, '_blank', 'noopener')
+    } catch (e) {
+      setErro(mensagemErro(e))
+    }
+  }
+
+  const remover = async (a: AnexoCRM) => {
+    if (!confirm(`Remover "${a.nome}"?`)) return
+    setErro('')
+    try {
+      await excluirAnexo(a)
+      setItens((x) => x.filter((y) => y.id !== a.id))
+    } catch (e) {
+      setErro(mensagemErro(e))
+    }
+  }
+
+  return (
+    <div className="crm-anexos">
+      {carregando ? (
+        <p className="crm-aviso">Carregando…</p>
+      ) : itens.length === 0 ? (
+        <p className="crm-aviso">Nenhum arquivo anexado.</p>
+      ) : (
+        <ul className="crm-anexos-lista">
+          {itens.map((a) => (
+            <li key={a.id}>
+              <button type="button" className="admin-link" onClick={() => abrir(a)}>
+                {a.nome}
+              </button>
+              {podeEnviar && (
+                <button
+                  type="button"
+                  className="admin-link admin-link-danger"
+                  onClick={() => remover(a)}
+                >
+                  remover
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {podeEnviar && (
+        <label className="crm-anexo-add">
+          <input
+            type="file"
+            accept="application/pdf,image/jpeg,image/png"
+            hidden
+            disabled={enviando}
+            onChange={(e) => {
+              void enviar(e.target.files?.[0])
+              e.target.value = ''
+            }}
+          />
+          <span>{enviando ? 'Enviando…' : '+ Anexar arquivo'}</span>
+        </label>
+      )}
+
+      {erro && (
+        <p className="erro" role="alert">
+          {erro}
+        </p>
+      )}
     </div>
   )
 }
