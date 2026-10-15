@@ -68,16 +68,38 @@ function calcular(lista: SolicitacaoCRM[]) {
     }
   }
 
-  // por solicitante (top 5 + demais)
-  const porSolic = new Map<string, number>()
-  for (const s of lista) {
-    const n = (s.solicitante || '—').trim() || '—'
-    porSolic.set(n, (porSolic.get(n) ?? 0) + 1)
+  // ranking: top 5 por campo (+ demais)
+  const ranking = (campo: (s: SolicitacaoCRM) => string) => {
+    const mapa = new Map<string, number>()
+    for (const s of lista) {
+      const n = (campo(s) || '—').trim() || '—'
+      mapa.set(n, (mapa.get(n) ?? 0) + 1)
+    }
+    const ord = [...mapa.entries()].sort((a, b) => b[1] - a[1])
+    const top5 = ord.slice(0, 5).map(([nome, n]) => ({ nome, n }))
+    const resto = ord.slice(5).reduce((a, [, n]) => a + n, 0)
+    if (resto > 0) top5.push({ nome: 'Demais', n: resto })
+    return top5
   }
-  const ordenado = [...porSolic.entries()].sort((a, b) => b[1] - a[1])
-  const top = ordenado.slice(0, 5).map(([nome, n]) => ({ nome, n }))
-  const demais = ordenado.slice(5).reduce((a, [, n]) => a + n, 0)
-  if (demais > 0) top.push({ nome: 'Demais', n: demais })
+  const top = ranking((s) => s.solicitante)
+  const topBenef = ranking((s) => s.beneficiario)
+
+  // solicitações por dia (últimos 14 dias, pela data de abertura)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const dias: { rotulo: string; chave: string; qtd: number }[] = []
+  const base = new Date()
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() - i)
+    dias.push({
+      rotulo: String(d.getDate()),
+      chave: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+      qtd: 0,
+    })
+  }
+  for (const s of lista) {
+    const b = dias.find((x) => x.chave === (s.abertura || '').slice(0, 10))
+    if (b) b.qtd++
+  }
 
   // indicadores
   const decididas = lista.filter((s) => s.autorizacao !== 'pendente').length
@@ -114,6 +136,8 @@ function calcular(lista: SolicitacaoCRM[]) {
     pagoNoMes,
     buckets,
     top,
+    topBenef,
+    dias,
     taxaAut,
     ticket,
     sla,
@@ -167,6 +191,8 @@ export default function AdminCRMPainel() {
   const maxEtapa = Math.max(1, ...Object.values(m.etapas))
   const maxMes = Math.max(1, ...m.buckets.map((b) => b.valor))
   const maxSolic = Math.max(1, ...m.top.map((t) => t.n))
+  const maxBenef = Math.max(1, ...m.topBenef.map((t) => t.n))
+  const maxDia = Math.max(1, ...m.dias.map((d) => d.qtd))
 
   const barra = (valor: number, max: number, cor: string) => (
     <span className="pnl-track">
@@ -296,6 +322,40 @@ export default function AdminCRMPainel() {
                 <span className="pnl-n">{t.nome}</span>
                 {barra(t.n, maxSolic, 'var(--blue-500)')}
                 <span className="pnl-v">{t.n}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* beneficiários que mais solicitaram */}
+        <section className="pnl-card">
+          <h3>Beneficiários que mais solicitaram</h3>
+          <p className="pnl-cap">Pacientes com mais solicitações</p>
+          <div className="pnl-hbars">
+            {m.topBenef.length === 0 && <p className="crm-aviso">Sem dados no período.</p>}
+            {m.topBenef.map((t) => (
+              <div className="pnl-hbar" key={t.nome}>
+                <span className="pnl-n">{t.nome}</span>
+                {barra(t.n, maxBenef, 'var(--blue-400)')}
+                <span className="pnl-v">{t.n}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* solicitações por dia */}
+        <section className="pnl-card">
+          <h3>Solicitações por dia</h3>
+          <p className="pnl-cap">Abertas por dia — últimos 14 dias</p>
+          <div className="pnl-vbars dia">
+            {m.dias.map((d, i) => (
+              <div key={d.chave} className={`pnl-vcol${i === m.dias.length - 1 ? ' cur' : ''}`}>
+                <span className="pnl-vv">{d.qtd || ''}</span>
+                <span
+                  className="pnl-vbar"
+                  style={{ height: `${d.qtd ? Math.max(3, (d.qtd / maxDia) * 100) : 0}%` }}
+                />
+                <span className="pnl-m">{d.rotulo}</span>
               </div>
             ))}
           </div>
