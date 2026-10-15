@@ -15,6 +15,7 @@ import AdminCredenciadas from './pages/AdminCredenciadas'
 import AdminRedes from './pages/AdminRedes'
 import AdminCRM from './pages/AdminCRM'
 import AdminCRMUsuarios from './pages/AdminCRMUsuarios'
+import AdminCRMPainel from './pages/AdminCRMPainel'
 import EmBreve from './pages/EmBreve'
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade'
 import InformacoesRegulatorias from './pages/InformacoesRegulatorias'
@@ -61,6 +62,7 @@ function App() {
           <Route path="redes" element={<AdminRedes />} />
           <Route path="crm" element={<AdminCRM />} />
           <Route path="crm/usuarios" element={<AdminCRMUsuarios />} />
+          <Route path="crm/painel" element={<AdminCRMPainel />} />
         </Route>
       </Routes>
       {analyticsEnabled && (
