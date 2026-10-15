@@ -369,8 +369,8 @@ function FormNovaSolicitacao({
 }) {
   const set = (campo: keyof FormNova, valor: string) => setForm({ ...form, [campo]: valor })
   return (
-    <div className="crm-overlay" role="dialog" aria-modal="true" onClick={onCancelar}>
-      <form className="crm-modal" onClick={(e) => e.stopPropagation()} onSubmit={onSalvar}>
+    <div className="crm-overlay" role="dialog" aria-modal="true">
+      <form className="crm-modal" onSubmit={onSalvar}>
         <h3>Nova solicitação</h3>
 
         <div className="campo">
@@ -512,8 +512,8 @@ function DetalheSolicitacao({
   const [status, setStatus] = useState<StatusFinanceiro>(s.statusFinanceiro ?? 'Pendente')
 
   return (
-    <div className="crm-overlay" role="dialog" aria-modal="true" onClick={onFechar}>
-      <aside className="crm-drawer" onClick={(e) => e.stopPropagation()}>
+    <div className="crm-overlay" role="dialog" aria-modal="true">
+      <aside className="crm-drawer">
         <header className="crm-drawer-topo">
           <div>
             <span className={`crm-badge tom-${et.tom}`}>{et.label}</span>
