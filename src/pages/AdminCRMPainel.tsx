@@ -7,7 +7,7 @@ import {
   type SolicitacaoCRM,
   type PapelCRM,
 } from '../data/crm'
-import { listarSolicitacoes, meuPapel } from '../data/crmRepo'
+import { assinarSolicitacoes, listarSolicitacoes, meuPapel } from '../data/crmRepo'
 
 type Periodo = '30' | '90' | 'ano'
 
@@ -174,6 +174,31 @@ export default function AdminCRMPainel() {
       vivo = false
     }
   }, [])
+
+  /* ---- tempo real: atualiza os números quando algo muda ---- */
+  useEffect(() => {
+    if (!papel) return
+    const recarregar = async () => {
+      try {
+        setLista(await listarSolicitacoes())
+      } catch {
+        /* mantém os dados atuais */
+      }
+    }
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const agendar = () => {
+      clearTimeout(timer)
+      timer = setTimeout(() => void recarregar(), 400)
+    }
+    const desassinar = assinarSolicitacoes(agendar)
+    const aoFocar = () => void recarregar()
+    window.addEventListener('focus', aoFocar)
+    return () => {
+      clearTimeout(timer)
+      desassinar()
+      window.removeEventListener('focus', aoFocar)
+    }
+  }, [papel])
 
   const m = useMemo(() => calcular(lista.filter((s) => noPeriodo(s, periodo))), [lista, periodo])
 

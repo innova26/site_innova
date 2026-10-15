@@ -17,6 +17,7 @@ import {
   type StatusFinanceiro,
 } from '../data/crm'
 import {
+  assinarSolicitacoes,
   atualizarSolicitacao,
   criarSolicitacao,
   excluirAnexo,
@@ -107,6 +108,25 @@ export default function AdminCRM() {
       vivo = false
     }
   }, [])
+
+  /* ---- tempo real: atualiza a lista quando outro usuário muda algo ---- */
+  useEffect(() => {
+    if (!papel) return
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const agendar = () => {
+      clearTimeout(timer)
+      timer = setTimeout(() => void recarregar(), 400)
+    }
+    const desassinar = assinarSolicitacoes(agendar)
+    const aoFocar = () => void recarregar()
+    window.addEventListener('focus', aoFocar)
+    return () => {
+      clearTimeout(timer)
+      desassinar()
+      window.removeEventListener('focus', aoFocar)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [papel])
 
   /* ---- métricas do painel ---- */
   const metricas = useMemo(() => {

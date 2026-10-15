@@ -92,6 +92,26 @@ export async function listarSolicitacoes(): Promise<SolicitacaoCRM[]> {
   return (data as LinhaCRM[]).map(daLinha)
 }
 
+/**
+ * Assina mudanças em tempo real na tabela de solicitações (Supabase Realtime).
+ * Chama `aoMudar` a cada inserção/atualização/exclusão. Devolve uma função
+ * para encerrar a assinatura. Requer o realtime ligado na tabela (ver SQL).
+ */
+export function assinarSolicitacoes(aoMudar: () => void): () => void {
+  if (!supabase) return () => {}
+  const canal = supabase
+    .channel('crm_solicitacoes_rt')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'crm_solicitacoes' },
+      () => aoMudar(),
+    )
+    .subscribe()
+  return () => {
+    void supabase!.removeChannel(canal)
+  }
+}
+
 export type NovaSolicitacao = {
   protocolo: string
   solicitante: string
