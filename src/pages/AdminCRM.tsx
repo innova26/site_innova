@@ -672,10 +672,14 @@ function DetalheSolicitacao({
         {/* ---- Atendimento ---- */}
         <section className="crm-bloco">
           <h4>1 · Atendimento</h4>
-          <Campo rot="Beneficiário / Paciente" val={s.beneficiario} />
-          <Campo rot="Solicitante" val={s.solicitante} />
-          <Campo rot="Procedimento" val={s.procedimento} />
-          <Campo rot="Clínica / Hospital" val={s.clinicaHospital || '—'} />
+          <div className="crm-linha2">
+            <Campo rot="Beneficiário / Paciente" val={s.beneficiario} />
+            <Campo rot="Solicitante" val={s.solicitante} />
+          </div>
+          <div className="crm-linha2">
+            <Campo rot="Procedimento" val={s.procedimento} />
+            <Campo rot="Clínica / Hospital" val={s.clinicaHospital || '—'} />
+          </div>
           <div className="crm-linha2">
             <Campo rot="Valor solicitado" val={formatarValor(s.valorSolicitado)} />
             <Campo rot="Data consulta" val={formatarData(s.dataConsulta)} />

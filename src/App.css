@@ -5046,7 +5046,7 @@ button.crm-card:hover {
 /* ---- drawer de detalhe ---- */
 .crm-drawer {
   width: 100%;
-  max-width: 480px;
+  max-width: 720px;
   background: var(--surface);
   border-radius: 16px;
   padding: 0 24px 24px;
