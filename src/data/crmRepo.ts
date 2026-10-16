@@ -385,3 +385,17 @@ export async function meuUserId(): Promise<string | null> {
   const { data } = await supabase.auth.getUser()
   return data.user?.id ?? null
 }
+
+/** Nome do usuário logado (do perfil do CRM) — para pré-preencher o solicitante. */
+export async function meuNome(): Promise<string> {
+  if (!supabase) return ''
+  const { data: auth } = await supabase.auth.getUser()
+  const uid = auth.user?.id
+  if (!uid) return ''
+  const { data } = await supabase
+    .from('crm_perfis')
+    .select('nome')
+    .eq('user_id', uid)
+    .maybeSingle()
+  return (data?.nome as string | null) ?? ''
+}

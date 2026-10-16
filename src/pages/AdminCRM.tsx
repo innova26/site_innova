@@ -25,6 +25,7 @@ import {
   enviarAnexo,
   listarAnexos,
   listarSolicitacoes,
+  meuNome,
   meuPapel,
   notificar,
   urlAnexo,
@@ -79,6 +80,7 @@ export default function AdminCRM() {
   const [filtro, setFiltro] = useState<string>('todos')
   const [selecionada, setSelecionada] = useState<SolicitacaoCRM | null>(null)
   const [form, setForm] = useState<FormNova | null>(null)
+  const [nomeAtendente, setNomeAtendente] = useState('')
 
   const recarregar = async () => {
     try {
@@ -94,9 +96,10 @@ export default function AdminCRM() {
     ;(async () => {
       setCarregando(true)
       try {
-        const p = await meuPapel()
+        const [p, nome] = await Promise.all([meuPapel(), meuNome()])
         if (!vivo) return
         setPapel(p)
+        setNomeAtendente(nome)
         if (p) await recarregar()
       } catch (e) {
         if (vivo) setErro('Falha ao iniciar o CRM: ' + String(e))
@@ -295,7 +298,11 @@ export default function AdminCRM() {
           {busca.trim() || filtro !== 'todos' ? ` de ${lista.length}` : ''} solicitações
         </p>
         {podeEditarAtendimento(papel) && (
-          <button type="button" className="btn btn-primary" onClick={() => setForm(FORM_VAZIO)}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => setForm({ ...FORM_VAZIO, solicitante: nomeAtendente })}
+          >
             + Nova solicitação
           </button>
         )}
