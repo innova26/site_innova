@@ -237,7 +237,8 @@ export default function AdminCRM() {
           console.warn('Falha ao anexar documento:', e)
         }
       }
-      setLista((atual) => [nova, ...atual])
+      // dedup por id: o tempo real pode ter adicionado a nova antes daqui
+      setLista((atual) => [nova, ...atual.filter((s) => s.id !== nova.id)])
       setForm(null)
       if (AVISOS_ATIVOS) void notificar('nova', nova.id)
     } catch (err) {
@@ -465,6 +466,7 @@ function FormNovaSolicitacao({
 
   const enviar = async (e: FormEvent) => {
     e.preventDefault()
+    if (salvando) return
     setSalvando(true)
     await onCriar(docs)
     setSalvando(false)
