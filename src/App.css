@@ -5113,6 +5113,38 @@ button.crm-card:hover {
   color: var(--text);
   font-weight: 500;
 }
+.crm-pix-val {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.crm-pix-val .crm-campo-val {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.crm-copiar {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: 1px solid var(--field-border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--blue-500);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.crm-copiar:hover {
+  border-color: var(--blue-300);
+  background: var(--surface-tint);
+}
+.crm-copiar.ok {
+  color: var(--tom-ok);
+  border-color: var(--tom-ok-bg);
+}
 .crm-aviso {
   font-size: 13px;
   color: var(--text-dim);

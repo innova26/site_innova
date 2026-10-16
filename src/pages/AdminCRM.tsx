@@ -684,7 +684,17 @@ function DetalheSolicitacao({
             <Campo rot="Abertura" val={formatarData(s.abertura)} />
             <Campo rot="Término / prazo" val={formatarData(s.termino)} />
           </div>
-          <Campo rot="Dados bancários (Pix)" val={s.dadosBancarios || '—'} />
+          <div className="crm-campo-ro">
+            <span className="crm-campo-rot">Dados bancários (Pix)</span>
+            {s.dadosBancarios ? (
+              <span className="crm-pix-val">
+                <span className="crm-campo-val">{s.dadosBancarios}</span>
+                <BotaoCopiarPix dados={s.dadosBancarios} />
+              </span>
+            ) : (
+              <span className="crm-campo-val">—</span>
+            )}
+          </div>
 
           <div className="crm-anexos-bloco">
             <span className="crm-campo-rot">Documentos</span>
@@ -904,6 +914,60 @@ function Historico({ solicitacaoId }: { solicitacaoId: string }) {
         </li>
       ))}
     </ul>
+  )
+}
+
+/** Extrai só a chave Pix (o que se cola no banco), sem o rótulo. */
+function chavePixParaCopiar(dados: string): string {
+  const t = dados.trim()
+  return t.includes(':') ? t.slice(t.lastIndexOf(':') + 1).trim() : t
+}
+
+function IconeCopiar() {
+  return (
+    <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+      <rect
+        x="9"
+        y="9"
+        width="11"
+        height="11"
+        rx="2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function BotaoCopiarPix({ dados }: { dados: string }) {
+  const [copiado, setCopiado] = useState(false)
+  const copiar = async () => {
+    try {
+      await navigator.clipboard.writeText(chavePixParaCopiar(dados))
+      setCopiado(true)
+      setTimeout(() => setCopiado(false), 1500)
+    } catch {
+      /* alguns navegadores bloqueiam; ignora */
+    }
+  }
+  return (
+    <button
+      type="button"
+      className={`crm-copiar${copiado ? ' ok' : ''}`}
+      onClick={copiar}
+      aria-label="Copiar chave Pix"
+      title="Copiar chave Pix"
+    >
+      {copiado ? '✓ Copiado' : <IconeCopiar />}
+    </button>
   )
 }
 
