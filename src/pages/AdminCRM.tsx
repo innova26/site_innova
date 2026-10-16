@@ -97,7 +97,7 @@ export default function AdminCRM() {
       const dados = await listarSolicitacoes()
       setLista(dados)
     } catch (e) {
-      setErro('Não foi possível carregar as solicitações: ' + String(e))
+      setErro('Não foi possível carregar as solicitações: ' + mensagemErro(e))
     }
   }
 
@@ -113,7 +113,7 @@ export default function AdminCRM() {
         setRedeSug(rede)
         if (p) await recarregar()
       } catch (e) {
-        if (vivo) setErro('Falha ao iniciar o CRM: ' + String(e))
+        if (vivo) setErro('Falha ao iniciar o CRM: ' + mensagemErro(e))
       } finally {
         if (vivo) setCarregando(false)
       }
@@ -195,7 +195,7 @@ export default function AdminCRM() {
       setSelecionada((atual) => (atual && atual.id === id ? nova : atual))
       if (AVISOS_ATIVOS && patch.autorizacao === 'sim') void notificar('autorizada', id)
     } catch (e) {
-      setErro('Não foi possível salvar a alteração: ' + String(e))
+      setErro('Não foi possível salvar a alteração: ' + mensagemErro(e))
     }
   }
 
@@ -208,7 +208,7 @@ export default function AdminCRM() {
       setLista((atual) => atual.filter((x) => x.id !== s.id))
       setSelecionada(null)
     } catch (e) {
-      setErro('Não foi possível excluir: ' + String(e))
+      setErro('Não foi possível excluir: ' + mensagemErro(e))
     }
   }
 
@@ -241,7 +241,7 @@ export default function AdminCRM() {
       setForm(null)
       if (AVISOS_ATIVOS) void notificar('nova', nova.id)
     } catch (err) {
-      setErro('Não foi possível criar a solicitação: ' + String(err))
+      setErro('Não foi possível criar a solicitação: ' + mensagemErro(err))
     }
   }
 
