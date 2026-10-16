@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../routes'
+import { mascaraDocumento } from '../utils/formulario'
 import {
   AVISOS_ATIVOS,
   STATUS_FINANCEIRO,
@@ -52,6 +53,7 @@ type FormNova = {
   protocolo: string
   solicitante: string
   beneficiario: string
+  cpf: string
   procedimento: string
   clinicaHospital: string
   dataConsulta: string
@@ -65,6 +67,7 @@ const FORM_VAZIO: FormNova = {
   protocolo: '',
   solicitante: '',
   beneficiario: '',
+  cpf: '',
   procedimento: '',
   clinicaHospital: '',
   dataConsulta: '',
@@ -217,6 +220,7 @@ export default function AdminCRM() {
         protocolo: form.protocolo.trim(),
         solicitante: form.solicitante.trim(),
         beneficiario: form.beneficiario.trim(),
+        cpf: form.cpf.trim(),
         procedimento: form.procedimento.trim(),
         clinicaHospital: form.clinicaHospital.trim(),
         dataConsulta: form.dataConsulta || null,
@@ -500,6 +504,20 @@ function FormNovaSolicitacao({
           </div>
         </div>
 
+        <div className="linha">
+          <div className="campo">
+            <label htmlFor="n-cpf">CPF do paciente</label>
+            <input
+              id="n-cpf"
+              inputMode="numeric"
+              placeholder="000.000.000-00"
+              value={form.cpf}
+              onChange={(e) => set('cpf', mascaraDocumento(e.target.value))}
+            />
+          </div>
+          <div className="campo" aria-hidden="true" />
+        </div>
+
         <div className="campo">
           <label htmlFor="n-proc">Procedimento</label>
           <input
@@ -674,8 +692,9 @@ function DetalheSolicitacao({
           <h4>1 · Atendimento</h4>
           <div className="crm-linha2">
             <Campo rot="Beneficiário / Paciente" val={s.beneficiario} />
-            <Campo rot="Solicitante" val={s.solicitante} />
+            <Campo rot="CPF do paciente" val={s.cpf || '—'} />
           </div>
+          <Campo rot="Solicitante" val={s.solicitante} />
           <div className="crm-linha2">
             <Campo rot="Procedimento" val={s.procedimento} />
             <Campo rot="Clínica / Hospital" val={s.clinicaHospital || '—'} />

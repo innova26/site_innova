@@ -14,6 +14,7 @@ type LinhaCRM = {
   solicitante: string
   data_consulta: string | null
   beneficiario: string
+  cpf: string | null
   procedimento: string
   clinica_hospital: string | null
   valor_solicitado: number | string | null
@@ -36,6 +37,7 @@ function daLinha(l: LinhaCRM): SolicitacaoCRM {
     solicitante: l.solicitante,
     dataConsulta: l.data_consulta,
     beneficiario: l.beneficiario,
+    cpf: l.cpf ?? '',
     procedimento: l.procedimento,
     clinicaHospital: l.clinica_hospital ?? '',
     valorSolicitado: l.valor_solicitado == null ? null : Number(l.valor_solicitado),
@@ -116,6 +118,7 @@ export type NovaSolicitacao = {
   protocolo: string
   solicitante: string
   beneficiario: string
+  cpf: string
   procedimento: string
   clinicaHospital: string
   dataConsulta: string | null
@@ -134,6 +137,7 @@ export async function criarSolicitacao(dados: NovaSolicitacao): Promise<Solicita
       protocolo: dados.protocolo.trim() || null,
       solicitante: dados.solicitante,
       beneficiario: dados.beneficiario,
+      cpf: dados.cpf || null,
       procedimento: dados.procedimento,
       clinica_hospital: dados.clinicaHospital || null,
       data_consulta: dados.dataConsulta,

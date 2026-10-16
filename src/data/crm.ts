@@ -43,6 +43,7 @@ export type SolicitacaoCRM = {
   solicitante: string
   dataConsulta: string | null
   beneficiario: string
+  cpf: string
   procedimento: string
   clinicaHospital: string
   valorSolicitado: number | null
@@ -265,6 +266,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     solicitante: 'VANESSA',
     dataConsulta: '2026-10-09',
     beneficiario: 'GAEL HENRIQUE SOUZA ATHAYDE',
+    cpf: '123.456.789-09',
     procedimento: 'CONSULTA ENDÓCRINO PEDIÁTRICO',
     clinicaHospital: 'ENDOCARDIO',
     valorSolicitado: 621.25,
@@ -285,6 +287,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     solicitante: 'VANESSA',
     dataConsulta: null,
     beneficiario: 'ERIKA RODRIGUES DE SOUZA FAIANÇA',
+    cpf: '987.654.321-00',
     procedimento: 'LIFTING CERVICOFACIAL',
     clinicaHospital: '',
     valorSolicitado: null,
@@ -305,6 +308,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     solicitante: 'MARCOS',
     dataConsulta: '2026-10-14',
     beneficiario: 'JOÃO PEDRO LIMA',
+    cpf: '111.222.333-96',
     procedimento: 'RESSONÂNCIA MAGNÉTICA DE JOELHO',
     clinicaHospital: 'CLÍNICA IMAGEM RO',
     valorSolicitado: 480,
@@ -325,6 +329,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     solicitante: 'VANESSA',
     dataConsulta: '2026-10-12',
     beneficiario: 'MARIA EDUARDA ALVES',
+    cpf: '444.555.666-20',
     procedimento: 'SESSÕES DE FISIOTERAPIA (10x)',
     clinicaHospital: 'REABILITAR',
     valorSolicitado: 1200,
@@ -345,6 +350,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     solicitante: 'LUCAS',
     dataConsulta: '2026-10-20',
     beneficiario: 'ANTÔNIO CARLOS PEREIRA',
+    cpf: '777.888.999-00',
     procedimento: 'CONSULTA CARDIOLOGIA',
     clinicaHospital: 'CARDIO CENTER',
     valorSolicitado: 350,
