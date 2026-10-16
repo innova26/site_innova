@@ -239,6 +239,17 @@ function daAnexo(l: LinhaAnexo): AnexoCRM {
   }
 }
 
+/** Conjunto de solicitações que têm ao menos um documento anexado. */
+export async function idsComDocumento(): Promise<Set<string>> {
+  if (!supabase) return new Set()
+  const { data, error } = await supabase
+    .from('crm_anexos')
+    .select('solicitacao_id')
+    .eq('tipo', 'documento')
+  if (error) return new Set()
+  return new Set((data ?? []).map((r) => (r as { solicitacao_id: string }).solicitacao_id))
+}
+
 export async function listarAnexos(solicitacaoId: string): Promise<AnexoCRM[]> {
   if (!supabase) return []
   const { data, error } = await supabase

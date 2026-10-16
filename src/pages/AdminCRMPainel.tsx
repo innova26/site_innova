@@ -1,13 +1,20 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../routes'
 import {
+  calcularAlertas,
   etapaAtual,
   formatarValor,
+  ROTULO_ALERTA,
   type SolicitacaoCRM,
   type PapelCRM,
 } from '../data/crm'
-import { assinarSolicitacoes, listarSolicitacoes, meuPapel } from '../data/crmRepo'
+import {
+  assinarSolicitacoes,
+  idsComDocumento,
+  listarSolicitacoes,
+  meuPapel,
+} from '../data/crmRepo'
 
 type Periodo = '30' | '90' | 'ano'
 
@@ -151,7 +158,14 @@ export default function AdminCRMPainel() {
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
   const [lista, setLista] = useState<SolicitacaoCRM[]>([])
+  const [idsDoc, setIdsDoc] = useState<Set<string>>(new Set())
   const [periodo, setPeriodo] = useState<Periodo>('90')
+
+  const recarregar = useCallback(async () => {
+    const [dados, docs] = await Promise.all([listarSolicitacoes(), idsComDocumento()])
+    setLista(dados)
+    setIdsDoc(docs)
+  }, [])
 
   useEffect(() => {
     let vivo = true
@@ -160,10 +174,7 @@ export default function AdminCRMPainel() {
         const p = await meuPapel()
         if (!vivo) return
         setPapel(p)
-        if (p) {
-          const dados = await listarSolicitacoes()
-          if (vivo) setLista(dados)
-        }
+        if (p) await recarregar()
       } catch (e) {
         if (vivo) setErro('Não foi possível carregar o painel: ' + String(e))
       } finally {
@@ -173,18 +184,11 @@ export default function AdminCRMPainel() {
     return () => {
       vivo = false
     }
-  }, [])
+  }, [recarregar])
 
   /* ---- tempo real: atualiza os números quando algo muda ---- */
   useEffect(() => {
     if (!papel) return
-    const recarregar = async () => {
-      try {
-        setLista(await listarSolicitacoes())
-      } catch {
-        /* mantém os dados atuais */
-      }
-    }
     let timer: ReturnType<typeof setTimeout> | undefined
     const agendar = () => {
       clearTimeout(timer)
@@ -198,9 +202,10 @@ export default function AdminCRMPainel() {
       desassinar()
       window.removeEventListener('focus', aoFocar)
     }
-  }, [papel])
+  }, [papel, recarregar])
 
   const m = useMemo(() => calcular(lista.filter((s) => noPeriodo(s, periodo))), [lista, periodo])
+  const alertas = useMemo(() => calcularAlertas(lista, idsDoc), [lista, idsDoc])
 
   if (carregando) return <p className="admin-info">Carregando painel…</p>
 
@@ -283,6 +288,32 @@ export default function AdminCRMPainel() {
           <span className="pnl-kpi-num">{formatarValor(m.pagoNoMes)}</span>
         </div>
       </div>
+
+      {(papel === 'financeiro' || papel === 'admin') && (
+        <section className="pnl-card pnl-alertas">
+          <h3>
+            Alertas para revisão
+            {alertas.length > 0 && <span className="pnl-alertas-n">{alertas.length}</span>}
+          </h3>
+          <p className="pnl-cap">Avisos automáticos — confira antes de pagar. Não bloqueia nada.</p>
+          {alertas.length === 0 ? (
+            <p className="crm-aviso">Nenhum alerta no momento.</p>
+          ) : (
+            <ul className="pnl-alertas-lista">
+              {alertas.map((a, i) => (
+                <li key={`${a.id}-${a.tipo}-${i}`}>
+                  <span className={`crm-badge pnl-alerta-tag t-${a.tipo}`}>
+                    {ROTULO_ALERTA[a.tipo]}
+                  </span>
+                  <span className="pnl-alerta-txt">
+                    <strong>{a.protocolo}</strong> · {a.beneficiario} — {a.motivo}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       <div className="pnl-grid">
         {/* por etapa */}

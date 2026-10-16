@@ -5439,6 +5439,67 @@ button.crm-card:hover {
   margin-top: 16px;
 }
 
+/* ---- alertas para revisão ---- */
+.pnl-alertas {
+  margin: 18px 0;
+}
+.pnl-alertas h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pnl-alertas-n {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--tom-recusado);
+  border-radius: 999px;
+  padding: 1px 8px;
+  min-width: 20px;
+  text-align: center;
+}
+.pnl-alertas-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.pnl-alertas-lista li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+.pnl-alertas-lista li:first-child {
+  border-top: none;
+}
+.pnl-alerta-tag {
+  flex: none;
+}
+.pnl-alerta-tag.t-duplicata,
+.pnl-alerta-tag.t-pix {
+  color: var(--tom-aguardando);
+  background: var(--tom-aguardando-bg);
+}
+.pnl-alerta-tag.t-valor {
+  color: var(--tom-recusado);
+  background: var(--tom-recusado-bg);
+}
+.pnl-alerta-tag.t-sem-doc {
+  color: var(--tom-analise);
+  background: var(--tom-analise-bg);
+}
+.pnl-alerta-txt {
+  font-size: 13px;
+  color: var(--text-muted);
+  min-width: 0;
+}
+.pnl-alerta-txt strong {
+  color: var(--text);
+}
+
 @media (max-width: 760px) {
   .crm-cards {
     grid-template-columns: repeat(2, 1fr);
