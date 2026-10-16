@@ -5026,7 +5026,7 @@ button.crm-card:hover {
 /* ---- modal nova solicitação ---- */
 .crm-modal {
   width: 100%;
-  max-width: 560px;
+  max-width: 720px;
   background: var(--surface);
   border-radius: 16px;
   padding: 24px;
