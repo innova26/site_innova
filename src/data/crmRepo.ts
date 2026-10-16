@@ -342,6 +342,42 @@ export async function excluirAnexo(anexo: AnexoCRM): Promise<void> {
 }
 
 /* ============================================================
+ * Histórico (trilha de auditoria) — ver supabase/crm_historico.sql
+ * ========================================================== */
+export type HistoricoCRM = {
+  id: string
+  evento: string
+  detalhe: string | null
+  userNome: string | null
+  createdAt: string
+}
+
+export async function listarHistorico(solicitacaoId: string): Promise<HistoricoCRM[]> {
+  if (!supabase) return []
+  const { data, error } = await supabase
+    .from('crm_historico')
+    .select('id, evento, detalhe, user_nome, created_at')
+    .eq('solicitacao_id', solicitacaoId)
+    .order('created_at', { ascending: true })
+  if (error) throw error
+  return (
+    data as {
+      id: string
+      evento: string
+      detalhe: string | null
+      user_nome: string | null
+      created_at: string
+    }[]
+  ).map((r) => ({
+    id: r.id,
+    evento: r.evento,
+    detalhe: r.detalhe,
+    userNome: r.user_nome,
+    createdAt: r.created_at,
+  }))
+}
+
+/* ============================================================
  * Gestão de usuários (admin) — via Edge Function crm-usuarios
  * ========================================================== */
 export type UsuarioCRM = {

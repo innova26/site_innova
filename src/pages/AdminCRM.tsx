@@ -24,6 +24,7 @@ import {
   excluirSolicitacao,
   enviarAnexo,
   listarAnexos,
+  listarHistorico,
   listarSolicitacoes,
   meuNome,
   meuPapel,
@@ -31,6 +32,7 @@ import {
   sugestoesRede,
   urlAnexo,
   type AnexoCRM,
+  type HistoricoCRM,
   type TipoAnexo,
 } from '../data/crmRepo'
 
@@ -828,6 +830,11 @@ function DetalheSolicitacao({
           </section>
         )}
 
+        <section className="crm-bloco">
+          <h4>Histórico</h4>
+          <Historico solicitacaoId={s.id} />
+        </section>
+
         {papel === 'admin' && (
           <section className="crm-bloco crm-excluir">
             <button type="button" className="btn btn-ghost crm-btn-recusar" onClick={() => onExcluir(s)}>
@@ -837,6 +844,66 @@ function DetalheSolicitacao({
         )}
       </aside>
     </div>
+  )
+}
+
+/* ============================================================
+ * Histórico (linha do tempo) de uma solicitação
+ * ========================================================== */
+const ROTULO_EVENTO: Record<string, string> = {
+  criada: 'Criada',
+  autorizada: 'Autorizada',
+  recusada: 'Recusada',
+  agendada: 'Agendada',
+  paga: 'Paga',
+  anexo: 'Anexo',
+}
+
+function dataHora(iso: string): string {
+  return new Date(iso).toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+function Historico({ solicitacaoId }: { solicitacaoId: string }) {
+  const [itens, setItens] = useState<HistoricoCRM[]>([])
+  const [carregando, setCarregando] = useState(true)
+
+  useEffect(() => {
+    let vivo = true
+    ;(async () => {
+      try {
+        const h = await listarHistorico(solicitacaoId)
+        if (vivo) setItens(h)
+      } catch {
+        /* ignora */
+      } finally {
+        if (vivo) setCarregando(false)
+      }
+    })()
+    return () => {
+      vivo = false
+    }
+  }, [solicitacaoId])
+
+  if (carregando) return <p className="crm-aviso">Carregando…</p>
+  if (itens.length === 0) return <p className="crm-aviso">Sem registros ainda.</p>
+
+  return (
+    <ul className="crm-timeline">
+      {itens.map((h) => (
+        <li key={h.id}>
+          <span className="crm-timeline-quando">{dataHora(h.createdAt)}</span>
+          <span className="crm-timeline-evt">{ROTULO_EVENTO[h.evento] ?? h.evento}</span>
+          {h.userNome && <span className="crm-timeline-quem">por {h.userNome}</span>}
+          {h.detalhe && <span className="crm-timeline-det">{h.detalhe}</span>}
+        </li>
+      ))}
+    </ul>
   )
 }
 
