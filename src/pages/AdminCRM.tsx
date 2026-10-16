@@ -28,6 +28,7 @@ import {
   meuNome,
   meuPapel,
   notificar,
+  sugestoesRede,
   urlAnexo,
   type AnexoCRM,
   type TipoAnexo,
@@ -81,6 +82,10 @@ export default function AdminCRM() {
   const [selecionada, setSelecionada] = useState<SolicitacaoCRM | null>(null)
   const [form, setForm] = useState<FormNova | null>(null)
   const [nomeAtendente, setNomeAtendente] = useState('')
+  const [redeSug, setRedeSug] = useState<{ clinicas: string[]; procedimentos: string[] }>({
+    clinicas: [],
+    procedimentos: [],
+  })
 
   const recarregar = async () => {
     try {
@@ -96,10 +101,11 @@ export default function AdminCRM() {
     ;(async () => {
       setCarregando(true)
       try {
-        const [p, nome] = await Promise.all([meuPapel(), meuNome()])
+        const [p, nome, rede] = await Promise.all([meuPapel(), meuNome(), sugestoesRede()])
         if (!vivo) return
         setPapel(p)
         setNomeAtendente(nome)
+        setRedeSug(rede)
         if (p) await recarregar()
       } catch (e) {
         if (vivo) setErro('Falha ao iniciar o CRM: ' + String(e))
@@ -150,17 +156,17 @@ export default function AdminCRM() {
     }
   }, [lista])
 
-  /* ---- sugestões (autocomplete) a partir do que já foi cadastrado ---- */
+  /* ---- sugestões (autocomplete): rede de atendimento + o que já foi usado ---- */
   const sugestoes = useMemo(() => {
-    const proc = new Set<string>()
-    const clin = new Set<string>()
+    const proc = new Set<string>(redeSug.procedimentos)
+    const clin = new Set<string>(redeSug.clinicas)
     for (const s of lista) {
       if (s.procedimento.trim()) proc.add(s.procedimento.trim())
       if (s.clinicaHospital.trim()) clin.add(s.clinicaHospital.trim())
     }
     const ordenar = (c: Set<string>) => [...c].sort((a, b) => a.localeCompare(b, 'pt-BR'))
     return { procedimentos: ordenar(proc), clinicas: ordenar(clin) }
-  }, [lista])
+  }, [lista, redeSug])
 
   /* ---- filtragem ---- */
   const filtrada = useMemo(() => {

@@ -239,6 +239,32 @@ function daAnexo(l: LinhaAnexo): AnexoCRM {
   }
 }
 
+/**
+ * Sugestões vindas da Rede de Atendimento (tabela `prestadores`):
+ * clínicas/hospitais (nome, instituição) e procedimentos (especialidades).
+ */
+export async function sugestoesRede(): Promise<{ clinicas: string[]; procedimentos: string[] }> {
+  if (!supabase) return { clinicas: [], procedimentos: [] }
+  const { data, error } = await supabase
+    .from('prestadores')
+    .select('nome, instituicao, especialidades')
+    .eq('visivel', true)
+  if (error) return { clinicas: [], procedimentos: [] }
+  const clin = new Set<string>()
+  const proc = new Set<string>()
+  for (const p of (data ?? []) as {
+    nome: string | null
+    instituicao: string | null
+    especialidades: string[] | null
+  }[]) {
+    if (p.nome?.trim()) clin.add(p.nome.trim())
+    if (p.instituicao?.trim()) clin.add(p.instituicao.trim())
+    for (const e of p.especialidades ?? []) if (e?.trim()) proc.add(e.trim())
+  }
+  const ordenar = (c: Set<string>) => [...c].sort((a, b) => a.localeCompare(b, 'pt-BR'))
+  return { clinicas: ordenar(clin), procedimentos: ordenar(proc) }
+}
+
 /** Conjunto de solicitações que têm ao menos um documento anexado. */
 export async function idsComDocumento(): Promise<Set<string>> {
   if (!supabase) return new Set()
