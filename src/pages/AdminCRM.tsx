@@ -147,6 +147,18 @@ export default function AdminCRM() {
     }
   }, [lista])
 
+  /* ---- sugestões (autocomplete) a partir do que já foi cadastrado ---- */
+  const sugestoes = useMemo(() => {
+    const proc = new Set<string>()
+    const clin = new Set<string>()
+    for (const s of lista) {
+      if (s.procedimento.trim()) proc.add(s.procedimento.trim())
+      if (s.clinicaHospital.trim()) clin.add(s.clinicaHospital.trim())
+    }
+    const ordenar = (c: Set<string>) => [...c].sort((a, b) => a.localeCompare(b, 'pt-BR'))
+    return { procedimentos: ordenar(proc), clinicas: ordenar(clin) }
+  }, [lista])
+
   /* ---- filtragem ---- */
   const filtrada = useMemo(() => {
     const termo = busca.trim().toLowerCase()
@@ -370,6 +382,7 @@ export default function AdminCRM() {
         <FormNovaSolicitacao
           form={form}
           setForm={setForm as (f: FormNova) => void}
+          sugestoes={sugestoes}
           onCriar={criar}
           onCancelar={() => setForm(null)}
         />
@@ -395,11 +408,13 @@ export default function AdminCRM() {
 function FormNovaSolicitacao({
   form,
   setForm,
+  sugestoes,
   onCriar,
   onCancelar,
 }: {
   form: FormNova
   setForm: (f: FormNova) => void
+  sugestoes: { procedimentos: string[]; clinicas: string[] }
   onCriar: (documentos: File[]) => void | Promise<void>
   onCancelar: () => void
 }) {
@@ -474,10 +489,16 @@ function FormNovaSolicitacao({
           <label htmlFor="n-proc">Procedimento</label>
           <input
             id="n-proc"
+            list="sug-procedimentos"
             value={form.procedimento}
             onChange={(e) => set('procedimento', e.target.value)}
             required
           />
+          <datalist id="sug-procedimentos">
+            {sugestoes.procedimentos.map((p) => (
+              <option key={p} value={p} />
+            ))}
+          </datalist>
         </div>
 
         <div className="linha">
@@ -485,9 +506,15 @@ function FormNovaSolicitacao({
             <label htmlFor="n-clinica">Clínica / Hospital</label>
             <input
               id="n-clinica"
+              list="sug-clinicas"
               value={form.clinicaHospital}
               onChange={(e) => set('clinicaHospital', e.target.value)}
             />
+            <datalist id="sug-clinicas">
+              {sugestoes.clinicas.map((c) => (
+                <option key={c} value={c} />
+              ))}
+            </datalist>
           </div>
           <div className="campo">
             <label htmlFor="n-valor">Valor solicitado (R$)</label>
