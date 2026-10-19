@@ -475,175 +475,208 @@ function FormNovaSolicitacao({
   return (
     <div className="crm-overlay" role="dialog" aria-modal="true">
       <form className="crm-modal" onSubmit={enviar}>
-        <h3>Nova solicitação</h3>
-
-        <div className="campo">
-          <label htmlFor="n-protocolo">Protocolo</label>
-          <input
-            id="n-protocolo"
-            placeholder="Protocolo do sistema de origem"
-            value={form.protocolo}
-            onChange={(e) => set('protocolo', e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="linha">
-          <div className="campo">
-            <label htmlFor="n-solic">Solicitante</label>
-            <input
-              id="n-solic"
-              value={form.solicitante}
-              onChange={(e) => set('solicitante', e.target.value)}
-              required
-            />
+        <div className="crm-modal-head">
+          <div>
+            <h3>Nova solicitação</h3>
+            <p className="crm-modal-sub">Preencha os dados do atendimento para abrir o protocolo.</p>
           </div>
-          <div className="campo">
-            <label htmlFor="n-benef">Beneficiário / Paciente</label>
-            <input
-              id="n-benef"
-              value={form.beneficiario}
-              onChange={(e) => set('beneficiario', e.target.value)}
-              required
-            />
-          </div>
+          <button type="button" className="crm-fechar" onClick={onCancelar} aria-label="Fechar">
+            ×
+          </button>
         </div>
 
-        <div className="linha">
-          <div className="campo">
-            <label htmlFor="n-cpf">CPF do paciente</label>
-            <input
-              id="n-cpf"
-              inputMode="numeric"
-              placeholder="000.000.000-00"
-              value={form.cpf}
-              onChange={(e) => set('cpf', mascaraDocumento(e.target.value))}
-            />
-          </div>
-          <div className="campo" aria-hidden="true" />
-        </div>
+        <div className="crm-modal-corpo">
+          <fieldset className="crm-fgrp">
+            <legend>Identificação</legend>
+            <div className="linha">
+              <div className="campo">
+                <label htmlFor="n-protocolo">
+                  Protocolo <span className="crm-req">*</span>
+                </label>
+                <input
+                  id="n-protocolo"
+                  placeholder="Protocolo do sistema de origem"
+                  value={form.protocolo}
+                  onChange={(e) => set('protocolo', e.target.value)}
+                  required
+                />
+              </div>
+              <div className="campo">
+                <label htmlFor="n-solic">
+                  Solicitante <span className="crm-req">*</span>
+                </label>
+                <input
+                  id="n-solic"
+                  value={form.solicitante}
+                  onChange={(e) => set('solicitante', e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+          </fieldset>
 
-        <div className="campo">
-          <label htmlFor="n-proc">Procedimento</label>
-          <input
-            id="n-proc"
-            list="sug-procedimentos"
-            value={form.procedimento}
-            onChange={(e) => set('procedimento', e.target.value)}
-            required
-          />
-          <datalist id="sug-procedimentos">
-            {sugestoes.procedimentos.map((p) => (
-              <option key={p} value={p} />
-            ))}
-          </datalist>
-        </div>
+          <fieldset className="crm-fgrp">
+            <legend>Paciente</legend>
+            <div className="linha">
+              <div className="campo">
+                <label htmlFor="n-benef">
+                  Beneficiário / Paciente <span className="crm-req">*</span>
+                </label>
+                <input
+                  id="n-benef"
+                  value={form.beneficiario}
+                  onChange={(e) => set('beneficiario', e.target.value)}
+                  required
+                />
+              </div>
+              <div className="campo">
+                <label htmlFor="n-cpf">CPF do paciente</label>
+                <input
+                  id="n-cpf"
+                  inputMode="numeric"
+                  placeholder="000.000.000-00"
+                  value={form.cpf}
+                  onChange={(e) => set('cpf', mascaraDocumento(e.target.value))}
+                />
+              </div>
+            </div>
+          </fieldset>
 
-        <div className="linha">
-          <div className="campo">
-            <label htmlFor="n-clinica">Clínica / Hospital</label>
-            <input
-              id="n-clinica"
-              list="sug-clinicas"
-              value={form.clinicaHospital}
-              onChange={(e) => set('clinicaHospital', e.target.value)}
-            />
-            <datalist id="sug-clinicas">
-              {sugestoes.clinicas.map((c) => (
-                <option key={c} value={c} />
-              ))}
-            </datalist>
-          </div>
-          <div className="campo">
-            <label htmlFor="n-valor">Valor solicitado (R$)</label>
-            <input
-              id="n-valor"
-              type="number"
-              min="0"
-              step="0.01"
-              value={form.valorSolicitado}
-              onChange={(e) => set('valorSolicitado', e.target.value)}
-            />
-          </div>
-        </div>
+          <fieldset className="crm-fgrp">
+            <legend>Atendimento</legend>
+            <div className="campo">
+              <label htmlFor="n-proc">
+                Procedimento <span className="crm-req">*</span>
+              </label>
+              <input
+                id="n-proc"
+                list="sug-procedimentos"
+                value={form.procedimento}
+                onChange={(e) => set('procedimento', e.target.value)}
+                required
+              />
+              <datalist id="sug-procedimentos">
+                {sugestoes.procedimentos.map((p) => (
+                  <option key={p} value={p} />
+                ))}
+              </datalist>
+            </div>
 
-        <div className="linha">
-          <div className="campo">
-            <label htmlFor="n-consulta">Data da consulta</label>
-            <input
-              id="n-consulta"
-              type="date"
-              value={form.dataConsulta}
-              onChange={(e) => set('dataConsulta', e.target.value)}
-            />
-          </div>
-          <div className="campo">
-            <label htmlFor="n-termino">Término / prazo</label>
-            <input
-              id="n-termino"
-              type="date"
-              value={form.termino}
-              onChange={(e) => set('termino', e.target.value)}
-            />
-          </div>
-        </div>
+            <div className="linha">
+              <div className="campo">
+                <label htmlFor="n-clinica">Clínica / Hospital</label>
+                <input
+                  id="n-clinica"
+                  list="sug-clinicas"
+                  value={form.clinicaHospital}
+                  onChange={(e) => set('clinicaHospital', e.target.value)}
+                />
+                <datalist id="sug-clinicas">
+                  {sugestoes.clinicas.map((c) => (
+                    <option key={c} value={c} />
+                  ))}
+                </datalist>
+              </div>
+              <div className="campo">
+                <label htmlFor="n-valor">Valor solicitado (R$)</label>
+                <input
+                  id="n-valor"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.valorSolicitado}
+                  onChange={(e) => set('valorSolicitado', e.target.value)}
+                />
+              </div>
+            </div>
 
-        <div className="campo">
-          <label htmlFor="n-banc">Dados bancários (Pix)</label>
-          <input
-            id="n-banc"
-            placeholder="Pix (e-mail / CPF-CNPJ / telefone / chave)"
-            value={form.dadosBancarios}
-            onChange={(e) => set('dadosBancarios', e.target.value)}
-          />
-        </div>
+            <div className="linha">
+              <div className="campo">
+                <label htmlFor="n-consulta">Data da consulta</label>
+                <input
+                  id="n-consulta"
+                  type="date"
+                  value={form.dataConsulta}
+                  onChange={(e) => set('dataConsulta', e.target.value)}
+                />
+              </div>
+              <div className="campo">
+                <label htmlFor="n-termino">Término / prazo</label>
+                <input
+                  id="n-termino"
+                  type="date"
+                  value={form.termino}
+                  onChange={(e) => set('termino', e.target.value)}
+                />
+              </div>
+            </div>
+          </fieldset>
 
-        <div className="campo">
-          <label htmlFor="n-obs">Observações</label>
-          <textarea
-            id="n-obs"
-            rows={2}
-            value={form.observacoes}
-            onChange={(e) => set('observacoes', e.target.value)}
-          />
-        </div>
+          <fieldset className="crm-fgrp">
+            <legend>Pagamento</legend>
+            <div className="campo">
+              <label htmlFor="n-banc">Dados bancários (Pix)</label>
+              <input
+                id="n-banc"
+                placeholder="Pix (e-mail / CPF-CNPJ / telefone / chave)"
+                value={form.dadosBancarios}
+                onChange={(e) => set('dadosBancarios', e.target.value)}
+              />
+            </div>
+          </fieldset>
 
-        <div className="campo">
-          <label>Documentos <span className="opcional">(PDF, JPG ou PNG)</span></label>
-          {docs.length > 0 && (
-            <ul className="crm-anexos-lista">
-              {docs.map((d, i) => (
-                <li key={`${d.name}-${i}`}>
-                  <span>{d.name}</span>
-                  <button
-                    type="button"
-                    className="admin-link admin-link-danger"
-                    onClick={() => setDocs((atual) => atual.filter((_, j) => j !== i))}
-                  >
-                    remover
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-          <label className="crm-anexo-add">
-            <input
-              type="file"
-              accept="application/pdf,image/jpeg,image/png"
-              multiple
-              hidden
-              onChange={(e) => {
-                adicionarDocs(e.target.files)
-                e.target.value = ''
-              }}
-            />
-            <span>+ Anexar documento</span>
-          </label>
-          {erroArquivo && (
-            <span className="erro" role="alert">
-              {erroArquivo}
-            </span>
-          )}
+          <fieldset className="crm-fgrp">
+            <legend>Anexos e observações</legend>
+            <div className="campo">
+              <label>
+                Documentos <span className="opcional">(PDF, JPG ou PNG)</span>
+              </label>
+              {docs.length > 0 && (
+                <ul className="crm-anexos-lista">
+                  {docs.map((d, i) => (
+                    <li key={`${d.name}-${i}`}>
+                      <span>{d.name}</span>
+                      <button
+                        type="button"
+                        className="admin-link admin-link-danger"
+                        onClick={() => setDocs((atual) => atual.filter((_, j) => j !== i))}
+                      >
+                        remover
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <label className="crm-anexo-add">
+                <input
+                  type="file"
+                  accept="application/pdf,image/jpeg,image/png"
+                  multiple
+                  hidden
+                  onChange={(e) => {
+                    adicionarDocs(e.target.files)
+                    e.target.value = ''
+                  }}
+                />
+                <span>+ Anexar documento</span>
+              </label>
+              {erroArquivo && (
+                <span className="erro" role="alert">
+                  {erroArquivo}
+                </span>
+              )}
+            </div>
+
+            <div className="campo">
+              <label htmlFor="n-obs">Observações</label>
+              <textarea
+                id="n-obs"
+                rows={2}
+                value={form.observacoes}
+                onChange={(e) => set('observacoes', e.target.value)}
+              />
+            </div>
+          </fieldset>
         </div>
 
         <div className="crm-modal-acoes">
@@ -679,187 +712,197 @@ function DetalheSolicitacao({
   const [dataPrev, setDataPrev] = useState(s.dataPrevistaPagamento ?? '')
   const [status, setStatus] = useState<StatusFinanceiro>(s.statusFinanceiro ?? 'Pendente')
 
+  const autorizado = s.autorizacao === 'sim'
+  const classeEnf = s.autorizacao !== 'pendente' ? 'done' : 'active'
+  const classeFin =
+    et.chave === 'pago'
+      ? 'done'
+      : et.chave === 'financeiro' || et.chave === 'agendado'
+        ? 'active'
+        : ''
+
   return (
     <div className="crm-overlay" role="dialog" aria-modal="true">
       <aside className="crm-drawer">
-        <header className="crm-drawer-topo">
-          <div>
-            <span className={`crm-badge tom-${et.tom}`}>{et.label}</span>
-            <h3>{s.protocolo}</h3>
-          </div>
+        <div className="crm-dh-top">
+          <span className={`crm-badge tom-${et.tom}`}>{et.label}</span>
           <button type="button" className="crm-fechar" onClick={onFechar} aria-label="Fechar">
             ×
           </button>
-        </header>
+        </div>
 
-        {/* ---- Atendimento ---- */}
-        <section className="crm-bloco">
-          <h4>1 · Atendimento</h4>
-          <div className="crm-linha2">
-            <Campo rot="Beneficiário / Paciente" val={s.beneficiario} />
-            <Campo rot="CPF do paciente" val={s.cpf || '—'} />
+        <div className="crm-dh-title">
+          <h3>{s.beneficiario}</h3>
+          <div className="crm-dh-desc">
+            {s.procedimento}
+            {s.clinicaHospital ? ` · ${s.clinicaHospital}` : ''}
           </div>
-          <Campo rot="Solicitante" val={s.solicitante} />
+          <div className="crm-dh-proto">Protocolo {s.protocolo}</div>
+        </div>
+
+        <div className="crm-stats">
+          <div className="crm-stat big">
+            <div className="k">Valor</div>
+            <div className="v">{formatarValor(s.valorSolicitado)}</div>
+          </div>
+          <div className="crm-stat">
+            <div className="k">Consulta</div>
+            <div className="v">{formatarData(s.dataConsulta)}</div>
+          </div>
+          <div className="crm-stat">
+            <div className="k">Prazo</div>
+            <div className="v">{formatarData(s.termino)}</div>
+          </div>
+        </div>
+
+        <div className="crm-steps" aria-hidden="true">
+          <div className="crm-step done">
+            <span className="crm-step-b">✓</span>
+            <span className="crm-step-t">Atendimento</span>
+            <span className="crm-step-ln" />
+          </div>
+          <div className={`crm-step ${classeEnf}`}>
+            <span className="crm-step-b">{classeEnf === 'done' ? '✓' : '2'}</span>
+            <span className="crm-step-t">Enfermagem</span>
+            <span className="crm-step-ln" />
+          </div>
+          <div className={`crm-step ${classeFin}`}>
+            <span className="crm-step-b">{classeFin === 'done' ? '✓' : '3'}</span>
+            <span className="crm-step-t">Financeiro</span>
+          </div>
+        </div>
+
+        {/* ---- zona de ação contextual ---- */}
+        {et.chave === 'enfermagem' &&
+          (podeEditarEnfermagem(papel) ? (
+            <div className="crm-acao">
+              <div className="crm-acao-lbl">Esta solicitação aguarda a análise da enfermagem.</div>
+              <div className="crm-acoes">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => onAtualizar(s.id, { autorizacao: 'sim', dataAutorizacao: hojeISO() })}
+                >
+                  Autorizar
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-ghost crm-btn-recusar"
+                  onClick={() => onAtualizar(s.id, { autorizacao: 'nao', dataAutorizacao: hojeISO() })}
+                >
+                  Recusar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="crm-acao-nota crm-aviso">Aguardando a análise da enfermagem.</p>
+          ))}
+
+        {et.chave === 'recusado' && (
+          <div className="crm-acao-crit">
+            Não autorizado{s.dataAutorizacao ? ` em ${formatarData(s.dataAutorizacao)}` : ''}.
+          </div>
+        )}
+
+        {(et.chave === 'financeiro' || et.chave === 'agendado') && (
+          <>
+            <p className="crm-acao-nota crm-ok">
+              ✓ Autorizado{s.dataAutorizacao ? ` em ${formatarData(s.dataAutorizacao)}` : ''}
+            </p>
+            {podeEditarFinanceiro(papel) ? (
+              <div className="crm-acao">
+                <div className="crm-acao-lbl">Pagamento</div>
+                <div className="crm-linha2">
+                  <div className="campo">
+                    <label>Data prevista</label>
+                    <input type="date" value={dataPrev} onChange={(e) => setDataPrev(e.target.value)} />
+                  </div>
+                  <div className="campo">
+                    <label>Status</label>
+                    <select value={status} onChange={(e) => setStatus(e.target.value as StatusFinanceiro)}>
+                      {STATUS_FINANCEIRO.filter((x) => x !== 'Recusado').map((x) => (
+                        <option key={x} value={x}>
+                          {x}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="crm-acoes">
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    onClick={() =>
+                      onAtualizar(s.id, { dataPrevistaPagamento: dataPrev || null, statusFinanceiro: status })
+                    }
+                  >
+                    Salvar
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() =>
+                      onAtualizar(s.id, {
+                        statusFinanceiro: 'Pago',
+                        dataPagamento: hojeISO(),
+                        dataPrevistaPagamento: dataPrev || s.dataPrevistaPagamento,
+                      })
+                    }
+                  >
+                    Marcar como pago
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="crm-acao-nota crm-aviso">Aguardando o financeiro.</p>
+            )}
+          </>
+        )}
+
+        {et.chave === 'pago' && (
+          <div className="crm-acao-ok">
+            ✓ Pago{s.dataPagamento ? ` em ${formatarData(s.dataPagamento)}` : ''}
+            {s.dataPrevistaPagamento ? ` · prev. ${formatarData(s.dataPrevistaPagamento)}` : ''}
+          </div>
+        )}
+
+        {/* ---- informações ---- */}
+        <section className="crm-bloco">
+          <h4>Paciente e atendimento</h4>
+          <div className="crm-linha2">
+            <Campo rot="CPF do paciente" val={s.cpf || '—'} />
+            <Campo rot="Solicitante" val={s.solicitante} />
+          </div>
           <div className="crm-linha2">
             <Campo rot="Procedimento" val={s.procedimento} />
             <Campo rot="Clínica / Hospital" val={s.clinicaHospital || '—'} />
           </div>
-          <div className="crm-linha2">
-            <Campo rot="Valor solicitado" val={formatarValor(s.valorSolicitado)} />
-            <Campo rot="Data consulta" val={formatarData(s.dataConsulta)} />
-          </div>
-          <div className="crm-linha2">
-            <Campo rot="Abertura" val={formatarData(s.abertura)} />
-            <Campo rot="Término / prazo" val={formatarData(s.termino)} />
-          </div>
-          <div className="crm-campo-ro">
-            <span className="crm-campo-rot">Dados bancários (Pix)</span>
-            {s.dadosBancarios ? (
-              <span className="crm-pix-val">
-                <span className="crm-campo-val">{s.dadosBancarios}</span>
-                <BotaoCopiarPix dados={s.dadosBancarios} />
-              </span>
-            ) : (
-              <span className="crm-campo-val">—</span>
-            )}
-          </div>
-
-          <div className="crm-anexos-bloco">
-            <span className="crm-campo-rot">Documentos</span>
-            <Anexos
-              solicitacaoId={s.id}
-              tipo="documento"
-              podeEnviar={podeEditarAtendimento(papel)}
-            />
-          </div>
+          <Campo rot="Abertura" val={formatarData(s.abertura)} />
         </section>
 
-        {/* ---- Enfermagem ---- */}
         <section className="crm-bloco">
-          <h4>2 · Enfermagem</h4>
-          <div className="crm-linha2">
-            <Campo
-              rot="Autorização"
-              val={
-                s.autorizacao === 'pendente'
-                  ? 'Pendente'
-                  : s.autorizacao === 'sim'
-                    ? 'Autorizado'
-                    : 'Não autorizado'
-              }
-            />
-            <Campo rot="Data autorização" val={formatarData(s.dataAutorizacao)} />
-          </div>
-
-          {podeEditarEnfermagem(papel) && s.autorizacao === 'pendente' && (
-            <div className="crm-acoes">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() =>
-                  onAtualizar(s.id, {
-                    autorizacao: 'sim',
-                    dataAutorizacao: hojeISO(),
-                  })
-                }
-              >
-                Autorizar
-              </button>
-              <button
-                type="button"
-                className="btn btn-ghost crm-btn-recusar"
-                onClick={() =>
-                  onAtualizar(s.id, {
-                    autorizacao: 'nao',
-                    dataAutorizacao: hojeISO(),
-                  })
-                }
-              >
-                Recusar
-              </button>
+          <h4>Dados para pagamento</h4>
+          {s.dadosBancarios ? (
+            <div className="crm-pay">
+              <span className="crm-pay-info">{s.dadosBancarios}</span>
+              <BotaoCopiarPix dados={s.dadosBancarios} />
             </div>
-          )}
-        </section>
-
-        {/* ---- Financeiro ---- */}
-        <section className="crm-bloco">
-          <h4>3 · Financeiro</h4>
-          {s.autorizacao !== 'sim' ? (
-            <p className="crm-aviso">Disponível após autorização da enfermagem.</p>
           ) : (
-            <>
-              <div className="crm-linha2">
-                <Campo rot="Status" val={s.statusFinanceiro ?? '—'} />
-                <Campo rot="Prev. pagamento" val={formatarData(s.dataPrevistaPagamento)} />
-              </div>
-              <Campo rot="Data do pagamento" val={formatarData(s.dataPagamento)} />
-
-              {podeEditarFinanceiro(papel) && s.statusFinanceiro !== 'Pago' && (
-                <div className="crm-form-fin">
-                  <div className="crm-linha2">
-                    <div className="campo">
-                      <label>Data prevista</label>
-                      <input
-                        type="date"
-                        value={dataPrev}
-                        onChange={(e) => setDataPrev(e.target.value)}
-                      />
-                    </div>
-                    <div className="campo">
-                      <label>Status</label>
-                      <select
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value as StatusFinanceiro)}
-                      >
-                        {STATUS_FINANCEIRO.filter((x) => x !== 'Recusado').map((x) => (
-                          <option key={x} value={x}>
-                            {x}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="crm-acoes">
-                    <button
-                      type="button"
-                      className="btn btn-ghost"
-                      onClick={() =>
-                        onAtualizar(s.id, {
-                          dataPrevistaPagamento: dataPrev || null,
-                          statusFinanceiro: status,
-                        })
-                      }
-                    >
-                      Salvar
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={() =>
-                        onAtualizar(s.id, {
-                          statusFinanceiro: 'Pago',
-                          dataPagamento: hojeISO(),
-                          dataPrevistaPagamento: dataPrev || s.dataPrevistaPagamento,
-                        })
-                      }
-                    >
-                      Marcar como pago
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <div className="crm-anexos-bloco">
-                <span className="crm-campo-rot">Recibo de pagamento</span>
-                <Anexos
-                  solicitacaoId={s.id}
-                  tipo="recibo"
-                  podeEnviar={podeEditarFinanceiro(papel)}
-                />
-              </div>
-            </>
+            <p className="crm-aviso">Não informado.</p>
           )}
         </section>
+
+        <section className="crm-bloco">
+          <h4>Documentos</h4>
+          <Anexos solicitacaoId={s.id} tipo="documento" podeEnviar={podeEditarAtendimento(papel)} />
+        </section>
+
+        {autorizado && (
+          <section className="crm-bloco">
+            <h4>Recibo de pagamento</h4>
+            <Anexos solicitacaoId={s.id} tipo="recibo" podeEnviar={podeEditarFinanceiro(papel)} />
+          </section>
+        )}
 
         {s.observacoes && (
           <section className="crm-bloco">
@@ -868,10 +911,15 @@ function DetalheSolicitacao({
           </section>
         )}
 
-        <section className="crm-bloco">
-          <h4>Histórico</h4>
-          <Historico solicitacaoId={s.id} />
-        </section>
+        <details className="crm-hist-det">
+          <summary>
+            <span>Histórico</span>
+            <span aria-hidden="true">▾</span>
+          </summary>
+          <div className="crm-hist-corpo">
+            <Historico solicitacaoId={s.id} />
+          </div>
+        </details>
 
         {papel === 'admin' && (
           <section className="crm-bloco crm-excluir">
