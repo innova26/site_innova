@@ -66,7 +66,7 @@ export type SolicitacaoCRM = {
 /* ============================================================
  * Etapa atual (derivada do estado) — rótulo + tom para o badge
  * ========================================================== */
-export type Tom = 'aguardando' | 'analise' | 'ok' | 'recusado'
+export type Tom = 'aguardando' | 'analise' | 'agendado' | 'ok' | 'recusado'
 
 export type EtapaInfo = { chave: string; label: string; tom: Tom }
 
@@ -82,9 +82,9 @@ export function etapaAtual(s: SolicitacaoCRM): EtapaInfo {
     return { chave: 'pago', label: 'Pago', tom: 'ok' }
 
   if (s.statusFinanceiro === 'Agendado')
-    return { chave: 'agendado', label: 'Pagamento agendado', tom: 'analise' }
+    return { chave: 'agendado', label: 'Pagamento agendado', tom: 'agendado' }
 
-  return { chave: 'financeiro', label: 'Aguardando financeiro', tom: 'aguardando' }
+  return { chave: 'financeiro', label: 'Aguardando financeiro', tom: 'analise' }
 }
 
 /** Papéis que podem editar cada etapa. */

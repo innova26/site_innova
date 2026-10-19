@@ -4867,8 +4867,10 @@
 .crm {
   --tom-aguardando: #b45309;
   --tom-aguardando-bg: #fef3c7;
-  --tom-analise: #1d4ed8;
+  --tom-analise: #1e40af;
   --tom-analise-bg: #dbeafe;
+  --tom-agendado: #5b21b6;
+  --tom-agendado-bg: #ede9fe;
   --tom-ok: #047857;
   --tom-ok-bg: #d1fae5;
   --tom-recusado: #b91c1c;
@@ -4976,6 +4978,61 @@ button.crm-card:hover {
   color: #fff;
 }
 
+/* chips por etapa: tom suave em repouso, sólido quando ativo */
+.crm-chip.tom-aguardando {
+  color: var(--tom-aguardando);
+  background: var(--tom-aguardando-bg);
+  border-color: transparent;
+}
+.crm-chip.tom-analise {
+  color: var(--tom-analise);
+  background: var(--tom-analise-bg);
+  border-color: transparent;
+}
+.crm-chip.tom-agendado {
+  color: var(--tom-agendado);
+  background: var(--tom-agendado-bg);
+  border-color: transparent;
+}
+.crm-chip.tom-ok {
+  color: var(--tom-ok);
+  background: var(--tom-ok-bg);
+  border-color: transparent;
+}
+.crm-chip.tom-recusado {
+  color: var(--tom-recusado);
+  background: var(--tom-recusado-bg);
+  border-color: transparent;
+}
+.crm-chip[class*='tom-']:hover {
+  border-color: currentColor;
+}
+.crm-chip.tom-aguardando.ativo {
+  background: var(--tom-aguardando);
+  border-color: var(--tom-aguardando);
+  color: #fff;
+}
+.crm-chip.tom-analise.ativo {
+  background: var(--tom-analise);
+  border-color: var(--tom-analise);
+  color: #fff;
+}
+.crm-chip.tom-agendado.ativo {
+  background: var(--tom-agendado);
+  border-color: var(--tom-agendado);
+  color: #fff;
+}
+.crm-chip.tom-ok.ativo {
+  background: var(--tom-ok);
+  border-color: var(--tom-ok);
+  color: #fff;
+}
+.crm-chip.tom-recusado.ativo {
+  background: var(--tom-recusado);
+  border-color: var(--tom-recusado);
+  color: #fff;
+}
+
 /* ---- tabela ---- */
 .crm-tabela td small {
   display: block;
@@ -5000,6 +5057,10 @@ button.crm-card:hover {
 .crm-badge.tom-analise {
   color: var(--tom-analise);
   background: var(--tom-analise-bg);
+}
+.crm-badge.tom-agendado {
+  color: var(--tom-agendado);
+  background: var(--tom-agendado-bg);
 }
 .crm-badge.tom-ok {
   color: var(--tom-ok);

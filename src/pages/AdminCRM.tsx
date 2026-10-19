@@ -41,12 +41,12 @@ import {
  * Filtros de etapa (para a barra de filtro e os cards)
  * ========================================================== */
 const FILTROS = [
-  { chave: 'todos', label: 'Todas' },
-  { chave: 'enfermagem', label: 'Aguardando enfermagem' },
-  { chave: 'financeiro', label: 'Aguardando financeiro' },
-  { chave: 'agendado', label: 'Agendado' },
-  { chave: 'pago', label: 'Pago' },
-  { chave: 'recusado', label: 'Não autorizado' },
+  { chave: 'todos', label: 'Todas', tom: '' },
+  { chave: 'enfermagem', label: 'Aguardando enfermagem', tom: 'aguardando' },
+  { chave: 'financeiro', label: 'Aguardando financeiro', tom: 'analise' },
+  { chave: 'agendado', label: 'Agendado', tom: 'agendado' },
+  { chave: 'pago', label: 'Pago', tom: 'ok' },
+  { chave: 'recusado', label: 'Não autorizado', tom: 'recusado' },
 ] as const
 
 type FormNova = {
@@ -329,7 +329,7 @@ export default function AdminCRM() {
           <button
             key={f.chave}
             type="button"
-            className={`crm-chip${filtro === f.chave ? ' ativo' : ''}`}
+            className={`crm-chip${f.tom ? ` tom-${f.tom}` : ''}${filtro === f.chave ? ' ativo' : ''}`}
             onClick={() => setFiltro(f.chave)}
           >
             {f.label}
