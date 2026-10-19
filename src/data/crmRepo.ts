@@ -128,18 +128,23 @@ export type NovaSolicitacao = {
   observacoes: string
 }
 
+/** Padroniza textos de identificação em MAIÚSCULAS (evita "Daiana" vs "DAIANA"
+ *  contar como pessoas diferentes nos rankings). Pix e observações ficam de fora:
+ *  uma chave Pix aleatória é sensível a maiúsculas e a observação é texto livre. */
+const maiusc = (v: string) => v.trim().toLocaleUpperCase('pt-BR')
+
 export async function criarSolicitacao(dados: NovaSolicitacao): Promise<SolicitacaoCRM> {
   if (!supabase) throw new Error('Supabase indisponível.')
   const { data, error } = await supabase
     .from('crm_solicitacoes')
     .insert({
       // vazio deixa o trigger gerar CRM-AAAA-00001; preenchido usa o informado
-      protocolo: dados.protocolo.trim() || null,
-      solicitante: dados.solicitante,
-      beneficiario: dados.beneficiario,
+      protocolo: maiusc(dados.protocolo) || null,
+      solicitante: maiusc(dados.solicitante),
+      beneficiario: maiusc(dados.beneficiario),
       cpf: dados.cpf || null,
-      procedimento: dados.procedimento,
-      clinica_hospital: dados.clinicaHospital || null,
+      procedimento: maiusc(dados.procedimento),
+      clinica_hospital: dados.clinicaHospital ? maiusc(dados.clinicaHospital) : null,
       data_consulta: dados.dataConsulta,
       termino: dados.termino,
       valor_solicitado: dados.valorSolicitado,

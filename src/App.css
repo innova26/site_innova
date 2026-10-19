@@ -5142,6 +5142,12 @@ button.crm-card:hover {
 .crm-req {
   color: var(--tom-recusado);
 }
+.crm-maiusc {
+  text-transform: uppercase;
+}
+.crm-maiusc::placeholder {
+  text-transform: none;
+}
 .crm-modal-acoes {
   flex: none;
   display: flex;

@@ -495,6 +495,7 @@ function FormNovaSolicitacao({
                 </label>
                 <input
                   id="n-protocolo"
+                  className="crm-maiusc"
                   placeholder="Protocolo do sistema de origem"
                   value={form.protocolo}
                   onChange={(e) => set('protocolo', e.target.value)}
@@ -507,6 +508,7 @@ function FormNovaSolicitacao({
                 </label>
                 <input
                   id="n-solic"
+                  className="crm-maiusc"
                   value={form.solicitante}
                   onChange={(e) => set('solicitante', e.target.value)}
                   required
@@ -524,6 +526,7 @@ function FormNovaSolicitacao({
                 </label>
                 <input
                   id="n-benef"
+                  className="crm-maiusc"
                   value={form.beneficiario}
                   onChange={(e) => set('beneficiario', e.target.value)}
                   required
@@ -550,6 +553,7 @@ function FormNovaSolicitacao({
               </label>
               <input
                 id="n-proc"
+                className="crm-maiusc"
                 list="sug-procedimentos"
                 value={form.procedimento}
                 onChange={(e) => set('procedimento', e.target.value)}
@@ -567,6 +571,7 @@ function FormNovaSolicitacao({
                 <label htmlFor="n-clinica">Clínica / Hospital</label>
                 <input
                   id="n-clinica"
+                  className="crm-maiusc"
                   list="sug-clinicas"
                   value={form.clinicaHospital}
                   onChange={(e) => set('clinicaHospital', e.target.value)}
