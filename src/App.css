@@ -5544,6 +5544,15 @@ button.crm-card:hover {
   letter-spacing: 0.6px;
   color: var(--blue-500);
 }
+.crm-bloco-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.crm-bloco-head h4 {
+  margin: 0 0 12px;
+}
 .crm-linha2 {
   display: grid;
   grid-template-columns: 1fr 1fr;

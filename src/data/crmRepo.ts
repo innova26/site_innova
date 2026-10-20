@@ -160,11 +160,24 @@ export async function criarSolicitacao(dados: NovaSolicitacao): Promise<Solicita
 
 /** Campos editáveis convertidos para as colunas do banco. */
 type PatchCRM = Partial<{
+  // atendimento (abertura)
+  beneficiario: string
+  cpf: string
+  solicitante: string
+  procedimento: string
+  clinicaHospital: string
+  valorSolicitado: number | null
+  dataConsulta: string | null
+  termino: string | null
+  dadosBancarios: string
+  // enfermagem
   autorizacao: SolicitacaoCRM['autorizacao']
   dataAutorizacao: string | null
+  // financeiro
   dataPrevistaPagamento: string | null
   statusFinanceiro: SolicitacaoCRM['statusFinanceiro']
   dataPagamento: string | null
+  // comum
   observacoes: string
 }>
 
@@ -174,6 +187,18 @@ export async function atualizarSolicitacao(
 ): Promise<SolicitacaoCRM> {
   if (!supabase) throw new Error('Supabase indisponível.')
   const col: Record<string, unknown> = {}
+  // atendimento — identificação em MAIÚSCULAS (igual ao cadastro)
+  if ('beneficiario' in patch) col.beneficiario = maiusc(patch.beneficiario ?? '')
+  if ('cpf' in patch) col.cpf = patch.cpf || null
+  if ('solicitante' in patch) col.solicitante = maiusc(patch.solicitante ?? '')
+  if ('procedimento' in patch) col.procedimento = maiusc(patch.procedimento ?? '')
+  if ('clinicaHospital' in patch)
+    col.clinica_hospital = patch.clinicaHospital ? maiusc(patch.clinicaHospital) : null
+  if ('valorSolicitado' in patch) col.valor_solicitado = patch.valorSolicitado
+  if ('dataConsulta' in patch) col.data_consulta = patch.dataConsulta
+  if ('termino' in patch) col.termino = patch.termino
+  if ('dadosBancarios' in patch) col.dados_bancarios = patch.dadosBancarios || null
+  // enfermagem / financeiro
   if ('autorizacao' in patch) col.autorizacao = patch.autorizacao
   if ('dataAutorizacao' in patch) col.data_autorizacao = patch.dataAutorizacao
   if ('dataPrevistaPagamento' in patch) col.data_prevista_pagamento = patch.dataPrevistaPagamento

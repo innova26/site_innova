@@ -717,6 +717,42 @@ function DetalheSolicitacao({
   const [dataPrev, setDataPrev] = useState(s.dataPrevistaPagamento ?? '')
   const [status, setStatus] = useState<StatusFinanceiro>(s.statusFinanceiro ?? 'Pendente')
 
+  const [editando, setEditando] = useState(false)
+  const dadosEdicao = () => ({
+    beneficiario: s.beneficiario,
+    cpf: s.cpf ?? '',
+    solicitante: s.solicitante,
+    procedimento: s.procedimento,
+    clinicaHospital: s.clinicaHospital ?? '',
+    valorSolicitado: s.valorSolicitado != null ? String(s.valorSolicitado) : '',
+    dataConsulta: s.dataConsulta ?? '',
+    termino: s.termino ?? '',
+    dadosBancarios: s.dadosBancarios ?? '',
+    observacoes: s.observacoes ?? '',
+  })
+  const [ed, setEd] = useState(dadosEdicao)
+  const setEdCampo = (k: keyof ReturnType<typeof dadosEdicao>, v: string) =>
+    setEd((prev) => ({ ...prev, [k]: v }))
+  const abrirEdicao = () => {
+    setEd(dadosEdicao())
+    setEditando(true)
+  }
+  const salvarEdicao = () => {
+    onAtualizar(s.id, {
+      beneficiario: ed.beneficiario,
+      cpf: ed.cpf,
+      solicitante: ed.solicitante,
+      procedimento: ed.procedimento,
+      clinicaHospital: ed.clinicaHospital,
+      valorSolicitado: ed.valorSolicitado === '' ? null : Number(ed.valorSolicitado),
+      dataConsulta: ed.dataConsulta || null,
+      termino: ed.termino || null,
+      dadosBancarios: ed.dadosBancarios,
+      observacoes: ed.observacoes,
+    })
+    setEditando(false)
+  }
+
   const autorizado = s.autorizacao === 'sim'
   const classeEnf = s.autorizacao !== 'pendente' ? 'done' : 'active'
   const classeFin =
@@ -871,31 +907,155 @@ function DetalheSolicitacao({
           </div>
         )}
 
-        {/* ---- informações ---- */}
-        <section className="crm-bloco">
-          <h4>Paciente e atendimento</h4>
-          <div className="crm-linha2">
-            <Campo rot="CPF do paciente" val={s.cpf || '—'} />
-            <Campo rot="Solicitante" val={s.solicitante} />
-          </div>
-          <div className="crm-linha2">
-            <Campo rot="Procedimento" val={s.procedimento} />
-            <Campo rot="Clínica / Hospital" val={s.clinicaHospital || '—'} />
-          </div>
-          <Campo rot="Abertura" val={formatarData(s.abertura)} />
-        </section>
-
-        <section className="crm-bloco">
-          <h4>Dados para pagamento</h4>
-          {s.dadosBancarios ? (
-            <div className="crm-pay">
-              <span className="crm-pay-info">{s.dadosBancarios}</span>
-              <BotaoCopiarPix dados={s.dadosBancarios} />
+        {/* ---- informações / edição ---- */}
+        {editando ? (
+          <section className="crm-bloco">
+            <h4>Editar solicitação</h4>
+            <div className="crm-linha2">
+              <div className="campo">
+                <label htmlFor="e-benef">Beneficiário / Paciente</label>
+                <input
+                  id="e-benef"
+                  className="crm-maiusc"
+                  value={ed.beneficiario}
+                  onChange={(e) => setEdCampo('beneficiario', e.target.value)}
+                />
+              </div>
+              <div className="campo">
+                <label htmlFor="e-cpf">CPF do paciente</label>
+                <input
+                  id="e-cpf"
+                  inputMode="numeric"
+                  placeholder="000.000.000-00"
+                  value={ed.cpf}
+                  onChange={(e) => setEdCampo('cpf', mascaraDocumento(e.target.value))}
+                />
+              </div>
             </div>
-          ) : (
-            <p className="crm-aviso">Não informado.</p>
-          )}
-        </section>
+            <div className="crm-linha2">
+              <div className="campo">
+                <label htmlFor="e-solic">Solicitante</label>
+                <input
+                  id="e-solic"
+                  className="crm-maiusc"
+                  value={ed.solicitante}
+                  onChange={(e) => setEdCampo('solicitante', e.target.value)}
+                />
+              </div>
+              <div className="campo">
+                <label htmlFor="e-valor">Valor solicitado (R$)</label>
+                <input
+                  id="e-valor"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={ed.valorSolicitado}
+                  onChange={(e) => setEdCampo('valorSolicitado', e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="crm-linha2">
+              <div className="campo">
+                <label htmlFor="e-proc">Procedimento</label>
+                <input
+                  id="e-proc"
+                  className="crm-maiusc"
+                  value={ed.procedimento}
+                  onChange={(e) => setEdCampo('procedimento', e.target.value)}
+                />
+              </div>
+              <div className="campo">
+                <label htmlFor="e-clinica">Clínica / Hospital</label>
+                <input
+                  id="e-clinica"
+                  className="crm-maiusc"
+                  value={ed.clinicaHospital}
+                  onChange={(e) => setEdCampo('clinicaHospital', e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="crm-linha2">
+              <div className="campo">
+                <label htmlFor="e-consulta">Data da consulta</label>
+                <input
+                  id="e-consulta"
+                  type="date"
+                  value={ed.dataConsulta}
+                  onChange={(e) => setEdCampo('dataConsulta', e.target.value)}
+                />
+              </div>
+              <div className="campo">
+                <label htmlFor="e-termino">Término / prazo</label>
+                <input
+                  id="e-termino"
+                  type="date"
+                  value={ed.termino}
+                  onChange={(e) => setEdCampo('termino', e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="campo">
+              <label htmlFor="e-banc">Dados bancários (Pix)</label>
+              <input
+                id="e-banc"
+                placeholder="Pix (e-mail / CPF-CNPJ / telefone / chave)"
+                value={ed.dadosBancarios}
+                onChange={(e) => setEdCampo('dadosBancarios', e.target.value)}
+              />
+            </div>
+            <div className="campo">
+              <label htmlFor="e-obs">Observações</label>
+              <textarea
+                id="e-obs"
+                rows={2}
+                value={ed.observacoes}
+                onChange={(e) => setEdCampo('observacoes', e.target.value)}
+              />
+            </div>
+            <div className="crm-acoes">
+              <button type="button" className="btn btn-ghost" onClick={() => setEditando(false)}>
+                Cancelar
+              </button>
+              <button type="button" className="btn btn-primary" onClick={salvarEdicao}>
+                Salvar alterações
+              </button>
+            </div>
+          </section>
+        ) : (
+          <>
+            <section className="crm-bloco">
+              <div className="crm-bloco-head">
+                <h4>Paciente e atendimento</h4>
+                {podeEditarAtendimento(papel) && (
+                  <button type="button" className="admin-link" onClick={abrirEdicao}>
+                    Editar
+                  </button>
+                )}
+              </div>
+              <div className="crm-linha2">
+                <Campo rot="CPF do paciente" val={s.cpf || '—'} />
+                <Campo rot="Solicitante" val={s.solicitante} />
+              </div>
+              <div className="crm-linha2">
+                <Campo rot="Procedimento" val={s.procedimento} />
+                <Campo rot="Clínica / Hospital" val={s.clinicaHospital || '—'} />
+              </div>
+              <Campo rot="Abertura" val={formatarData(s.abertura)} />
+            </section>
+
+            <section className="crm-bloco">
+              <h4>Dados para pagamento</h4>
+              {s.dadosBancarios ? (
+                <div className="crm-pay">
+                  <span className="crm-pay-info">{s.dadosBancarios}</span>
+                  <BotaoCopiarPix dados={s.dadosBancarios} />
+                </div>
+              ) : (
+                <p className="crm-aviso">Não informado.</p>
+              )}
+            </section>
+          </>
+        )}
 
         <section className="crm-bloco">
           <h4>Documentos</h4>
@@ -909,7 +1069,7 @@ function DetalheSolicitacao({
           </section>
         )}
 
-        {s.observacoes && (
+        {!editando && s.observacoes && (
           <section className="crm-bloco">
             <h4>Observações</h4>
             <p className="crm-obs">{s.observacoes}</p>
