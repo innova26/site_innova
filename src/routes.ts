@@ -16,6 +16,7 @@ export const ROUTES = {
   adminCrm: '/admin/crm',
   adminCrmUsuarios: '/admin/crm/usuarios',
   adminCrmPainel: '/admin/crm/painel',
+  adminCases: '/admin/cases',
 } as const
 
 /** Portais sao sistemas externos, por isso ficam fora do roteador. */

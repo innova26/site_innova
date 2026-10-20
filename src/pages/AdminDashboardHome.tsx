@@ -58,6 +58,25 @@ function IconeCrm() {
   )
 }
 
+function IconeCases() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4 19.5V6a2 2 0 0 1 2-2h11a1 1 0 0 1 1 1v13" />
+      <path d="M6 17h12" />
+      <path d="M6 20.5A1.5 1.5 0 0 1 7.5 19H18v2.5H7.5A1.5 1.5 0 0 1 6 20.5z" />
+      <path d="M9.5 8.5h5" />
+    </svg>
+  )
+}
+
 const OPCOES: {
   to: string
   titulo: string
@@ -84,6 +103,13 @@ const OPCOES: {
     descricao:
       'Fluxo de CM entre atendimento, enfermagem e financeiro — abertura, autorização, agendamento e pagamento.',
     icone: <IconeCrm />,
+  },
+  {
+    to: ROUTES.adminCases,
+    titulo: 'Case de Estudos — UX/UI Fullstack Developer',
+    descricao:
+      'Documentação do setor de TI: melhorias de produto, UX/UI e engenharia desenvolvidas na Innova.',
+    icone: <IconeCases />,
   },
 ]
 

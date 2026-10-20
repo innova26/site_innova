@@ -16,6 +16,7 @@ import AdminRedes from './pages/AdminRedes'
 import AdminCRM from './pages/AdminCRM'
 import AdminCRMUsuarios from './pages/AdminCRMUsuarios'
 import AdminCRMPainel from './pages/AdminCRMPainel'
+import AdminCases from './pages/AdminCases'
 import EmBreve from './pages/EmBreve'
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade'
 import InformacoesRegulatorias from './pages/InformacoesRegulatorias'
@@ -63,6 +64,7 @@ function App() {
           <Route path="crm" element={<AdminCRM />} />
           <Route path="crm/usuarios" element={<AdminCRMUsuarios />} />
           <Route path="crm/painel" element={<AdminCRMPainel />} />
+          <Route path="cases" element={<AdminCases />} />
         </Route>
       </Routes>
       {analyticsEnabled && (
