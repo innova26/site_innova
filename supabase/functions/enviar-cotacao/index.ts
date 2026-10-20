@@ -8,7 +8,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? ''
-const DESTINOS = (Deno.env.get('COTACAO_DESTINO') ?? 'mateus.souza@innovaoperadora.com.br')
+const DESTINOS = (Deno.env.get('COTACAO_DESTINO') ?? 'faleconosco@innovaoperadora.com.br')
   .split(',')
   .map((item) => item.trim())
   .filter(Boolean)
