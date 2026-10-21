@@ -289,31 +289,29 @@ export default function AdminCRMPainel() {
         </div>
       </div>
 
-      {(papel === 'financeiro' || papel === 'admin') && (
-        <section className="pnl-card pnl-alertas">
-          <h3>
-            Alertas para revisão
-            {alertas.length > 0 && <span className="pnl-alertas-n">{alertas.length}</span>}
-          </h3>
-          <p className="pnl-cap">Avisos automáticos — confira antes de pagar. Não bloqueia nada.</p>
-          {alertas.length === 0 ? (
-            <p className="crm-aviso">Nenhum alerta no momento.</p>
-          ) : (
-            <ul className="pnl-alertas-lista">
-              {alertas.map((a, i) => (
-                <li key={`${a.id}-${a.tipo}-${i}`}>
-                  <span className={`crm-badge pnl-alerta-tag t-${a.tipo}`}>
-                    {ROTULO_ALERTA[a.tipo]}
-                  </span>
-                  <span className="pnl-alerta-txt">
-                    <strong>{a.protocolo}</strong> · {a.beneficiario} — {a.motivo}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      )}
+      <section className="pnl-card pnl-alertas">
+        <h3>
+          Alertas para revisão
+          {alertas.length > 0 && <span className="pnl-alertas-n">{alertas.length}</span>}
+        </h3>
+        <p className="pnl-cap">Avisos automáticos — confira antes de pagar. Não bloqueia nada.</p>
+        {alertas.length === 0 ? (
+          <p className="crm-aviso">Nenhum alerta no momento.</p>
+        ) : (
+          <ul className="pnl-alertas-lista">
+            {alertas.map((a, i) => (
+              <li key={`${a.id}-${a.tipo}-${i}`}>
+                <span className={`crm-badge pnl-alerta-tag t-${a.tipo}`}>
+                  {ROTULO_ALERTA[a.tipo]}
+                </span>
+                <span className="pnl-alerta-txt">
+                  <strong>{a.protocolo}</strong> · {a.beneficiario} — {a.motivo}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <div className="pnl-grid">
         {/* por etapa */}
