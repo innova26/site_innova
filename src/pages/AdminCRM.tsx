@@ -717,6 +717,24 @@ function DetalheSolicitacao({
   const [dataPrev, setDataPrev] = useState(s.dataPrevistaPagamento ?? '')
   const [status, setStatus] = useState<StatusFinanceiro>(s.statusFinanceiro ?? 'Pendente')
 
+  // edição do financeiro sobre um pagamento já concluído (só os campos do financeiro)
+  const [editandoPag, setEditandoPag] = useState(false)
+  const [dataPag, setDataPag] = useState(s.dataPagamento ?? '')
+  const abrirPagamento = () => {
+    setStatus(s.statusFinanceiro ?? 'Pendente')
+    setDataPrev(s.dataPrevistaPagamento ?? '')
+    setDataPag(s.dataPagamento ?? '')
+    setEditandoPag(true)
+  }
+  const salvarPagamento = () => {
+    onAtualizar(s.id, {
+      statusFinanceiro: status,
+      dataPrevistaPagamento: dataPrev || null,
+      dataPagamento: dataPag || null,
+    })
+    setEditandoPag(false)
+  }
+
   const [editando, setEditando] = useState(false)
   const dadosEdicao = () => ({
     beneficiario: s.beneficiario,
@@ -900,12 +918,52 @@ function DetalheSolicitacao({
           </>
         )}
 
-        {et.chave === 'pago' && (
-          <div className="crm-acao-ok">
-            ✓ Pago{s.dataPagamento ? ` em ${formatarData(s.dataPagamento)}` : ''}
-            {s.dataPrevistaPagamento ? ` · prev. ${formatarData(s.dataPrevistaPagamento)}` : ''}
-          </div>
-        )}
+        {et.chave === 'pago' &&
+          (podeEditarFinanceiro(papel) && editandoPag ? (
+            <div className="crm-acao">
+              <div className="crm-acao-lbl">Editar pagamento</div>
+              <div className="crm-linha2">
+                <div className="campo">
+                  <label>Status</label>
+                  <select value={status} onChange={(e) => setStatus(e.target.value as StatusFinanceiro)}>
+                    {STATUS_FINANCEIRO.filter((x) => x !== 'Recusado').map((x) => (
+                      <option key={x} value={x}>
+                        {x}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="campo">
+                  <label>Data do pagamento</label>
+                  <input type="date" value={dataPag} onChange={(e) => setDataPag(e.target.value)} />
+                </div>
+              </div>
+              <div className="campo">
+                <label>Data prevista</label>
+                <input type="date" value={dataPrev} onChange={(e) => setDataPrev(e.target.value)} />
+              </div>
+              <div className="crm-acoes">
+                <button type="button" className="btn btn-ghost" onClick={() => setEditandoPag(false)}>
+                  Cancelar
+                </button>
+                <button type="button" className="btn btn-primary" onClick={salvarPagamento}>
+                  Salvar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="crm-acao-ok crm-acao-ok-row">
+              <span>
+                ✓ Pago{s.dataPagamento ? ` em ${formatarData(s.dataPagamento)}` : ''}
+                {s.dataPrevistaPagamento ? ` · prev. ${formatarData(s.dataPrevistaPagamento)}` : ''}
+              </span>
+              {podeEditarFinanceiro(papel) && (
+                <button type="button" className="crm-link-ok" onClick={abrirPagamento}>
+                  Editar
+                </button>
+              )}
+            </div>
+          ))}
 
         {/* ---- informações / edição ---- */}
         {editando ? (

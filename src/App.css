@@ -5455,6 +5455,23 @@ button.crm-card:hover {
   font-size: 13.5px;
   font-weight: 600;
 }
+.crm-acao-ok-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.crm-link-ok {
+  flex: none;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--tom-ok);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
 .crm-acao-nota {
   margin-top: 12px;
   font-size: 13px;
