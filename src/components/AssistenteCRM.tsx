@@ -105,11 +105,25 @@ const DUVIDAS: Duvida[] = [
 
 const GRUPOS: Grupo[] = ['Geral', 'Atendimento', 'Enfermagem', 'Financeiro']
 
-function IconeAjuda() {
+/* Avatar do Novi — robozinho sorridente nas cores da Innova. */
+function NoviAvatar({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M7.5 8.5a4.5 4.5 0 0 1 9 0c0 3-4.5 3.5-4.5 6" />
-      <circle cx="12" cy="18" r="0.6" fill="currentColor" stroke="none" />
+    <svg className={className} viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      {/* antena */}
+      <line x1="32" y1="12" x2="32" y2="6" stroke="#e2ebf8" strokeWidth="2.4" strokeLinecap="round" />
+      <circle className="novi-antena" cx="32" cy="4.5" r="3.2" fill="#37c35a" />
+      {/* orelhas */}
+      <rect x="9" y="22" width="6" height="12" rx="3" fill="#37c35a" />
+      <rect x="49" y="22" width="6" height="12" rx="3" fill="#2a8fe0" />
+      {/* cabeça */}
+      <rect x="14" y="12" width="36" height="30" rx="12" fill="#f4f8fd" stroke="#cfdcf0" strokeWidth="1.5" />
+      {/* tela */}
+      <rect x="18.5" y="17.5" width="27" height="19" rx="8" fill="#0e1830" />
+      {/* olhos sorridentes */}
+      <path d="M23 27 Q27 22.5 31 27" stroke="#49d4ff" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M33 27 Q37 22.5 41 27" stroke="#49d4ff" strokeWidth="2.4" strokeLinecap="round" />
+      {/* sorriso */}
+      <path d="M28 31 Q32 35 36 31" stroke="#49d4ff" strokeWidth="2.2" strokeLinecap="round" />
     </svg>
   )
 }
@@ -135,22 +149,29 @@ export default function AssistenteCRM() {
         className="assist-fab"
         onClick={() => setAberto((v) => !v)}
         aria-expanded={aberto}
-        aria-label={aberto ? 'Fechar ajuda' : 'Abrir ajuda do CRM'}
+        aria-label={aberto ? 'Fechar o Novi' : 'Abrir o Novi — assistente da Innova'}
       >
-        {aberto ? '×' : <IconeAjuda />}
+        {aberto ? '×' : <NoviAvatar className="novi" />}
       </button>
 
       {aberto && (
-        <aside className="assist-painel" role="dialog" aria-label="Ajuda do CRM">
+        <aside className="assist-painel" role="dialog" aria-label="Novi — assistente da Innova">
           <header className="assist-cab">
-            <div>
-              <strong>Ajuda do CRM</strong>
-              <span>Dúvidas de uso do sistema</span>
+            <div className="assist-cab-id">
+              <NoviAvatar className="novi" />
+              <div>
+                <strong>Novi</strong>
+                <span>Assistente da Innova</span>
+              </div>
             </div>
             <button type="button" className="assist-x" onClick={() => setAberto(false)} aria-label="Fechar">
               ×
             </button>
           </header>
+
+          <p className="assist-ola">
+            Oi! Sou o <strong>Novi</strong>. Escolha um tema ou busque sua dúvida que eu te ajudo.
+          </p>
 
           <div className="assist-busca">
             <input
@@ -198,7 +219,7 @@ export default function AssistenteCRM() {
           </div>
 
           <footer className="assist-rodape">
-            Não achou? Fale com a TI.
+            Não achei por aqui? Fale com o setor de TI que a gente resolve.
           </footer>
         </aside>
       )}
