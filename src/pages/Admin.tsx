@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 import type { Session } from '@supabase/supabase-js'
 import { ROUTES } from '../routes'
 import { supabase, supabaseConfigurado } from '../lib/supabase'
+import AssistenteCRM from '../components/AssistenteCRM'
 
 function OlhoIcone({ aberto }: { aberto: boolean }) {
   return (
@@ -251,6 +252,8 @@ function AdminShell({ sessao }: { sessao: Session }) {
 
         <Outlet />
       </div>
+
+      {naCrm && <AssistenteCRM />}
     </section>
   )
 }
