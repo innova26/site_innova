@@ -27,6 +27,15 @@ const CASOS: Caso[] = [
     arquivo: '/casos/crm-controle-de-solicitacoes.html',
     data: 'Out 2026',
   },
+  {
+    slug: 'novi-assistente',
+    titulo: 'Novi — Identidade do assistente',
+    resumo:
+      'Guia de identidade e tom de voz do Novi, o robozinho assistente da Innova: conceito, personalidade, estados visuais (atento, pensando, sucesso, feliz) e como ele fala nos sistemas.',
+    tags: ['Branding', 'UX Writing', 'Design', 'Mascote'],
+    arquivo: '/casos/novi-assistente.html',
+    data: 'Out 2026',
+  },
 ]
 
 export default function AdminCases() {
