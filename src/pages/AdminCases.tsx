@@ -36,6 +36,15 @@ const CASOS: Caso[] = [
     arquivo: '/casos/novi-assistente.html',
     data: 'Out 2026',
   },
+  {
+    slug: 'nativafacil',
+    titulo: 'NativaFácil — Portal do cliente e gestão',
+    resumo:
+      'Camada de autoatendimento e gestão sobre o ERP Omie para uma operadora de plano de saúde: portal do beneficiário (boletos, 2ª via, IR, declarações) e área administrativa, com cache/retry, RLS e conformidade LGPD.',
+    tags: ['Product Design', 'Full-stack', 'React', 'Supabase', 'Healthtech'],
+    arquivo: '/casos/nativafacil.html',
+    data: 'Out 2026',
+  },
 ]
 
 export default function AdminCases() {

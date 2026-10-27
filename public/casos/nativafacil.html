@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NativaFácil — Caso de Estudo</title>
+<style>
+  :root{
+    --bg:#f2f8fc; --surface:#ffffff; --panel:#e6f2fb; --fg:#0f1f2e; --muted:#51647a;
+    --line:#d3e4f2; --brand:#0a8fd6; --brand-d:#0b4a8b; --cyan:#00b7e5; --soft:#e6f6ff;
+    --ok:#16a34a; --ok-bg:#dcfce7; --warn:#d97706; --warn-bg:#fef3c7; --bad:#dc2626; --bad-bg:#fee2e2;
+    --screen-2:#eef5fc; --d:#e9f3fb;
+    --font-display:"Fraunces",Georgia,serif;
+    --font-body:"IBM Plex Sans",system-ui,sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#081019; --surface:#0f1d2b; --panel:#132334; --fg:#e7f1fa; --muted:#9bb0c4;
+    --line:#223445; --brand:#39b3ec; --brand-d:#8fd0f3; --cyan:#4fd6f5; --soft:#11293b; --screen-2:#13273a; --d:#0a1420;
+    color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#081019; --surface:#0f1d2b; --panel:#132334; --fg:#e7f1fa; --muted:#9bb0c4;
+    --line:#223445; --brand:#39b3ec; --brand-d:#8fd0f3; --cyan:#4fd6f5; --soft:#11293b; --screen-2:#13273a; --d:#0a1420;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:1.68;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding-left:max(22px,env(safe-area-inset-left,0px));padding-right:max(22px,env(safe-area-inset-right,0px))}
+  h1,h2,h3{font-family:var(--font-display);font-weight:400;text-wrap:balance;line-height:1.1;margin:0}
+  h2{font-size:clamp(26px,4.2vw,38px);letter-spacing:-.4px}
+  h3{font-size:19px;font-family:var(--font-body);font-weight:600}
+  p{margin:0}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--brand);font-weight:500}
+  .lead{font-size:clamp(17px,2.1vw,20px);color:var(--muted)}
+  section{padding-block:clamp(40px,6vw,64px)}
+  .sec-head{display:flex;flex-direction:column;gap:14px;margin-bottom:24px}
+  .divider{height:1px;background:var(--line)}
+  .prose p{color:var(--fg);margin-bottom:14px}
+  .prose p:last-child{margin-bottom:0}
+
+  .hero{padding-top:clamp(44px,7vw,78px);padding-bottom:clamp(24px,4vw,40px)}
+  .hero h1{font-size:clamp(42px,8vw,76px);letter-spacing:-1.4px;margin:16px 0 14px}
+  .hero h1 em{font-style:italic;color:var(--brand)}
+  .hero .sub{font-size:15px;color:var(--muted);font-family:var(--font-mono);letter-spacing:.02em}
+  .meta{display:flex;flex-wrap:wrap;gap:0;margin-top:30px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+  .meta div{flex:1 1 150px;min-width:140px;padding:15px 18px;border-right:1px solid var(--line)}
+  .meta div:last-child{border-right:none}
+  .meta dt{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .meta dd{margin:0;font-size:14px;font-weight:500}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .chip{font-family:var(--font-mono);font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+
+  /* placeholder de mockup */
+  .mock{background:var(--screen-2);border:2px dashed var(--brand);border-radius:16px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    text-align:center;padding:38px 22px;color:var(--brand)}
+  .mock .ico{font-size:30px;line-height:1;opacity:.75}
+  .mock .lbl{font-weight:600;font-size:15px}
+  .mock .hint{font-size:12.5px;color:var(--muted);max-width:46ch}
+  .mock.tall{min-height:300px}
+  .mock.wide{min-height:240px}
+  .mock.hero-mock{min-height:280px;margin-top:26px}
+  .mockrow{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:700px){.mockrow{grid-template-columns:1fr}}
+
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  @media(max-width:720px){.twocol{grid-template-columns:1fr;gap:20px}}
+  .block{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .block h3{margin:0 0 12px;color:var(--brand-d)}
+  ul.clean{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px}
+  ul.clean li{padding-left:24px;position:relative;color:var(--muted);font-size:14.5px}
+  ul.clean li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:50%;background:var(--cyan)}
+  ul.clean.bad li::before{background:var(--bad)}
+  ul.clean b{color:var(--fg);font-weight:600}
+
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.feat{grid-template-columns:1fr}}
+  .feat .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .feat .card h3{color:var(--brand-d);margin:0 0 6px;font-size:16px}
+  .feat .card p{color:var(--muted);font-size:14px}
+
+  .arch{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-top:6px}
+  .node{flex:1 1 150px;min-width:150px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .node h4{margin:0 0 5px;font-size:14.5px;font-family:var(--font-body);font-weight:600}
+  .node p{font-size:12.5px;color:var(--muted)}
+  .arrow{display:flex;align-items:center;justify-content:center;padding:0 10px;color:var(--brand);font-size:20px;flex:none}
+  @media(max-width:700px){.arrow{transform:rotate(90deg);padding:8px 0;width:100%}}
+
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:620px){.metrics{grid-template-columns:1fr}}
+  .metric{background:var(--surface);border:1px dashed var(--brand);border-radius:14px;padding:18px 20px;text-align:center}
+  .metric b{font-family:var(--font-display);font-size:30px;color:var(--brand);display:block;line-height:1}
+  .metric span{font-size:12.5px;color:var(--muted);display:block;margin-top:8px}
+  .metric .tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);margin-top:8px;display:block}
+
+  .callout{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:12px;padding:16px 20px;color:var(--fg);font-size:15.5px}
+  footer{border-top:1px solid var(--line);padding-block:40px;color:var(--muted);font-size:13px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+  .mono{font-family:var(--font-mono)}
+
+  @page{size:A4;margin:12mm}
+  @media print{
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    html,body{background:#fff}
+    .wrap{max-width:none}
+    .divider{display:none}
+    section{padding-block:16px !important;break-inside:avoid}
+    .hero{padding-top:4px;padding-bottom:4px;break-inside:avoid}
+    .twocol{grid-template-columns:1fr 1fr !important}
+    .feat{grid-template-columns:1fr 1fr !important}
+    .metrics{grid-template-columns:repeat(3,1fr) !important}
+    .block,.card,.node,.metric,.mock,.callout{break-inside:avoid}
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+</head>
+<body>
+
+<header class="hero"><div class="wrap">
+  <p class="eyebrow">Caso de estudo</p>
+  <h1>Nativa<em>Fácil</em></h1>
+  <p class="sub">Portal do cliente e gestão para operadora de plano de saúde · Healthtech</p>
+  <dl class="meta">
+    <div><dt>Papel</dt><dd>Product Design · Full-stack</dd></div>
+    <div><dt>Plataforma</dt><dd>Aplicação web</dd></div>
+    <div><dt>Backend</dt><dd>Supabase ↔ Omie (ERP)</dd></div>
+    <div><dt>Segmento</dt><dd>Healthtech · plano de saúde</dd></div>
+  </dl>
+  <div class="chips">
+    <span class="chip">React</span><span class="chip">Supabase</span><span class="chip">Edge Functions</span>
+    <span class="chip">RLS · LGPD</span><span class="chip">Integração Omie</span><span class="chip">Cache + Retry</span>
+  </div>
+  <div class="mock hero-mock">
+    <div class="ico">▭</div>
+    <div class="lbl">[ Mockup — visão geral do NativaFácil ]</div>
+    <div class="hint">Sugestão: colagem do portal do beneficiário + painel de gestão (hero).</div>
+  </div>
+</div></header>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<section><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Resumo executivo</p><h2>Autoatendimento e gestão sobre o ERP.</h2></div>
+  <div class="prose lead">
+    <p>O NativaFácil deu aos beneficiários de uma operadora de plano de saúde um portal de autoatendimento 24/7 e, à equipe, uma central de gestão — tudo integrado em tempo real ao ERP Omie, onde os dados financeiros já viviam. Antes, cada 2ª via de boleto, informe de imposto de renda ou declaração de pagamento dependia de uma ligação ou visita, e a equipe não tinha visão consolidada de faturamento e inadimplência.</p>
+    <p>A solução eliminou esse atrito: documentos saem na hora, com segurança e conformidade LGPD, e os gestores passaram a enxergar o negócio em um painel único. Em vez de substituir o Omie, o projeto o potencializou.</p>
+  </div>
+</div></section>
+
+<section style="background:var(--panel)"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Contexto e ponto de partida</p><h2>Dados presos no ERP.</h2></div>
+  <div class="prose">
+    <p>A operadora (marca Innova) já conduzia toda a gestão financeira no Omie, um ERP robusto, porém fechado para o cliente final. Os beneficiários não tinham como acessar seus próprios boletos e documentos: dependiam do atendimento humano.</p>
+    <p>A equipe, por sua vez, administrava tudo dentro do Omie, sem uma camada própria de autoatendimento nem um lugar para consolidar indicadores gerenciais. Faltava uma ponte entre o ERP e as pessoas — beneficiários de um lado, gestores do outro.</p>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Os desafios — as dores</p><h2>Atrito nos dois lados.</h2></div>
+  <div class="twocol">
+    <div class="block">
+      <h3>Do lado do beneficiário</h3>
+      <ul class="clean">
+        <li>Para obter a <b>2ª via de um boleto</b>, era preciso ligar ou ir até a operadora.</li>
+        <li>Informe de IR, recibos e declarações de pagamento eram <b>pedidos e gerados manualmente</b>.</li>
+        <li>Nenhum acesso <b>fora do horário comercial</b> — qualquer dúvida virava um chamado.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Do lado da empresa</h3>
+      <ul class="clean bad">
+        <li>Suporte <b>sobrecarregado</b> com pedidos repetitivos (2ª via e documentos).</li>
+        <li>Sem visão consolidada de <b>faturamento, recebimento e inadimplência</b>.</li>
+        <li>Inadimplência <b>sem leitura por faixa de atraso</b> nem histórico.</li>
+        <li>Cadastro de clientes frágil e gestão de equipe burocrática.</li>
+        <li>Dados sensíveis (CPF e saúde) exigindo <b>rigor de LGPD</b>.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section style="background:var(--panel)"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">A solução</p><h2>Uma camada sobre o Omie, sem substituí-lo.</h2>
+    <p class="lead">O NativaFácil é uma aplicação web (React + Supabase) que coloca autoatendimento e gestão sobre o Omie.</p>
+  </div>
+
+  <div class="feat">
+    <div class="card"><h3>Portal do beneficiário</h3><p>Login seguro, consulta de boletos com código de barras e PDF, histórico de pagamentos e geração automática de informe de IR, recibos e declaração de pagamentos — tudo puxado do Omie em tempo real.</p></div>
+    <div class="card"><h3>Área administrativa</h3><p>Painel com faturamento, recebimento e inadimplência por projeto, histórico de inadimplência por faixa de atraso (30/60/90/90+ dias), lista de clientes, carteirinhas e gestão dos usuários da equipe.</p></div>
+    <div class="card"><h3>Integração inteligente com o Omie</h3><p>As consultas passam por uma camada de cache (com validade por tipo de dado) e por mecanismos de retry que respeitam os limites da API do Omie — velocidade para o usuário e estabilidade na integração.</p></div>
+    <div class="card"><h3>Segurança por design</h3><p>Controle de acesso por papéis (beneficiário, supervisor, administrador), regras a nível de linha no banco (RLS) e mascaramento de dados pessoais, em conformidade com a LGPD. Cadastro resiliente e recuperação de senha pelo CPF.</p></div>
+  </div>
+
+  <div class="mockrow" style="margin-top:22px">
+    <div class="mock tall">
+      <div class="ico">▭</div>
+      <div class="lbl">[ Mockup — Portal do beneficiário ]</div>
+      <div class="hint">Boletos com código de barras/PDF, histórico e documentos fiscais.</div>
+    </div>
+    <div class="mock tall">
+      <div class="ico">▭</div>
+      <div class="lbl">[ Mockup — Área administrativa ]</div>
+      <div class="hint">Painel de faturamento, recebimento e inadimplência por faixa de atraso.</div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Arquitetura</p><h2>O cliente nunca toca o Omie.</h2></div>
+  <div class="arch">
+    <div class="node"><h4>Aplicação web</h4><p>React. Portal do beneficiário e área administrativa, com papéis de acesso.</p></div>
+    <div class="arrow">→</div>
+    <div class="node"><h4>Supabase</h4><p>Auth, RLS e Edge Functions (serverless). Cache por tipo de dado e retry com backoff.</p></div>
+    <div class="arrow">→</div>
+    <div class="node"><h4>Omie (ERP)</h4><p>Fonte dos dados financeiros. Acessado só pelo backend, respeitando os limites da API.</p></div>
+  </div>
+</div></section>
+
+<section style="background:var(--panel)"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Benefícios</p><h2>Valor para os dois lados.</h2></div>
+  <div class="twocol">
+    <div class="block">
+      <h3>Para o beneficiário</h3>
+      <ul class="clean">
+        <li><b>Autonomia 24/7:</b> 2ª via, código de barras e PDF do boleto a qualquer hora, sem ligar.</li>
+        <li><b>Documentos fiscais na hora:</b> informe de IR, recibos e declaração de pagamentos automáticos.</li>
+        <li><b>Histórico completo</b> de pagamentos reunido em um só lugar.</li>
+        <li>Experiência simples, com <b>tema claro/escuro</b> e acesso pelo celular.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Para a empresa</h3>
+      <ul class="clean">
+        <li><b>Menos chamados repetitivos:</b> 2ª via e documentos viram autoatendimento.</li>
+        <li><b>Visão gerencial única:</b> faturamento, recebimento e inadimplência por projeto.</li>
+        <li><b>Cobrança mais eficiente:</b> inadimplência lida por faixa de atraso e histórico.</li>
+        <li><b>Operação escalável:</b> o cache absorve o crescimento sem sobrecarregar o Omie.</li>
+        <li><b>Conformidade por padrão:</b> RLS, mascaramento de PII e papéis (LGPD desde o design).</li>
+        <li>Menos atrito no onboarding de clientes e na gestão da equipe.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Resultados e diferenciais técnicos</p><h2>Experiência boa, base robusta.</h2></div>
+  <div class="feat">
+    <div class="card"><h3>Performance e estabilidade</h3><p>Cache por tipo de dado e retry com backoff mantêm o portal rápido mesmo diante dos limites da API do Omie.</p></div>
+    <div class="card"><h3>Segurança</h3><p>RLS em todas as tabelas, papéis de acesso e mascaramento de CPF/e-mail nos logs.</p></div>
+    <div class="card"><h3>Resiliência</h3><p>Cadastro que cria ou repara contas e recuperação de senha por CPF reduzem contas “presas”.</p></div>
+    <div class="card"><h3>Escalabilidade</h3><p>Arquitetura serverless (Supabase Edge Functions) que cresce sob demanda.</p></div>
+  </div>
+
+  <h3 style="margin:30px 0 14px;color:var(--brand-d)">Métricas</h3>
+  <div class="metrics">
+    <div class="metric"><b>—</b><span>Redução nos chamados de 2ª via</span><span class="tag">a preencher</span></div>
+    <div class="metric"><b>—</b><span>Tempo médio de emissão (antes → depois)</span><span class="tag">a preencher</span></div>
+    <div class="metric"><b>—</b><span>Beneficiários ativos no portal</span><span class="tag">a preencher</span></div>
+  </div>
+</div></section>
+
+<section style="background:var(--panel)"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Conclusão</p><h2>Potencializar, não substituir.</h2></div>
+  <div class="callout">
+    O NativaFácil mostra como uma camada bem projetada sobre um ERP existente gera valor para os dois lados ao mesmo tempo: o beneficiário ganha autonomia e rapidez; a empresa ganha eficiência, visão de negócio e conformidade. Em vez de trocar o Omie, o projeto o potencializou — transformando dados que ficavam presos no sistema financeiro em autoatendimento e inteligência de gestão.
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>NativaFácil · Caso de estudo — Product Design + Full-stack</span>
+  <span class="mono" style="font-size:12px">Healthtech · dados ilustrativos</span>
+</div></footer>
+
+</body>
+</html>
