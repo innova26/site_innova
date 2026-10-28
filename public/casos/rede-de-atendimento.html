@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rede de Atendimento — Caso de Estudo</title>
+<style>
+  :root{
+    --bg:#f5f7fc; --surface:#ffffff; --panel:#eaf0fb; --fg:#14245e; --muted:#5b6b8c;
+    --line:#dbe4f3; --brand:#2456c9; --brand-d:#14245e; --cyan:#3f7fe0; --soft:#e8eefb;
+    --ok:#047857; --ok-bg:#d1fae5; --bad:#b91c1c; --bad-bg:#fee2e2; --warn:#b45309; --warn-bg:#fef3c7;
+    --tile:#f1f5fd; --tile-line:#dde7f6;
+    --font-display:"Fraunces",Georgia,serif;
+    --font-body:"IBM Plex Sans",system-ui,sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0b1020; --surface:#13192b; --panel:#171f34; --fg:#e7edfa; --muted:#93a1c0;
+    --line:#242f49; --brand:#6f97f2; --brand-d:#aec4f7; --cyan:#7aa6e8; --soft:#16203a;
+    --tile:#111a2c; --tile-line:#243149; color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#0b1020; --surface:#13192b; --panel:#171f34; --fg:#e7edfa; --muted:#93a1c0;
+    --line:#242f49; --brand:#6f97f2; --brand-d:#aec4f7; --cyan:#7aa6e8; --soft:#16203a;
+    --tile:#111a2c; --tile-line:#243149; color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:1.66;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:980px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  h1,h2,h3{font-family:var(--font-display);font-weight:400;text-wrap:balance;line-height:1.08;margin:0}
+  h2{font-size:clamp(27px,4.3vw,40px);letter-spacing:-.5px}
+  p{margin:0}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--brand);font-weight:500}
+  .lead{font-size:clamp(17px,2.1vw,20px);color:var(--muted);max-width:62ch}
+  section{padding-block:clamp(44px,7vw,78px)}
+  .sec-head{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;max-width:70ch}
+  .divider{height:1px;background:var(--line)}
+
+  .hero{padding-top:clamp(46px,7vw,80px);padding-bottom:clamp(26px,4vw,44px)}
+  .hero h1{font-size:clamp(42px,8vw,80px);letter-spacing:-1.4px;margin:16px 0 16px}
+  .hero h1 em{font-style:italic;color:var(--brand)}
+  .meta{display:flex;flex-wrap:wrap;gap:0;margin-top:32px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+  .meta div{flex:1 1 150px;min-width:140px;padding:15px 18px;border-right:1px solid var(--line)}
+  .meta div:last-child{border-right:none}
+  .meta dt{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .meta dd{margin:0;font-size:14px;font-weight:500}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .chip{font-family:var(--font-mono);font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+
+  .figura{background:var(--tile);border:1px solid var(--tile-line);border-radius:16px;padding:12px}
+  .figura img{display:block;width:100%;border-radius:9px}
+  .cap{font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-top:12px;text-align:center}
+
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  @media(max-width:760px){.ba{grid-template-columns:1fr}}
+  .ba-tag{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:4px 10px;border-radius:999px;margin-bottom:10px}
+  .ba-antes{background:var(--bad-bg);color:var(--bad)}
+  .ba-depois{background:var(--ok-bg);color:var(--ok)}
+
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}
+  @media(max-width:820px){.g3{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.g3,.g2{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .card h3{font-family:var(--font-body);font-size:16px;font-weight:600;margin:0 0 6px;color:var(--brand-d)}
+  .card p{color:var(--muted);font-size:14px}
+
+  ul.clean{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px}
+  ul.clean li{padding-left:24px;position:relative;color:var(--muted);font-size:15px}
+  ul.clean li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:50%;background:var(--cyan)}
+  ul.clean.bad li::before{background:var(--bad)}
+  ul.clean b{color:var(--fg);font-weight:600}
+
+  .statrow{display:flex;flex-wrap:wrap;gap:14px}
+  .stat{flex:1 1 170px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .stat b{font-family:var(--font-display);font-size:34px;font-weight:400;display:block;line-height:1;letter-spacing:-.5px;color:var(--brand)}
+  .stat span{font-size:13px;color:var(--muted);display:block;margin-top:8px}
+  .stat .src{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);opacity:.8;margin-top:6px;display:block}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  @media(max-width:760px){.cols{grid-template-columns:1fr;gap:20px}}
+  .callout{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:12px;padding:16px 20px;color:var(--fg);font-size:15.5px}
+
+  footer{border-top:1px solid var(--line);padding-block:40px;color:var(--muted);font-size:13px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+  .mono{font-family:var(--font-mono)}
+
+  @page{size:A4;margin:11mm}
+  @media print{
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    html,body{background:#fff}
+    .wrap{max-width:none}
+    .divider{display:none}
+    section{padding-block:16px !important;break-inside:avoid}
+    .hero{padding-top:4px;break-inside:avoid}
+    .g3{grid-template-columns:repeat(3,1fr) !important}
+    .ba,.cols{grid-template-columns:1fr 1fr !important}
+    .card,.stat,.figura,.callout{break-inside:avoid}
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+</head>
+<body>
+
+<header class="hero"><div class="wrap">
+  <p class="eyebrow">Caso de estudo · Innova</p>
+  <h1>Achar um credenciado <em>em segundos</em>.</h1>
+  <p class="lead">O redesenho da Rede de Atendimento transformou uma lista crua e interminável do site antigo em uma busca com filtros e cards limpos — hoje uma das páginas mais acessadas da Innova, com forte tráfego orgânico vindo do Google.</p>
+  <dl class="meta">
+    <div><dt>Papel</dt><dd>Product Design · Front-end</dd></div>
+    <div><dt>Plataforma</dt><dd>Página pública (web)</dd></div>
+    <div><dt>Dados</dt><dd>269 prestadores · Supabase</dd></div>
+    <div><dt>Destaque</dt><dd>581 visitantes / 7 dias</dd></div>
+  </dl>
+  <div class="chips">
+    <span class="chip">React</span><span class="chip">Vite · TypeScript</span><span class="chip">Supabase</span>
+    <span class="chip">Busca + 5 filtros</span><span class="chip">Responsivo</span><span class="chip">SEO / orgânico</span>
+  </div>
+</div></header>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<section id="desafio"><div class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">O problema — antes</p>
+    <h2>Uma lista interminável, impossível de escanear.</h2>
+    <p class="lead">No site antigo, encontrar um credenciado era um teste de paciência: filtros crus que pouco ajudavam e uma listagem poluída, com paredões de nomes de médicos amontoados e a mesma instituição repetida em vários blocos.</p>
+  </div>
+  <div class="figura">
+    <img src="rede/antes-lista.png" alt="Site antigo: cards com enormes listas de nomes de médicos amontoados, a mesma instituição repetida">
+    <p class="cap">Antes — dezenas de nomes por bloco, “DAY HOSPITAL” repetido no mesmo endereço</p>
+  </div>
+  <div class="cols" style="margin-top:26px">
+    <div>
+      <ul class="clean bad">
+        <li><b>Paredões de texto:</b> dezenas de médicos listados em sequência, sem hierarquia.</li>
+        <li><b>Instituição repetida:</b> a mesma clínica aparecia em vários cards.</li>
+        <li><b>Filtros pouco úteis</b> e visual datado — difícil de usar no celular.</li>
+      </ul>
+    </div>
+    <div class="figura">
+      <img src="rede/antes-filtros.png" alt="Site antigo: topo da página com filtros em selects simples">
+      <p class="cap">Antes — o topo da página antiga</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="solucao" style="background:var(--panel)"><div class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">A solução — depois</p>
+    <h2>Busca com filtros e cards que se leem numa olhada.</h2>
+    <p class="lead">A nova Rede de Atendimento combina cinco filtros com uma busca por nome e agrupa os resultados por instituição — cada prestador em um card limpo, com tipo, endereço, contato, especialidades e os planos aceitos.</p>
+  </div>
+  <div class="figura">
+    <img src="rede/depois-busca.jpg" alt="Nova Rede de Atendimento: filtros limpos e um card de prestador organizado">
+    <p class="cap">Depois — filtros claros, contador de resultados e cards organizados</p>
+  </div>
+</div></section>
+
+<section id="comparativo"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Antes × Depois</p><h2>O mesmo conteúdo, outra experiência.</h2></div>
+  <div class="ba">
+    <div>
+      <span class="ba-tag ba-antes">● Antes</span>
+      <div class="figura"><img src="rede/antes-lista.png" alt="Antes: listagem poluída"></div>
+      <ul class="clean bad" style="margin-top:14px">
+        <li>Nomes amontoados, sem organização</li>
+        <li>Instituições duplicadas</li>
+        <li>Nada de filtro combinado ou mapa</li>
+      </ul>
+    </div>
+    <div>
+      <span class="ba-tag ba-depois">● Depois</span>
+      <div class="figura"><img src="rede/depois-cards.jpg" alt="Depois: cards limpos"></div>
+      <ul class="clean" style="margin-top:14px">
+        <li>Um card por instituição, sem repetição</li>
+        <li>Especialidades em chips, corpo clínico organizado</li>
+        <li>Endereço com link pro Google Maps e telefone</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section id="melhorias" style="background:var(--panel)"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Melhorias</p><h2>O que mudou na prática.</h2></div>
+  <div class="grid g3">
+    <div class="card"><h3>5 filtros combináveis</h3><p>Estado, município, rede/plano, tipo de recurso e especialidade — juntos, com busca por nome e contador de resultados.</p></div>
+    <div class="card"><h3>Agrupamento inteligente</h3><p>Prestadores do mesmo local/tipo viram um único card — fim da instituição repetida.</p></div>
+    <div class="card"><h3>Especialidades em chips</h3><p>As especialidades e o corpo clínico ficam legíveis, sem paredões de nomes.</p></div>
+    <div class="card"><h3>Endereço no mapa</h3><p>Cada endereço abre direto no Google Maps; telefones prontos para ligar.</p></div>
+    <div class="card"><h3>Mobile de verdade</h3><p>Layout responsivo — a maior parte do acesso vem do celular, via busca no Google.</p></div>
+    <div class="card"><h3>Base viva</h3><p>Os dados vêm do Supabase e são geridos no admin (Dashboard de Redes), sempre atualizados.</p></div>
+  </div>
+</div></section>
+
+<section id="beneficios"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Benefícios para o usuário</p><h2>Menos esforço, mais encontro.</h2></div>
+  <ul class="clean">
+    <li><b>Acha o credenciado certo em segundos</b> — filtra por onde está, pelo plano e pela especialidade.</li>
+    <li><b>Sem rolar listas gigantes:</b> o resultado já vem agrupado e enxuto.</li>
+    <li><b>Vai direto ao destino:</b> endereço no mapa e telefone a um toque.</li>
+    <li><b>Funciona no celular</b> — onde a maioria realmente acessa.</li>
+    <li><b>Encontrável no Google:</b> quem pesquisa “rede credenciada Innova” chega direto na página.</li>
+  </ul>
+</div></section>
+
+<section id="resultados" style="background:var(--panel)"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Resultados</p><h2>Uma das páginas mais acessadas do site.</h2>
+    <p class="lead">A Rede de Atendimento virou porta de entrada: boa parte do tráfego chega pela busca orgânica no Google, não só de quem já é cliente.</p>
+  </div>
+  <div class="statrow">
+    <div class="stat"><b>581</b><span>visitantes na página</span><span class="src">Vercel Analytics · 7 dias</span></div>
+    <div class="stat"><b>937</b><span>visualizações</span><span class="src">Vercel Analytics · 7 dias</span></div>
+    <div class="stat"><b>~2,5 mil</b><span>visitantes/mês (estimado)</span><span class="src">projeção dos 7 dias</span></div>
+    <div class="stat"><b>Google</b><span>principal origem (orgânico)</span><span class="src">Referrers</span></div>
+  </div>
+  <div class="callout" style="margin-top:22px">
+    O redesenho não só melhorou a experiência: transformou uma página esquecida do site antigo em um dos maiores pontos de entrada da Innova na web — útil para o beneficiário e para a captação.
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>Rede de Atendimento · Caso de estudo — Product Design + Front-end</span>
+  <span class="mono" style="font-size:12px">Innova Planos de Saúde · prints reais do antes e do depois</span>
+</div></footer>
+
+</body>
+</html>

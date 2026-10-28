@@ -45,6 +45,15 @@ const CASOS: Caso[] = [
     arquivo: '/casos/nativafacil.html',
     data: 'Out 2026',
   },
+  {
+    slug: 'rede-de-atendimento',
+    titulo: 'Rede de Atendimento — Busca de credenciados',
+    resumo:
+      'Redesenho da página pública de credenciados: de uma lista crua do site antigo para uma busca com 5 filtros e cards limpos. Uma das páginas mais acessadas da Innova (581 visitantes/7 dias, tráfego orgânico do Google). Com antes e depois reais.',
+    tags: ['Product Design', 'Front-end', 'React', 'UX', 'SEO'],
+    arquivo: '/casos/rede-de-atendimento.html',
+    data: 'Out 2026',
+  },
 ]
 
 export default function AdminCases() {
