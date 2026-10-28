@@ -254,9 +254,12 @@ export default function AdminCRMPainel() {
       </div>
 
       {erro && (
-        <p className="erro admin-erro" role="alert">
-          {erro}
-        </p>
+        <div className="crm-toast-erro" role="alert">
+          <span>{erro}</span>
+          <button type="button" onClick={() => setErro('')} aria-label="Fechar">
+            ×
+          </button>
+        </div>
       )}
 
       {/* KPIs */}

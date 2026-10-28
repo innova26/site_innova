@@ -5937,10 +5937,10 @@ button.crm-card:hover {
 .crm-toast-erro {
   position: fixed;
   top: calc(16px + env(safe-area-inset-top, 0px));
-  left: 50%;
-  transform: translateX(-50%);
+  right: max(16px, env(safe-area-inset-right, 0px));
   z-index: 1000;
-  max-width: min(560px, calc(100% - 32px));
+  width: 360px;
+  max-width: calc(100% - 32px);
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -5948,10 +5948,35 @@ button.crm-card:hover {
   background: var(--tom-recusado-bg, #fee2e2);
   color: var(--tom-recusado, #b91c1c);
   border: 1px solid var(--tom-recusado, #b91c1c);
+  border-left: 4px solid var(--tom-recusado, #b91c1c);
   border-radius: 10px;
   box-shadow: 0 12px 34px rgba(10, 20, 50, 0.28);
   font-size: 13.5px;
   font-weight: 500;
+  animation: crm-toast-in 0.22s ease;
+}
+@keyframes crm-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .crm-toast-erro {
+    animation: none;
+  }
+}
+@media (max-width: 520px) {
+  .crm-toast-erro {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+  }
 }
 .crm-toast-erro button {
   flex: none;
