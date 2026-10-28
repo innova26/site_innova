@@ -5934,7 +5934,8 @@ button.crm-card:hover {
 }
 
 /* aviso de erro fixo no topo (acima de modais) */
-.crm-toast-erro {
+.crm-toast-erro,
+.crm-toast-ok {
   position: fixed;
   top: calc(16px + env(safe-area-inset-top, 0px));
   right: max(16px, env(safe-area-inset-right, 0px));
@@ -5945,15 +5946,23 @@ button.crm-card:hover {
   align-items: flex-start;
   gap: 12px;
   padding: 12px 12px 12px 16px;
-  background: var(--tom-recusado-bg, #fee2e2);
-  color: var(--tom-recusado, #b91c1c);
-  border: 1px solid var(--tom-recusado, #b91c1c);
-  border-left: 4px solid var(--tom-recusado, #b91c1c);
   border-radius: 10px;
   box-shadow: 0 12px 34px rgba(10, 20, 50, 0.28);
   font-size: 13.5px;
   font-weight: 500;
   animation: crm-toast-in 0.22s ease;
+}
+.crm-toast-erro {
+  background: var(--tom-recusado-bg, #fee2e2);
+  color: var(--tom-recusado, #b91c1c);
+  border: 1px solid var(--tom-recusado, #b91c1c);
+  border-left: 4px solid var(--tom-recusado, #b91c1c);
+}
+.crm-toast-ok {
+  background: var(--tom-ok-bg, #d1fae5);
+  color: var(--tom-ok, #047857);
+  border: 1px solid var(--tom-ok, #047857);
+  border-left: 4px solid var(--tom-ok, #047857);
 }
 @keyframes crm-toast-in {
   from {
@@ -5966,19 +5975,22 @@ button.crm-card:hover {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .crm-toast-erro {
+  .crm-toast-erro,
+  .crm-toast-ok {
     animation: none;
   }
 }
 @media (max-width: 520px) {
-  .crm-toast-erro {
+  .crm-toast-erro,
+  .crm-toast-ok {
     left: 12px;
     right: 12px;
     width: auto;
     max-width: none;
   }
 }
-.crm-toast-erro button {
+.crm-toast-erro button,
+.crm-toast-ok button {
   flex: none;
   background: none;
   border: none;

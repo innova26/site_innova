@@ -151,7 +151,14 @@ export default function AdminCRMUsuarios() {
           </button>
         </div>
       )}
-      {aviso && <p className="admin-info crm-ok" role="status">{aviso}</p>}
+      {aviso && (
+        <div className="crm-toast-ok" role="status">
+          <span>{aviso}</span>
+          <button type="button" onClick={() => setAviso('')} aria-label="Fechar">
+            ×
+          </button>
+        </div>
+      )}
 
       <div className="admin-barra">
         <p className="rede-contagem">
