@@ -14,7 +14,10 @@ import {
   podeEditarEnfermagem,
   podeEditarFinanceiro,
   urgenciaConsulta,
+  ROTULO_TIPO,
+  rotulosTipo,
   type PapelCRM,
+  type TipoSolicitacao,
   type SolicitacaoCRM,
   type StatusFinanceiro,
 } from '../data/crm'
@@ -43,6 +46,7 @@ import {
  * ========================================================== */
 const FILTROS = [
   { chave: 'todos', label: 'Todas', tom: '' },
+  { chave: 'tipo-reembolso', label: 'Reembolsos', tom: '' },
   { chave: 'consultas', label: '⏰ Próximas consultas', tom: '' },
   { chave: 'enfermagem', label: 'Aguardando enfermagem', tom: 'aguardando' },
   { chave: 'financeiro', label: 'Aguardando financeiro', tom: 'analise' },
@@ -52,6 +56,7 @@ const FILTROS = [
 ] as const
 
 type FormNova = {
+  tipo: TipoSolicitacao
   protocolo: string
   solicitante: string
   beneficiario: string
@@ -66,6 +71,7 @@ type FormNova = {
 }
 
 const FORM_VAZIO: FormNova = {
+  tipo: 'consulta',
   protocolo: '',
   solicitante: '',
   beneficiario: '',
@@ -179,7 +185,9 @@ export default function AdminCRM() {
   const filtrada = useMemo(() => {
     const termo = busca.trim().toLowerCase()
     const r = lista.filter((s) => {
-      if (filtro === 'consultas') {
+      if (filtro === 'tipo-reembolso') {
+        if (s.tipo !== 'reembolso') return false
+      } else if (filtro === 'consultas') {
         // não pagas, não recusadas e com data de consulta marcada
         if (s.statusFinanceiro === 'Pago') return false
         if (s.autorizacao === 'nao' || s.statusFinanceiro === 'Recusado') return false
@@ -229,6 +237,7 @@ export default function AdminCRM() {
     setErro('')
     try {
       const nova = await criarSolicitacao({
+        tipo: form.tipo,
         protocolo: form.protocolo.trim(),
         solicitante: form.solicitante.trim(),
         beneficiario: form.beneficiario.trim(),
@@ -394,6 +403,11 @@ export default function AdminCRM() {
                     <small>{s.solicitante}</small>
                   </td>
                   <td>
+                    {s.tipo === 'reembolso' && (
+                      <span className="crm-tipo-tag crm-tipo-reembolso crm-tipo-inline">
+                        Reembolso
+                      </span>
+                    )}
                     {s.procedimento}
                     {s.clinicaHospital && <small>{s.clinicaHospital}</small>}
                   </td>
@@ -459,7 +473,9 @@ function FormNovaSolicitacao({
   onCriar: (documentos: File[]) => void | Promise<void>
   onCancelar: () => void
 }) {
-  const set = (campo: keyof FormNova, valor: string) => setForm({ ...form, [campo]: valor })
+  const set = <K extends keyof FormNova>(campo: K, valor: FormNova[K]) =>
+    setForm({ ...form, [campo]: valor })
+  const rot = rotulosTipo(form.tipo)
   const [docs, setDocs] = useState<File[]>([])
   const [salvando, setSalvando] = useState(false)
   const [erroArquivo, setErroArquivo] = useState('')
@@ -504,6 +520,26 @@ function FormNovaSolicitacao({
         </div>
 
         <div className="crm-modal-corpo">
+          <fieldset className="crm-fgrp">
+            <legend>Tipo de solicitação</legend>
+            <div className="crm-tipo-seg" role="group" aria-label="Tipo de solicitação">
+              <button
+                type="button"
+                className={`crm-tipo-opt${form.tipo === 'consulta' ? ' on' : ''}`}
+                onClick={() => setForm({ ...form, tipo: 'consulta' })}
+              >
+                Consulta
+              </button>
+              <button
+                type="button"
+                className={`crm-tipo-opt${form.tipo === 'reembolso' ? ' on' : ''}`}
+                onClick={() => setForm({ ...form, tipo: 'reembolso' })}
+              >
+                Reembolso
+              </button>
+            </div>
+          </fieldset>
+
           <fieldset className="crm-fgrp">
             <legend>Identificação</legend>
             <div className="linha">
@@ -567,7 +603,7 @@ function FormNovaSolicitacao({
             <legend>Atendimento</legend>
             <div className="campo">
               <label htmlFor="n-proc">
-                Procedimento <span className="crm-req">*</span>
+                {rot.proc} <span className="crm-req">*</span>
               </label>
               <input
                 id="n-proc"
@@ -586,7 +622,7 @@ function FormNovaSolicitacao({
 
             <div className="linha">
               <div className="campo">
-                <label htmlFor="n-clinica">Clínica / Hospital</label>
+                <label htmlFor="n-clinica">{rot.local}</label>
                 <input
                   id="n-clinica"
                   className="crm-maiusc"
@@ -601,7 +637,7 @@ function FormNovaSolicitacao({
                 </datalist>
               </div>
               <div className="campo">
-                <label htmlFor="n-valor">Valor solicitado (R$)</label>
+                <label htmlFor="n-valor">{rot.valor} (R$)</label>
                 <input
                   id="n-valor"
                   type="number"
@@ -615,7 +651,7 @@ function FormNovaSolicitacao({
 
             <div className="linha">
               <div className="campo">
-                <label htmlFor="n-consulta">Data da consulta</label>
+                <label htmlFor="n-consulta">{rot.data}</label>
                 <input
                   id="n-consulta"
                   type="date"
@@ -733,6 +769,7 @@ function DetalheSolicitacao({
 }) {
   const et = etapaAtual(s)
   const urg = urgenciaConsulta(s)
+  const rotS = rotulosTipo(s.tipo)
   const [dataPrev, setDataPrev] = useState(s.dataPrevistaPagamento ?? '')
   const [status, setStatus] = useState<StatusFinanceiro>(s.statusFinanceiro ?? 'Pendente')
 
@@ -756,6 +793,7 @@ function DetalheSolicitacao({
 
   const [editando, setEditando] = useState(false)
   const dadosEdicao = () => ({
+    tipo: s.tipo,
     beneficiario: s.beneficiario,
     cpf: s.cpf ?? '',
     solicitante: s.solicitante,
@@ -768,14 +806,18 @@ function DetalheSolicitacao({
     observacoes: s.observacoes ?? '',
   })
   const [ed, setEd] = useState(dadosEdicao)
-  const setEdCampo = (k: keyof ReturnType<typeof dadosEdicao>, v: string) =>
-    setEd((prev) => ({ ...prev, [k]: v }))
+  const rotEd = rotulosTipo(ed.tipo)
+  const setEdCampo = <K extends keyof ReturnType<typeof dadosEdicao>>(
+    k: K,
+    v: ReturnType<typeof dadosEdicao>[K],
+  ) => setEd((prev) => ({ ...prev, [k]: v }))
   const abrirEdicao = () => {
     setEd(dadosEdicao())
     setEditando(true)
   }
   const salvarEdicao = () => {
     onAtualizar(s.id, {
+      tipo: ed.tipo,
       beneficiario: ed.beneficiario,
       cpf: ed.cpf,
       solicitante: ed.solicitante,
@@ -803,7 +845,10 @@ function DetalheSolicitacao({
     <div className="crm-overlay" role="dialog" aria-modal="true">
       <aside className="crm-drawer">
         <div className="crm-dh-top">
-          <span className={`crm-badge tom-${et.tom}`}>{et.label}</span>
+          <span className="crm-dh-badges">
+            <span className={`crm-badge tom-${et.tom}`}>{et.label}</span>
+            <span className={`crm-tipo-tag crm-tipo-${s.tipo}`}>{ROTULO_TIPO[s.tipo]}</span>
+          </span>
           <button type="button" className="crm-fechar" onClick={onFechar} aria-label="Fechar">
             ×
           </button>
@@ -824,7 +869,7 @@ function DetalheSolicitacao({
             <div className="v">{formatarValor(s.valorSolicitado)}</div>
           </div>
           <div className="crm-stat">
-            <div className="k">Consulta</div>
+            <div className="k">{rotS.dataCurta}</div>
             <div className="v">{formatarData(s.dataConsulta)}</div>
           </div>
           <div className="crm-stat">
@@ -998,6 +1043,25 @@ function DetalheSolicitacao({
         {editando ? (
           <section className="crm-bloco">
             <h4>Editar solicitação</h4>
+            <div className="campo">
+              <label>Tipo de solicitação</label>
+              <div className="crm-tipo-seg" role="group" aria-label="Tipo de solicitação">
+                <button
+                  type="button"
+                  className={`crm-tipo-opt${ed.tipo === 'consulta' ? ' on' : ''}`}
+                  onClick={() => setEdCampo('tipo', 'consulta')}
+                >
+                  Consulta
+                </button>
+                <button
+                  type="button"
+                  className={`crm-tipo-opt${ed.tipo === 'reembolso' ? ' on' : ''}`}
+                  onClick={() => setEdCampo('tipo', 'reembolso')}
+                >
+                  Reembolso
+                </button>
+              </div>
+            </div>
             <div className="crm-linha2">
               <div className="campo">
                 <label htmlFor="e-benef">Beneficiário / Paciente</label>
@@ -1030,7 +1094,7 @@ function DetalheSolicitacao({
                 />
               </div>
               <div className="campo">
-                <label htmlFor="e-valor">Valor solicitado (R$)</label>
+                <label htmlFor="e-valor">{rotEd.valor} (R$)</label>
                 <input
                   id="e-valor"
                   type="number"
@@ -1043,7 +1107,7 @@ function DetalheSolicitacao({
             </div>
             <div className="crm-linha2">
               <div className="campo">
-                <label htmlFor="e-proc">Procedimento</label>
+                <label htmlFor="e-proc">{rotEd.proc}</label>
                 <input
                   id="e-proc"
                   className="crm-maiusc"
@@ -1052,7 +1116,7 @@ function DetalheSolicitacao({
                 />
               </div>
               <div className="campo">
-                <label htmlFor="e-clinica">Clínica / Hospital</label>
+                <label htmlFor="e-clinica">{rotEd.local}</label>
                 <input
                   id="e-clinica"
                   className="crm-maiusc"
@@ -1063,7 +1127,7 @@ function DetalheSolicitacao({
             </div>
             <div className="crm-linha2">
               <div className="campo">
-                <label htmlFor="e-consulta">Data da consulta</label>
+                <label htmlFor="e-consulta">{rotEd.data}</label>
                 <input
                   id="e-consulta"
                   type="date"
@@ -1124,8 +1188,8 @@ function DetalheSolicitacao({
                 <Campo rot="Solicitante" val={s.solicitante} />
               </div>
               <div className="crm-linha2">
-                <Campo rot="Procedimento" val={s.procedimento} />
-                <Campo rot="Clínica / Hospital" val={s.clinicaHospital || '—'} />
+                <Campo rot={rotS.proc} val={s.procedimento} />
+                <Campo rot={rotS.local} val={s.clinicaHospital || '—'} />
               </div>
               <Campo rot="Abertura" val={formatarData(s.abertura)} />
             </section>

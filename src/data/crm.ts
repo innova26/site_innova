@@ -33,9 +33,36 @@ export const FORMAS_PAGAMENTO = ['Pix'] as const
  */
 export const AVISOS_ATIVOS = false
 
+export type TipoSolicitacao = 'consulta' | 'reembolso'
+
+export const ROTULO_TIPO: Record<TipoSolicitacao, string> = {
+  consulta: 'Consulta',
+  reembolso: 'Reembolso',
+}
+
+/** Rótulos dos campos conforme o tipo (consulta x reembolso). */
+export function rotulosTipo(t: TipoSolicitacao) {
+  return t === 'reembolso'
+    ? {
+        data: 'Data do atendimento',
+        dataCurta: 'Atendimento',
+        valor: 'Valor a reembolsar',
+        proc: 'Procedimento / despesa',
+        local: 'Prestador / local',
+      }
+    : {
+        data: 'Data da consulta',
+        dataCurta: 'Consulta',
+        valor: 'Valor solicitado',
+        proc: 'Procedimento',
+        local: 'Clínica / Hospital',
+      }
+}
+
 export type SolicitacaoCRM = {
   id: string
   protocolo: string
+  tipo: TipoSolicitacao
 
   /* ---- Atendimento ---- */
   abertura: string // ISO (yyyy-mm-dd)
@@ -161,6 +188,7 @@ export type NivelUrgencia = 'atrasada' | 'urgente' | 'atencao'
 export type UrgenciaConsulta = { nivel: NivelUrgencia; dias: number; rotulo: string } | null
 
 export function urgenciaConsulta(s: SolicitacaoCRM): UrgenciaConsulta {
+  if (s.tipo === 'reembolso') return null // reembolso é despesa passada, não time-critical
   if (!s.dataConsulta) return null
   if (s.statusFinanceiro === 'Pago') return null
   if (s.autorizacao === 'nao' || s.statusFinanceiro === 'Recusado') return null
@@ -304,6 +332,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
   {
     id: 's1',
     protocolo: 'CRM-2026-00001',
+    tipo: 'consulta',
     abertura: '2026-10-06',
     termino: '2026-10-26',
     solicitante: 'VANESSA',
@@ -325,6 +354,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
   {
     id: 's2',
     protocolo: 'CRM-2026-00002',
+    tipo: 'consulta',
     abertura: '2026-09-15',
     termino: null,
     solicitante: 'VANESSA',
@@ -346,6 +376,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
   {
     id: 's3',
     protocolo: 'CRM-2026-00003',
+    tipo: 'consulta',
     abertura: '2026-10-10',
     termino: '2026-10-30',
     solicitante: 'MARCOS',
@@ -367,6 +398,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
   {
     id: 's4',
     protocolo: 'CRM-2026-00004',
+    tipo: 'consulta',
     abertura: '2026-10-11',
     termino: '2026-10-31',
     solicitante: 'VANESSA',
@@ -388,6 +420,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
   {
     id: 's5',
     protocolo: 'CRM-2026-00005',
+    tipo: 'consulta',
     abertura: '2026-10-13',
     termino: null,
     solicitante: 'LUCAS',

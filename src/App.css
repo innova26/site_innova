@@ -5934,6 +5934,58 @@ button.crm-card:hover {
 }
 
 /* aviso de erro fixo no topo (acima de modais) */
+/* tipo da solicitação (consulta × reembolso) */
+.crm-tipo-seg {
+  display: inline-flex;
+  border: 1px solid var(--field-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.crm-tipo-opt {
+  padding: 9px 20px;
+  border: none;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.crm-tipo-opt + .crm-tipo-opt {
+  border-left: 1px solid var(--field-border);
+}
+.crm-tipo-opt.on {
+  background: var(--blue-500);
+  color: #fff;
+}
+.crm-tipo-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.crm-tipo-consulta {
+  color: var(--blue-500);
+  background: var(--surface-tint);
+}
+.crm-tipo-reembolso {
+  color: #0f766e;
+  background: #ccfbf1;
+}
+.crm-tipo-inline {
+  font-size: 11px;
+  padding: 2px 8px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.crm-dh-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 /* urgência da consulta (data da consulta × pagamento) */
 .crm-etapa-cel {
   display: flex;

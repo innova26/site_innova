@@ -9,6 +9,7 @@ import type { PapelCRM, SolicitacaoCRM } from './crm'
 type LinhaCRM = {
   id: string
   protocolo: string
+  tipo: string | null
   abertura: string
   termino: string | null
   solicitante: string
@@ -32,6 +33,7 @@ function daLinha(l: LinhaCRM): SolicitacaoCRM {
   return {
     id: l.id,
     protocolo: l.protocolo,
+    tipo: l.tipo === 'reembolso' ? 'reembolso' : 'consulta',
     abertura: l.abertura,
     termino: l.termino,
     solicitante: l.solicitante,
@@ -116,6 +118,7 @@ export function assinarSolicitacoes(aoMudar: () => void): () => void {
 
 export type NovaSolicitacao = {
   protocolo: string
+  tipo: SolicitacaoCRM['tipo']
   solicitante: string
   beneficiario: string
   cpf: string
@@ -140,6 +143,7 @@ export async function criarSolicitacao(dados: NovaSolicitacao): Promise<Solicita
     .insert({
       // vazio deixa o trigger gerar CRM-AAAA-00001; preenchido usa o informado
       protocolo: maiusc(dados.protocolo) || null,
+      tipo: dados.tipo,
       solicitante: maiusc(dados.solicitante),
       beneficiario: maiusc(dados.beneficiario),
       cpf: dados.cpf || null,
@@ -161,6 +165,7 @@ export async function criarSolicitacao(dados: NovaSolicitacao): Promise<Solicita
 /** Campos editáveis convertidos para as colunas do banco. */
 type PatchCRM = Partial<{
   // atendimento (abertura)
+  tipo: SolicitacaoCRM['tipo']
   beneficiario: string
   cpf: string
   solicitante: string
@@ -188,6 +193,7 @@ export async function atualizarSolicitacao(
   if (!supabase) throw new Error('Supabase indisponível.')
   const col: Record<string, unknown> = {}
   // atendimento — identificação em MAIÚSCULAS (igual ao cadastro)
+  if ('tipo' in patch) col.tipo = patch.tipo
   if ('beneficiario' in patch) col.beneficiario = maiusc(patch.beneficiario ?? '')
   if ('cpf' in patch) col.cpf = patch.cpf || null
   if ('solicitante' in patch) col.solicitante = maiusc(patch.solicitante ?? '')
