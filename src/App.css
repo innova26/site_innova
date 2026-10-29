@@ -5936,26 +5936,38 @@ button.crm-card:hover {
 /* aviso de erro fixo no topo (acima de modais) */
 /* tipo da solicitação (consulta × reembolso) */
 .crm-tipo-seg {
-  display: inline-flex;
-  border: 1px solid var(--field-border);
-  border-radius: 10px;
-  overflow: hidden;
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  max-width: 340px;
+  margin: 2px auto 0;
+  padding: 4px;
+  background: var(--surface-tint);
+  border: 1px solid var(--surface-border);
+  border-radius: 999px;
 }
 .crm-tipo-opt {
-  padding: 9px 20px;
+  flex: 1;
+  padding: 9px 16px;
   border: none;
-  background: var(--surface);
+  border-radius: 999px;
+  background: transparent;
   color: var(--text-muted);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease;
 }
-.crm-tipo-opt + .crm-tipo-opt {
-  border-left: 1px solid var(--field-border);
+.crm-tipo-opt:hover {
+  color: var(--text);
 }
 .crm-tipo-opt.on {
   background: var(--blue-500);
   color: #fff;
+  box-shadow: 0 2px 8px rgba(36, 86, 201, 0.3);
 }
 .crm-tipo-tag {
   display: inline-block;
