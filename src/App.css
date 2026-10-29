@@ -5934,6 +5934,56 @@ button.crm-card:hover {
 }
 
 /* aviso de erro fixo no topo (acima de modais) */
+/* urgência da consulta (data da consulta × pagamento) */
+.crm-etapa-cel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+.crm-badge.crm-urg {
+  white-space: normal;
+  line-height: 1.25;
+  border: 1px solid currentColor;
+}
+.crm-urg.crm-urg-urgente,
+.crm-urg.crm-urg-atrasada {
+  color: var(--tom-recusado, #b91c1c);
+  background: var(--tom-recusado-bg, #fee2e2);
+}
+.crm-urg.crm-urg-atencao {
+  color: var(--tom-aguardando, #b45309);
+  background: var(--tom-aguardando-bg, #fef3c7);
+}
+.crm-row-urg-urgente td:first-child,
+.crm-row-urg-atrasada td:first-child {
+  box-shadow: inset 3px 0 0 var(--tom-recusado, #b91c1c);
+}
+.crm-row-urg-atencao td:first-child {
+  box-shadow: inset 3px 0 0 var(--tom-aguardando, #b45309);
+}
+.crm-urg-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.crm-urg-banner.crm-urg-urgente,
+.crm-urg-banner.crm-urg-atrasada {
+  color: var(--tom-recusado, #b91c1c);
+  background: var(--tom-recusado-bg, #fee2e2);
+  border: 1px solid var(--tom-recusado, #b91c1c);
+}
+.crm-urg-banner.crm-urg-atencao {
+  color: var(--tom-aguardando, #b45309);
+  background: var(--tom-aguardando-bg, #fef3c7);
+  border: 1px solid var(--tom-aguardando, #b45309);
+}
+
 .crm-toast-erro,
 .crm-toast-ok {
   position: fixed;
@@ -6310,6 +6360,10 @@ button.crm-card:hover {
 .pnl-alerta-tag.t-sem-doc {
   color: var(--tom-analise);
   background: var(--tom-analise-bg);
+}
+.pnl-alerta-tag.t-consulta {
+  color: var(--tom-recusado);
+  background: var(--tom-recusado-bg);
 }
 .pnl-alerta-txt {
   font-size: 13px;

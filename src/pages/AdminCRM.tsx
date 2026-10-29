@@ -13,6 +13,7 @@ import {
   podeEditarAtendimento,
   podeEditarEnfermagem,
   podeEditarFinanceiro,
+  urgenciaConsulta,
   type PapelCRM,
   type SolicitacaoCRM,
   type StatusFinanceiro,
@@ -42,6 +43,7 @@ import {
  * ========================================================== */
 const FILTROS = [
   { chave: 'todos', label: 'Todas', tom: '' },
+  { chave: 'consultas', label: '⏰ Próximas consultas', tom: '' },
   { chave: 'enfermagem', label: 'Aguardando enfermagem', tom: 'aguardando' },
   { chave: 'financeiro', label: 'Aguardando financeiro', tom: 'analise' },
   { chave: 'agendado', label: 'Agendado', tom: 'agendado' },
@@ -176,14 +178,24 @@ export default function AdminCRM() {
   /* ---- filtragem ---- */
   const filtrada = useMemo(() => {
     const termo = busca.trim().toLowerCase()
-    return lista.filter((s) => {
-      if (filtro !== 'todos' && etapaAtual(s).chave !== filtro) return false
+    const r = lista.filter((s) => {
+      if (filtro === 'consultas') {
+        // não pagas, não recusadas e com data de consulta marcada
+        if (s.statusFinanceiro === 'Pago') return false
+        if (s.autorizacao === 'nao' || s.statusFinanceiro === 'Recusado') return false
+        if (!s.dataConsulta) return false
+      } else if (filtro !== 'todos' && etapaAtual(s).chave !== filtro) return false
       if (!termo) return true
       return [s.protocolo, s.beneficiario, s.solicitante, s.procedimento, s.clinicaHospital]
         .join(' ')
         .toLowerCase()
         .includes(termo)
     })
+    // na visão "Próximas consultas", a ordem é pela data da consulta (mais próxima primeiro)
+    if (filtro === 'consultas') {
+      return [...r].sort((a, b) => (a.dataConsulta ?? '').localeCompare(b.dataConsulta ?? ''))
+    }
+    return r
   }, [lista, busca, filtro])
 
   /* ---- mutações (Supabase) ---- */
@@ -370,8 +382,9 @@ export default function AdminCRM() {
             )}
             {filtrada.map((s) => {
               const et = etapaAtual(s)
+              const u = urgenciaConsulta(s)
               return (
-                <tr key={s.id}>
+                <tr key={s.id} className={u ? `crm-row-urg crm-row-urg-${u.nivel}` : undefined}>
                   <td>
                     <strong>{s.protocolo}</strong>
                     <small>{formatarData(s.abertura)}</small>
@@ -386,7 +399,12 @@ export default function AdminCRM() {
                   </td>
                   <td>{formatarValor(s.valorSolicitado)}</td>
                   <td>
-                    <span className={`crm-badge tom-${et.tom}`}>{et.label}</span>
+                    <div className="crm-etapa-cel">
+                      <span className={`crm-badge tom-${et.tom}`}>{et.label}</span>
+                      {u && (
+                        <span className={`crm-badge crm-urg crm-urg-${u.nivel}`}>{u.rotulo}</span>
+                      )}
+                    </div>
                   </td>
                   <td className="admin-td-acoes">
                     <button type="button" className="admin-link" onClick={() => setSelecionada(s)}>
@@ -714,6 +732,7 @@ function DetalheSolicitacao({
   onExcluir: (s: SolicitacaoCRM) => void
 }) {
   const et = etapaAtual(s)
+  const urg = urgenciaConsulta(s)
   const [dataPrev, setDataPrev] = useState(s.dataPrevistaPagamento ?? '')
   const [status, setStatus] = useState<StatusFinanceiro>(s.statusFinanceiro ?? 'Pendente')
 
@@ -813,6 +832,16 @@ function DetalheSolicitacao({
             <div className="v">{formatarData(s.termino)}</div>
           </div>
         </div>
+
+        {urg && (
+          <div className={`crm-urg-banner crm-urg-${urg.nivel}`}>
+            <span aria-hidden="true">⏰</span>
+            <span>
+              {urg.rotulo}
+              {podeEditarFinanceiro(papel) ? ' — pague para resolver.' : ' — avise o financeiro.'}
+            </span>
+          </div>
+        )}
 
         <div className="crm-steps" aria-hidden="true">
           <div className="crm-step done">

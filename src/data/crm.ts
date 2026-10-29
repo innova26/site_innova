@@ -135,7 +135,7 @@ export function proximoProtocolo(existentes: SolicitacaoCRM[]): string {
 /* ============================================================
  * Alertas para revisão (regras locais — nenhum dado sai do sistema)
  * ========================================================== */
-export type TipoAlerta = 'duplicata' | 'pix' | 'valor' | 'sem-doc'
+export type TipoAlerta = 'duplicata' | 'pix' | 'valor' | 'sem-doc' | 'consulta'
 
 export type Alerta = {
   id: string
@@ -150,6 +150,33 @@ export const ROTULO_ALERTA: Record<TipoAlerta, string> = {
   pix: 'Pix repetido',
   valor: 'Valor atípico',
   'sem-doc': 'Sem documento',
+  consulta: 'Consulta sem pagamento',
+}
+
+/* ============================================================
+ * Urgência da consulta — cruza a data da consulta com o pagamento.
+ * Só vale para solicitações ainda NÃO pagas (e não recusadas) com data.
+ * ========================================================== */
+export type NivelUrgencia = 'atrasada' | 'urgente' | 'atencao'
+export type UrgenciaConsulta = { nivel: NivelUrgencia; dias: number; rotulo: string } | null
+
+export function urgenciaConsulta(s: SolicitacaoCRM): UrgenciaConsulta {
+  if (!s.dataConsulta) return null
+  if (s.statusFinanceiro === 'Pago') return null
+  if (s.autorizacao === 'nao' || s.statusFinanceiro === 'Recusado') return null
+  const hoje = new Date(hojeISO())
+  const dc = new Date(s.dataConsulta)
+  const dias = Math.round((dc.getTime() - hoje.getTime()) / 86400000)
+  if (dias < 0)
+    return { nivel: 'atrasada', dias, rotulo: `Consulta atrasada (${formatarData(s.dataConsulta)}) · não paga` }
+  if (dias <= 1)
+    return {
+      nivel: 'urgente',
+      dias,
+      rotulo: dias === 0 ? 'Consulta hoje · não paga' : 'Consulta amanhã · não paga',
+    }
+  if (dias <= 3) return { nivel: 'atencao', dias, rotulo: `Consulta em ${dias} dias · não paga` }
+  return null
 }
 
 function mediana(nums: number[]): number {
@@ -248,6 +275,22 @@ export function calcularAlertas(lista: SolicitacaoCRM[], idsComDoc?: Set<string>
       if (s.autorizacao === 'sim' && !idsComDoc.has(s.id)) {
         add(s, 'sem-doc', 'Autorizada sem documento anexado')
       }
+    }
+  }
+
+  // 5) consulta hoje/amanhã (ou atrasada) ainda não paga — avisar o financeiro
+  for (const s of lista) {
+    const u = urgenciaConsulta(s)
+    if (u && u.nivel !== 'atencao') {
+      add(
+        s,
+        'consulta',
+        u.nivel === 'atrasada'
+          ? `Consulta já passou (${formatarData(s.dataConsulta)}) e não foi paga — pagar`
+          : u.dias === 0
+            ? 'Consulta é hoje e ainda não foi paga — pagar'
+            : 'Consulta é amanhã e ainda não foi paga — pagar',
+      )
     }
   }
 
