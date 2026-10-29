@@ -43,6 +43,21 @@ const DUVIDAS: Duvida[] = [
     p: 'Por que os nomes ficam em MAIÚSCULAS?',
     r: 'Para padronizar. Assim "Maria" e "MARIA" não contam como duas pessoas diferentes nos rankings e relatórios do painel.',
   },
+  {
+    grupo: 'Geral',
+    p: 'O que significa o aviso de "consulta não paga"?',
+    r: 'É o alerta de urgência: quando a consulta está chegando e ainda não foi paga, a solicitação ganha uma faixa e um selo na lista (vermelho = hoje/amanhã ou atrasada; âmbar = nos próximos dias) e um aviso no topo do detalhe. As de hoje/amanhã também entram em "Alertas para revisão" no painel, para o financeiro pagar a tempo.',
+  },
+  {
+    grupo: 'Geral',
+    p: 'Para que serve o filtro "Próximas consultas"?',
+    r: 'Mostra só as solicitações de consulta ainda não pagas e com data marcada, ordenadas da mais próxima para a mais distante — é a fila do que precisa ser pago primeiro.',
+  },
+  {
+    grupo: 'Geral',
+    p: 'Qual a diferença entre Consulta e Reembolso?',
+    r: 'São os dois tipos de solicitação. Consulta é o atendimento a ser pago; Reembolso é uma despesa já paga pelo beneficiário que ele quer de volta. O fluxo é o mesmo (abrir → autorizar → pagar); muda só o tipo e alguns rótulos.',
+  },
   // ---- Atendimento ----
   {
     grupo: 'Atendimento',
@@ -63,6 +78,11 @@ const DUVIDAS: Duvida[] = [
     grupo: 'Atendimento',
     p: 'Preciso corrigir algo depois de criar. Dá para editar?',
     r: 'Dá. Abra a solicitação e clique em "Editar" no bloco "Paciente e atendimento". Você ajusta os dados de abertura (paciente, valor, procedimento, Pix, etc.) e salva.',
+  },
+  {
+    grupo: 'Atendimento',
+    p: 'Como abrir um Reembolso?',
+    r: 'Em "Nova solicitação", escolha o tipo "Reembolso" no topo do formulário. Os rótulos se ajustam (ex.: "Valor a reembolsar", "Data do atendimento") e o resto é igual ao da consulta. Na lista, o reembolso aparece com o selo "Reembolso".',
   },
   // ---- Enfermagem ----
   {
@@ -100,6 +120,11 @@ const DUVIDAS: Duvida[] = [
     grupo: 'Financeiro',
     p: 'Onde anexo o recibo do pagamento?',
     r: 'No detalhe da solicitação autorizada, use a seção "Recibo de pagamento" para anexar o comprovante.',
+  },
+  {
+    grupo: 'Financeiro',
+    p: 'Como vejo o que precisa ser pago com urgência?',
+    r: 'Use o filtro "⏰ Próximas consultas" (lista ordenada pela data) e fique de olho nos selos vermelhos/âmbar na lista e nos "Alertas para revisão" do painel — eles apontam as consultas de hoje/amanhã ou atrasadas ainda não pagas.',
   },
 ]
 
