@@ -80,6 +80,7 @@ export type SolicitacaoCRM = {
   /* ---- Enfermagem ---- */
   autorizacao: Autorizacao
   dataAutorizacao: string | null
+  motivoRecusa: string | null
 
   /* ---- Financeiro ---- */
   dataPrevistaPagamento: string | null
@@ -346,6 +347,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     dadosBancarios: 'Pix (e-mail): endocardio.ro@gmail.com',
     autorizacao: 'sim',
     dataAutorizacao: '2026-10-08',
+    motivoRecusa: null,
     dataPrevistaPagamento: '2026-10-09',
     statusFinanceiro: 'Agendado',
     dataPagamento: null,
@@ -368,6 +370,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     dadosBancarios: '',
     autorizacao: 'nao',
     dataAutorizacao: '2026-09-16',
+    motivoRecusa: null,
     dataPrevistaPagamento: null,
     statusFinanceiro: 'Recusado',
     dataPagamento: null,
@@ -390,6 +393,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     dadosBancarios: 'Pix (CNPJ): 12.345.678/0001-90',
     autorizacao: 'pendente',
     dataAutorizacao: null,
+    motivoRecusa: null,
     dataPrevistaPagamento: null,
     statusFinanceiro: null,
     dataPagamento: null,
@@ -412,6 +416,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     dadosBancarios: 'Pix (telefone): (69) 99999-0000',
     autorizacao: 'sim',
     dataAutorizacao: '2026-10-12',
+    motivoRecusa: null,
     dataPrevistaPagamento: '2026-10-05',
     statusFinanceiro: 'Pago',
     dataPagamento: '2026-10-05',
@@ -434,6 +439,7 @@ export const SOLICITACOES_EXEMPLO: SolicitacaoCRM[] = [
     dadosBancarios: '',
     autorizacao: 'sim',
     dataAutorizacao: '2026-10-13',
+    motivoRecusa: null,
     dataPrevistaPagamento: null,
     statusFinanceiro: 'Pendente',
     dataPagamento: null,

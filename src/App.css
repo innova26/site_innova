@@ -5413,6 +5413,28 @@ button.crm-card:hover {
   overflow-y: auto;
 }
 
+.crm-overlay-top {
+  z-index: 70;
+  align-items: center;
+}
+.crm-modal-sm {
+  max-width: 460px;
+}
+.crm-motivo-rec {
+  margin-top: 8px;
+  font-weight: 500;
+}
+.crm-motivo-rec strong {
+  font-weight: 700;
+}
+.crm-btn-recusar-conf {
+  background: var(--tom-recusado, #b91c1c);
+  border-color: var(--tom-recusado, #b91c1c);
+}
+.crm-btn-recusar-conf:hover {
+  filter: brightness(0.95);
+}
+
 /* ---- modal nova solicitação ---- */
 .crm-modal {
   width: 100%;

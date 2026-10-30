@@ -770,6 +770,18 @@ function DetalheSolicitacao({
   const et = etapaAtual(s)
   const urg = urgenciaConsulta(s)
   const rotS = rotulosTipo(s.tipo)
+  const [recusando, setRecusando] = useState(false)
+  const [motivoRec, setMotivoRec] = useState('')
+  const [erroMotivo, setErroMotivo] = useState('')
+  const confirmarRecusa = () => {
+    const m = motivoRec.trim()
+    if (!m) {
+      setErroMotivo('Informe o motivo da recusa.')
+      return
+    }
+    onAtualizar(s.id, { autorizacao: 'nao', dataAutorizacao: hojeISO(), motivoRecusa: m })
+    setRecusando(false)
+  }
   const [dataPrev, setDataPrev] = useState(s.dataPrevistaPagamento ?? '')
   const [status, setStatus] = useState<StatusFinanceiro>(s.statusFinanceiro ?? 'Pendente')
 
@@ -921,7 +933,11 @@ function DetalheSolicitacao({
                 <button
                   type="button"
                   className="btn btn-ghost crm-btn-recusar"
-                  onClick={() => onAtualizar(s.id, { autorizacao: 'nao', dataAutorizacao: hojeISO() })}
+                  onClick={() => {
+                    setMotivoRec('')
+                    setErroMotivo('')
+                    setRecusando(true)
+                  }}
                 >
                   Recusar
                 </button>
@@ -934,6 +950,11 @@ function DetalheSolicitacao({
         {et.chave === 'recusado' && (
           <div className="crm-acao-crit">
             Não autorizado{s.dataAutorizacao ? ` em ${formatarData(s.dataAutorizacao)}` : ''}.
+            {s.motivoRecusa && (
+              <div className="crm-motivo-rec">
+                <strong>Motivo:</strong> {s.motivoRecusa}
+              </div>
+            )}
           </div>
         )}
 
@@ -1245,6 +1266,53 @@ function DetalheSolicitacao({
           </section>
         )}
       </aside>
+
+      {recusando && (
+        <div className="crm-overlay crm-overlay-top" role="dialog" aria-modal="true">
+          <div className="crm-modal crm-modal-sm">
+            <div className="crm-modal-head">
+              <div>
+                <h3>Recusar solicitação</h3>
+                <p className="crm-modal-sub">Explique o motivo — ajuda o atendimento a entender a recusa.</p>
+              </div>
+              <button type="button" className="crm-fechar" onClick={() => setRecusando(false)} aria-label="Fechar">
+                ×
+              </button>
+            </div>
+            <div className="crm-modal-corpo">
+              <div className="campo">
+                <label htmlFor="motivo-recusa">
+                  Motivo da recusa <span className="crm-req">*</span>
+                </label>
+                <textarea
+                  id="motivo-recusa"
+                  rows={4}
+                  autoFocus
+                  value={motivoRec}
+                  onChange={(e) => {
+                    setMotivoRec(e.target.value)
+                    if (erroMotivo) setErroMotivo('')
+                  }}
+                  placeholder="Ex.: Procedimento fora de cobertura; documentação incompleta…"
+                />
+                {erroMotivo && (
+                  <span className="erro" role="alert">
+                    {erroMotivo}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="crm-modal-acoes">
+              <button type="button" className="btn btn-ghost" onClick={() => setRecusando(false)}>
+                Cancelar
+              </button>
+              <button type="button" className="btn btn-primary crm-btn-recusar-conf" onClick={confirmarRecusa}>
+                Confirmar recusa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
