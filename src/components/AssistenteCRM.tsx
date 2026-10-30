@@ -84,16 +84,21 @@ const DUVIDAS: Duvida[] = [
     p: 'Como abrir um Reembolso?',
     r: 'Em "Nova solicitação", escolha o tipo "Reembolso" no topo do formulário. Os rótulos se ajustam (ex.: "Valor a reembolsar", "Data do atendimento") e o resto é igual ao da consulta. Na lista, o reembolso aparece com o selo "Reembolso".',
   },
+  {
+    grupo: 'Atendimento',
+    p: 'Como sei por que uma solicitação foi recusada?',
+    r: 'Abra a solicitação recusada (vermelha): no aviso "Não autorizado" aparece o motivo informado pela enfermagem.',
+  },
   // ---- Enfermagem ----
   {
     grupo: 'Enfermagem',
     p: 'Como autorizar ou recusar uma solicitação?',
-    r: 'Abra a solicitação que está "Aguardando enfermagem". Na zona de ação no topo, use os botões Autorizar ou Recusar. A data fica registrada automaticamente.',
+    r: 'Abra a solicitação que está "Aguardando enfermagem". Na zona de ação no topo, use Autorizar ou Recusar. Ao recusar, abre um popup pedindo o motivo (obrigatório). A data fica registrada automaticamente.',
   },
   {
     grupo: 'Enfermagem',
     p: 'O que acontece quando eu recuso?',
-    r: 'A solicitação passa para "Não autorizado" (vermelho) e sai do fluxo de pagamento. O motivo pode ser registrado nas observações.',
+    r: 'Ao clicar em Recusar, você informa o motivo (obrigatório) num popup. A solicitação passa para "Não autorizado" (vermelho), sai do fluxo de pagamento e o motivo fica salvo e visível para o atendimento no detalhe.',
   },
   {
     grupo: 'Enfermagem',
