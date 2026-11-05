@@ -482,6 +482,7 @@ function FormNovaSolicitacao({
     setForm({ ...form, [campo]: valor })
   const rot = rotulosTipo(form.tipo)
   const [alertaValor, setAlertaValor] = useState(false)
+  const [erroValor, setErroValor] = useState('')
   const [docs, setDocs] = useState<File[]>([])
   const [salvando, setSalvando] = useState(false)
   const [erroArquivo, setErroArquivo] = useState('')
@@ -507,6 +508,12 @@ function FormNovaSolicitacao({
   const enviar = async (e: FormEvent) => {
     e.preventDefault()
     if (salvando) return
+    const v = valorParaNumero(form.valorSolicitado)
+    if (v === null || v <= 0) {
+      setErroValor('Informe um valor maior que zero.')
+      document.getElementById('n-valor')?.focus()
+      return
+    }
     setSalvando(true)
     await onCriar(docs)
     setSalvando(false)
@@ -642,21 +649,31 @@ function FormNovaSolicitacao({
                   ))}
                 </datalist>
               </div>
-              <div className="campo">
-                <label htmlFor="n-valor">{rot.valor} (R$)</label>
+              <div className={`campo${erroValor ? ' tem-erro' : ''}`}>
+                <label htmlFor="n-valor">
+                  {rot.valor} (R$) <span className="crm-req">*</span>
+                </label>
                 <input
                   id="n-valor"
                   type="text"
                   inputMode="numeric"
                   placeholder="0"
                   value={form.valorSolicitado}
-                  onChange={(e) => set('valorSolicitado', mascaraValor(e.target.value))}
+                  onChange={(e) => {
+                    set('valorSolicitado', mascaraValor(e.target.value))
+                    if (erroValor) setErroValor('')
+                  }}
                   onBlur={() => {
                     const n = valorParaNumero(form.valorSolicitado)
                     if (n !== null) set('valorSolicitado', numeroParaMascara(n))
                     if (n !== null && n > 0 && n < 10) setAlertaValor(true)
                   }}
                 />
+                {erroValor && (
+                  <span className="erro" role="alert">
+                    {erroValor}
+                  </span>
+                )}
               </div>
             </div>
 
