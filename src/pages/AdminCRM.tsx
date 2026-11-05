@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../routes'
-import { mascaraDocumento } from '../utils/formulario'
+import {
+  mascaraDocumento,
+  mascaraValor,
+  valorParaNumero,
+  numeroParaMascara,
+} from '../utils/formulario'
 import {
   AVISOS_ATIVOS,
   STATUS_FINANCEIRO,
@@ -246,7 +251,7 @@ export default function AdminCRM() {
         clinicaHospital: form.clinicaHospital.trim(),
         dataConsulta: form.dataConsulta || null,
         termino: form.termino || null,
-        valorSolicitado: form.valorSolicitado ? Number(form.valorSolicitado) : null,
+        valorSolicitado: valorParaNumero(form.valorSolicitado),
         dadosBancarios: form.dadosBancarios.trim(),
         observacoes: form.observacoes.trim(),
       })
@@ -476,6 +481,7 @@ function FormNovaSolicitacao({
   const set = <K extends keyof FormNova>(campo: K, valor: FormNova[K]) =>
     setForm({ ...form, [campo]: valor })
   const rot = rotulosTipo(form.tipo)
+  const [alertaValor, setAlertaValor] = useState(false)
   const [docs, setDocs] = useState<File[]>([])
   const [salvando, setSalvando] = useState(false)
   const [erroArquivo, setErroArquivo] = useState('')
@@ -640,11 +646,15 @@ function FormNovaSolicitacao({
                 <label htmlFor="n-valor">{rot.valor} (R$)</label>
                 <input
                   id="n-valor"
-                  type="number"
-                  min="0"
-                  step="0.01"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="0"
                   value={form.valorSolicitado}
-                  onChange={(e) => set('valorSolicitado', e.target.value)}
+                  onChange={(e) => set('valorSolicitado', mascaraValor(e.target.value))}
+                  onBlur={() => {
+                    const n = valorParaNumero(form.valorSolicitado)
+                    if (n !== null && n > 0 && n < 10) setAlertaValor(true)
+                  }}
                 />
               </div>
             </div>
@@ -747,6 +757,38 @@ function FormNovaSolicitacao({
           </button>
         </div>
       </form>
+
+      {alertaValor && (
+        <div className="crm-overlay crm-overlay-top" role="alertdialog" aria-modal="true">
+          <div className="crm-modal crm-modal-sm">
+            <div className="crm-modal-head">
+              <div>
+                <h3>Valor abaixo de R$ 10,00</h3>
+                <p className="crm-modal-sub">Confira se o valor digitado está correto.</p>
+              </div>
+              <button
+                type="button"
+                className="crm-fechar"
+                onClick={() => setAlertaValor(false)}
+                aria-label="Fechar"
+              >
+                ×
+              </button>
+            </div>
+            <div className="crm-modal-corpo">
+              <p className="crm-alerta-valor">
+                O valor informado é <strong>menor que R$ 10,00</strong>. Se estiver certo, pode
+                continuar; se foi engano, corrija antes de salvar.
+              </p>
+            </div>
+            <div className="crm-modal-acoes">
+              <button type="button" className="btn btn-primary" onClick={() => setAlertaValor(false)}>
+                Entendi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -811,7 +853,7 @@ function DetalheSolicitacao({
     solicitante: s.solicitante,
     procedimento: s.procedimento,
     clinicaHospital: s.clinicaHospital ?? '',
-    valorSolicitado: s.valorSolicitado != null ? String(s.valorSolicitado) : '',
+    valorSolicitado: numeroParaMascara(s.valorSolicitado),
     dataConsulta: s.dataConsulta ?? '',
     termino: s.termino ?? '',
     dadosBancarios: s.dadosBancarios ?? '',
@@ -835,7 +877,7 @@ function DetalheSolicitacao({
       solicitante: ed.solicitante,
       procedimento: ed.procedimento,
       clinicaHospital: ed.clinicaHospital,
-      valorSolicitado: ed.valorSolicitado === '' ? null : Number(ed.valorSolicitado),
+      valorSolicitado: valorParaNumero(ed.valorSolicitado),
       dataConsulta: ed.dataConsulta || null,
       termino: ed.termino || null,
       dadosBancarios: ed.dadosBancarios,
@@ -1118,11 +1160,11 @@ function DetalheSolicitacao({
                 <label htmlFor="e-valor">{rotEd.valor} (R$)</label>
                 <input
                   id="e-valor"
-                  type="number"
-                  min="0"
-                  step="0.01"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="0"
                   value={ed.valorSolicitado}
-                  onChange={(e) => setEdCampo('valorSolicitado', e.target.value)}
+                  onChange={(e) => setEdCampo('valorSolicitado', mascaraValor(e.target.value))}
                 />
               </div>
             </div>

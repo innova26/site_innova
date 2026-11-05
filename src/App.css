@@ -5420,6 +5420,15 @@ button.crm-card:hover {
 .crm-modal-sm {
   max-width: 460px;
 }
+.crm-alerta-valor {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--text);
+}
+.crm-alerta-valor strong {
+  color: var(--tom-aguardando, #b45309);
+}
 .crm-motivo-rec {
   margin-top: 8px;
   font-weight: 500;

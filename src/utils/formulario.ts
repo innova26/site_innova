@@ -25,6 +25,33 @@ export function mascaraDocumento(valor: string) {
     .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
 }
 
+/** Máscara de valor em reais: agrupa milhares com ponto conforme digita
+ *  (1500 -> 1.500) e aceita centavos após vírgula (1500,50 -> 1.500,50). */
+export function mascaraValor(valor: string) {
+  const v = valor.replace(/[^\d,]/g, '')
+  const i = v.indexOf(',')
+  let inteiro = i === -1 ? v : v.slice(0, i)
+  const dec = i === -1 ? null : v.slice(i + 1).replace(/\D/g, '').slice(0, 2)
+  inteiro = inteiro.replace(/^0+(?=\d)/, '')
+  inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  if (inteiro === '' && dec === null) return ''
+  return dec === null ? inteiro : `${inteiro || '0'},${dec}`
+}
+
+/** Converte o valor mascarado (1.500,50) em número (1500.5). Vazio -> null. */
+export function valorParaNumero(mascarado: string): number | null {
+  const t = mascarado.trim()
+  if (!t) return null
+  const n = Number(t.replace(/\./g, '').replace(',', '.'))
+  return Number.isNaN(n) ? null : n
+}
+
+/** Formata um número para a máscara de valor em reais (1500 -> "1.500"). */
+export function numeroParaMascara(n: number | null): string {
+  if (n == null) return ''
+  return n.toLocaleString('pt-BR', { maximumFractionDigits: 2 })
+}
+
 export function cpfValido(d: string) {
   if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false
   const digito = (fatia: number) => {
