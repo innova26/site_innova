@@ -653,6 +653,7 @@ function FormNovaSolicitacao({
                   onChange={(e) => set('valorSolicitado', mascaraValor(e.target.value))}
                   onBlur={() => {
                     const n = valorParaNumero(form.valorSolicitado)
+                    if (n !== null) set('valorSolicitado', numeroParaMascara(n))
                     if (n !== null && n > 0 && n < 10) setAlertaValor(true)
                   }}
                 />
@@ -1165,6 +1166,10 @@ function DetalheSolicitacao({
                   placeholder="0"
                   value={ed.valorSolicitado}
                   onChange={(e) => setEdCampo('valorSolicitado', mascaraValor(e.target.value))}
+                  onBlur={() => {
+                    const n = valorParaNumero(ed.valorSolicitado)
+                    if (n !== null) setEdCampo('valorSolicitado', numeroParaMascara(n))
+                  }}
                 />
               </div>
             </div>

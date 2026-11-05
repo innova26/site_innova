@@ -46,10 +46,11 @@ export function valorParaNumero(mascarado: string): number | null {
   return Number.isNaN(n) ? null : n
 }
 
-/** Formata um número para a máscara de valor em reais (1500 -> "1.500"). */
+/** Formata um número no padrão brasileiro de reais com centavos
+ *  (1500 -> "1.500,00"; 1500.5 -> "1.500,50"). Usado ao sair do campo. */
 export function numeroParaMascara(n: number | null): string {
   if (n == null) return ''
-  return n.toLocaleString('pt-BR', { maximumFractionDigits: 2 })
+  return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 export function cpfValido(d: string) {
