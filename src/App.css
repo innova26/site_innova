@@ -3006,6 +3006,63 @@
   gap: 12px;
 }
 
+/* --- acoes do topo do card: tag do tipo + botao copiar --- */
+.rede-card-acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rede-card-copiar {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #e1e7f2;
+  border-radius: 10px;
+  background: #f5f8fd;
+  color: #2f80ed;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.rede-card-copiar:hover {
+  background: #eaf2fe;
+  border-color: rgba(47, 128, 237, 0.5);
+}
+
+.rede-card-copiar:focus-visible {
+  outline: 2px solid #2f80ed;
+  outline-offset: 2px;
+}
+
+.rede-card-copiar.is-copiado {
+  background: #e8f7ee;
+  border-color: #9bd8b2;
+  color: #1f9d55;
+}
+
+/* balaozinho "Copiado!" acima do botao */
+.rede-card-copiar-msg:empty {
+  display: none;
+}
+
+.rede-card-copiar-msg {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #10203f;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 /* --- secoes rotuladas do card (design2.0) --- */
 .rede-card-secao {
   display: flex;
@@ -3233,9 +3290,23 @@
     grid-template-columns: auto 1fr;
   }
 
-  .rede-tag-tipo {
+  .rede-card-topo {
+    position: relative;
+  }
+
+  /* no celular o copiar continua no canto superior direito */
+  .rede-card-identidade {
+    padding-right: 42px;
+  }
+
+  .rede-card-copiar {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .rede-card-acoes {
     grid-column: 2;
-    justify-self: start;
     margin-top: 4px;
   }
 }

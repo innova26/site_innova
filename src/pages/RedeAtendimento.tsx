@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Check, Copy } from 'lucide-react'
 import { ROUTES } from '../routes'
 import {
   ESTADOS,
@@ -172,11 +173,63 @@ function separarMedicos(entradas: string[]): string[] {
   return todos
 }
 
+/** Copia texto para a área de transferência (com fallback p/ navegadores antigos / http). */
+async function copiarTexto(texto: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(texto)
+    return true
+  } catch {
+    const area = document.createElement('textarea')
+    area.value = texto
+    area.setAttribute('readonly', '')
+    area.style.position = 'fixed'
+    area.style.opacity = '0'
+    document.body.appendChild(area)
+    area.select()
+    const ok = document.execCommand('copy')
+    area.remove()
+    return ok
+  }
+}
+
+/** Botão "copiar" do card: nome, endereço e telefones, um por linha. */
+function BotaoCopiar({ texto, nome }: { texto: string; nome: string }) {
+  const [copiado, setCopiado] = useState(false)
+
+  useEffect(() => {
+    if (!copiado) return
+    const t = window.setTimeout(() => setCopiado(false), 2000)
+    return () => window.clearTimeout(t)
+  }, [copiado])
+
+  return (
+    <button
+      type="button"
+      className={`rede-card-copiar${copiado ? ' is-copiado' : ''}`}
+      onClick={async () => setCopiado(await copiarTexto(texto))}
+      aria-label={copiado ? 'Dados copiados' : `Copiar nome, endereço e telefone de ${nome}`}
+      title={copiado ? 'Copiado!' : 'Copiar nome, endereço e telefone'}
+    >
+      {copiado ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
+      <span className="rede-card-copiar-msg" aria-live="polite">
+        {copiado ? 'Copiado!' : ''}
+      </span>
+    </button>
+  )
+}
+
 function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
   const especialidades = normalizarLista(grupo.especialidades)
   const medicos = normalizarLista(separarMedicos(grupo.profissionais))
   const redes = normalizarLista(grupo.redes)
   const telefones = normalizarLista(grupo.telefones)
+  const textoCopia = [
+    grupo.nome,
+    grupo.endereco,
+    telefones.length ? `Tel.: ${telefones.join(' / ')}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n')
 
   return (
     <article className="rede-card">
@@ -238,7 +291,10 @@ function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
             )}
           </div>
         </div>
-        <span className="rede-tag rede-tag-tipo">{grupo.tipo}</span>
+        <div className="rede-card-acoes">
+          <span className="rede-tag rede-tag-tipo">{grupo.tipo}</span>
+          <BotaoCopiar texto={textoCopia} nome={grupo.nome} />
+        </div>
       </header>
 
       {especialidades.length > 0 && (
