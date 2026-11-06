@@ -173,9 +173,26 @@ function separarMedicos(entradas: string[]): string[] {
   return todos
 }
 
-/** Copia texto para a área de transferência (com fallback p/ navegadores antigos / http). */
-async function copiarTexto(texto: string): Promise<boolean> {
+const escaparHtml = (t: string) =>
+  t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+/**
+ * Copia para a área de transferência em dois formatos:
+ * - HTML (e-mail, Word, Google Docs): o endereço vira link clicável;
+ * - texto puro (WhatsApp, bloco de notas): o link do mapa vai numa linha.
+ * Com fallback p/ navegadores sem Clipboard API.
+ */
+async function copiarTexto(texto: string, html?: string): Promise<boolean> {
   try {
+    if (html && typeof ClipboardItem !== 'undefined' && navigator.clipboard.write) {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/plain': new Blob([texto], { type: 'text/plain' }),
+          'text/html': new Blob([html], { type: 'text/html' }),
+        }),
+      ])
+      return true
+    }
     await navigator.clipboard.writeText(texto)
     return true
   } catch {
@@ -193,7 +210,7 @@ async function copiarTexto(texto: string): Promise<boolean> {
 }
 
 /** Botão "copiar" do card: nome, endereço e telefones, um por linha. */
-function BotaoCopiar({ texto, nome }: { texto: string; nome: string }) {
+function BotaoCopiar({ texto, html, nome }: { texto: string; html?: string; nome: string }) {
   const [copiado, setCopiado] = useState(false)
 
   useEffect(() => {
@@ -206,7 +223,7 @@ function BotaoCopiar({ texto, nome }: { texto: string; nome: string }) {
     <button
       type="button"
       className={`rede-card-copiar${copiado ? ' is-copiado' : ''}`}
-      onClick={async () => setCopiado(await copiarTexto(texto))}
+      onClick={async () => setCopiado(await copiarTexto(texto, html))}
       aria-label={copiado ? 'Dados copiados' : `Copiar nome, endereço e telefone de ${nome}`}
       title={copiado ? 'Copiado!' : 'Copiar nome, endereço e telefone'}
     >
@@ -231,6 +248,15 @@ function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
   ]
     .filter(Boolean)
     .join('\n')
+  const htmlCopia = [
+    `<strong>${escaparHtml(grupo.nome)}</strong>`,
+    grupo.endereco
+      ? `<a href="${escaparHtml(mapsHref(grupo.endereco))}">${escaparHtml(grupo.endereco)}</a>`
+      : '',
+    telefones.length ? `Tel.: ${escaparHtml(telefones.join(' / '))}` : '',
+  ]
+    .filter(Boolean)
+    .join('<br>')
 
   return (
     <article className="rede-card">
@@ -294,7 +320,7 @@ function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
         </div>
         <div className="rede-card-acoes">
           <span className="rede-tag rede-tag-tipo">{grupo.tipo}</span>
-          <BotaoCopiar texto={textoCopia} nome={grupo.nome} />
+          <BotaoCopiar texto={textoCopia} html={htmlCopia} nome={grupo.nome} />
         </div>
       </header>
 
