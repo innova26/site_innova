@@ -227,6 +227,7 @@ function CardPrestador({ grupo }: { grupo: PrestadorGrupo }) {
     grupo.nome,
     grupo.endereco,
     telefones.length ? `Tel.: ${telefones.join(' / ')}` : '',
+    grupo.endereco ? `Mapa: ${mapsHref(grupo.endereco)}` : '',
   ]
     .filter(Boolean)
     .join('\n')
